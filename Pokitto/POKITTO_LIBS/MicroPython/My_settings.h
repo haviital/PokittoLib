@@ -12,11 +12,15 @@
 #ifndef MY_SETTINGS_H
 #define MY_SETTINGS_H
 
-#define PROJ_HIRES 0 //1 = high resolution (220x176) , 0 = low resolution fast mode (110x88)
+#define PROJ_HIRES 1 //1 = high resolution (220x176) , 0 = low resolution fast mode (110x88)
 #define PROJ_STARTUPLOGO 1
 #define PROJ_GAMEBUINO 0
 #define PROJ_STREAMING_MUSIC 0
 #define PROJ_ENABLE_SYNTH 0
+
+//#define PROJ_SHOW_FPS_COUNTER
+
+#define SPRITE_COUNT 8
 
 // Python specific
 
@@ -26,7 +30,8 @@
 #ifdef POK_SIM
 #define USE_USB_SERIAL_PRINT (0)
 #else
-#define USE_USB_SERIAL_PRINT (1)
+#define USE_USB_SERIAL_PRINT (0)
+#define USE_SEGGER_SERIAL_PRINT
 #endif
 
 #endif
