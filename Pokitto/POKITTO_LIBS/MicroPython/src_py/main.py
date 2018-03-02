@@ -76,6 +76,8 @@ def main():
 # *** MAIN PLAY
 def MainPlay():
 
+    print('1 free mem=', gc.mem_free());
+
     global gameMode
     global points
     global g_level
