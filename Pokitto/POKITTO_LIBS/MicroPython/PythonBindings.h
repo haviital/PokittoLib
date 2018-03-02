@@ -38,7 +38,6 @@
 #define PYTHON_BINDINGS_H
 
 #if MICROPY_ENABLE_GC==1  // This means micropython is used
-
 #ifdef __cplusplus
 #define EXTERNC extern "C"
 #else

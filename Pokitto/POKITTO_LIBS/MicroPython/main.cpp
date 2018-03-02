@@ -53,7 +53,7 @@
 
 Pokitto::Core game;
 
-extern "C" int main_upython(int argc, char **argv);
+extern "C" int PythonMain(int argc, char **argv);
 
 
 int main () {

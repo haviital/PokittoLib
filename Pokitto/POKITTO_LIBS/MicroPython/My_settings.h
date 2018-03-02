@@ -11,7 +11,6 @@
 
 #ifndef MY_SETTINGS_H
 #define MY_SETTINGS_H
-
 #define PROJ_HIRES 1 //1 = high resolution (220x176) , 0 = low resolution fast mode (110x88)
 #define PROJ_STARTUPLOGO 1
 #define PROJ_GAMEBUINO 0

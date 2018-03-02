@@ -8,7 +8,7 @@
    My_settings can be used to set project settings inside the mbed online IDE
 */
 /**************************************************************************/
-
+xxx
 #ifndef MY_SETTINGS_H
 #define MY_SETTINGS_H
 
