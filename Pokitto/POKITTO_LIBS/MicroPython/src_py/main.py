@@ -1,5 +1,5 @@
 print('*** start python script')
-import gc
+import gc as gc2
 import upygame as pygame
 import urandom as random
 import sprite
@@ -8,6 +8,9 @@ import marsattack_classes as gameclass
 import umachine as pok
 #import utime
 #import math # not currently supported for HW build
+
+gc2.collect()
+print('000 FREE:',gc2.mem_free())
 
 # *** INIT SCREEN AND CRATE GLOBAL OBJECTS
 pygame.display.init()
@@ -53,11 +56,17 @@ print('*** display ready')
 # *** MAIN
 def main():
 
+    gc2.collect()
+    print('0 FREE:',gc2.mem_free())
+
     # Create whole level
     RestartLevel()
 
     while True:
 
+        gc2.collect()
+        print('HV')
+        print('00 FREE:',gc2.mem_free())
         print('gameMode', gameMode)
 
         # Draw points
@@ -76,7 +85,8 @@ def main():
 # *** MAIN PLAY
 def MainPlay():
 
-    print('1 free mem=', gc.mem_free());
+    gc2.collect()
+    print('1 FREE:',gc2.mem_free())
 
     global gameMode
     global points
@@ -324,7 +334,10 @@ def RestartLevel():
 
     print('create level. g_level=',g_level)
 
-    # Create rock pile sprites
+    gc2.collect()
+    print('2 FREE:',gc2.mem_free())
+
+   # Create rock pile sprites
     CreateRockPileSprites(g_levelParam[g_level][1], g_levelParam[g_level][2], g_levelParam[g_level][3], g_levelParam[g_level][4], g_levelParam[g_level][5])
 
      # Init sprites
@@ -332,12 +345,20 @@ def RestartLevel():
 
     all_rockpiles.update()
 
+    gc2.collect()
+    print('2.1 FREE:',gc2.mem_free())
+
     # draw screen once.
     #screen.fill(0)
     # Draw background
     screen.blit(gamedata.backgroundSurf, 0, 0, 15) # no invisible color
     all_rockpiles.draw(screen)
+    gc2.collect()
+    print('2.11 FREE:',gc2.mem_free())
     pygame.display.update(False)
+    gc2.collect()
+    print('2.2 FREE:',gc2.mem_free())
+
     #pygame.display.update(False)
 
 
