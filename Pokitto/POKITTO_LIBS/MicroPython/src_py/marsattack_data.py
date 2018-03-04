@@ -1,28 +1,10 @@
+# Copyright (C) 2018 Hannu Viitala.
+# All rights reserved.
+# Note: The graphics data is not licenced under MIT license.
+
+# Game graphics
+
 import upygame as pygame
-
-def ConvStrTo4bitPixelArray(w, h, strArray, numArray):
-    #print("strArray=", strArray)
-    for y in range(h):
-        for x in range(w//2):
-            #print("y=",y," x=", x*2)
-            pixStr = "0x" + strArray[y*w + (x*2)] + strArray[y*w + (x*2) + 1]
-            pix = int(pixStr, 16)
-            numArray.append(pix)
-
-def ConvStrTo2bitPixelArray(w, h, strArray, numArray):
-    #print("strArray=", strArray)
-    for y in range(h):
-        for x in range(w//4):
-            # make a byte
-            #print("y=",y," x=", x*4)
-            c0 = int(strArray[y*w + (x*4)])
-            c1 = int(strArray[y*w + (x*4) + 1])
-            c2 = int(strArray[y*w + (x*4) + 2])
-            c3 = int(strArray[y*w + (x*4) + 3])
-            #print("c0=", bin(c0),"c1=", bin(c1),"c2=", bin(c2),"c3=", bin(c3))
-            bytepixels = (c0 << 6) + (c1 << 4) + (c2 << 2) + c3
-            #print("bytepixels=",bin(bytepixels))
-            numArray.append(bytepixels)
 
 # Rock picture: 1
 # Note: that the image data is given as *bytes* object. That is immutable (read only) object and will be stored to ROM.
@@ -263,6 +245,7 @@ b'\x50\x00\x00\x50\
 ')
 
 
+# Ship picture
 w = 32
 h = 16
 shipF1Surf = pygame.surface.Surface(w, h,
@@ -282,6 +265,7 @@ b'\xFC\x00\x00\x00\x00\x00\x00\x00\
 \x0F\xFF\xF5\x55\x55\x57\xFF\xDF\
 \x0C\x3F\xFF\xFF\xFF\xFF\xFF\xFC\
 \x00\x00\x3C\x00\x00\x00\x0F\x00')
+
 # Bomb
 w = 8
 h = 8
@@ -357,7 +341,6 @@ b'\x01\x00\x69\x00\
 \x19\xA0\xAA\xA8\
 \x1A\x91\xAA\x50\
 \x05\x40\x15\x00')
-
 # Explosion 1, frame 4
 explosion1f4Surf = pygame.surface.Surface(w, h,
 b'\x00\x00\x01\xA4\
@@ -377,7 +360,7 @@ b'\x00\x00\x01\xA4\
 \x29\x00\x0A\xA8\
 \x19\x00\x02\x80')
 
-# Background
+# Background image
 w = 220
 h = 176
 # b'\1\2\xff'

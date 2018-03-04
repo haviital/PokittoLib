@@ -1,23 +1,23 @@
-print('*** start python script')
-import gc as gc2
+
+import gc
 import upygame as pygame
 import urandom as random
 import sprite
 import marsattack_data as gamedata
 import marsattack_classes as gameclass
 import umachine as pok
-#import utime
-#import math # not currently supported for HW build
 
-gc2.collect()
-print('000 FREE:',gc2.mem_free())
-
-# *** INIT SCREEN AND CRATE GLOBAL OBJECTS
+# Init screen
 pygame.display.init()
 screen = pygame.display.set_mode() # full screen
 screenRect = screen.get_rect()
 screenW = screenRect.width
 screenH = screenRect.height
+# Copyright (C) 2018 Hannu Viitala
+# This file is released under MIT license.
+# Go to http://opensource.org/licenses/MIT for full license details.
+
+# Create global objects
 shipGob = None
 bombGob = None
 explosionGob = None
@@ -32,6 +32,8 @@ g_ship_speed = 2
 g_level = 0
 test_num_piles = 8
 g_debug_mode = 0
+
+# Level definitions
 g_levelParam = [
     # palette, number of piles, max height, body bitmap,head bitmap, head collision rect
     [[60683,32963,49572,65502], test_num_piles, 0, gamedata.rock1Surf, gamedata.rockHead1Surf, gamedata.rockHead1CollRect],
@@ -48,26 +50,16 @@ all_sprites = sprite.Group()
 all_rockpiles = gameclass.RockPileGroup()
 all_gobs = gameclass.GobGroup()
 
-# Set palette
+# Set initial palette
 pygame.display.set_palette_16bit([60683,32963,49572,65502]);
 
-print('*** display ready')
-
-# *** MAIN
+# Main function
 def main():
 
-    gc2.collect()
-    print('0 FREE:',gc2.mem_free())
-
-    # Create whole level
+    # Create the whole level
     RestartLevel()
 
     while True:
-
-        gc2.collect()
-        print('HV')
-        print('00 FREE:',gc2.mem_free())
-        print('gameMode', gameMode)
 
         # Draw points
         DrawPoints()
@@ -82,20 +74,20 @@ def main():
         else: # gameMode="play"
             MainPlay()
 
-# *** MAIN PLAY
+# *** Playing main loop
 def MainPlay():
-
-    gc2.collect()
-    print('1 FREE:',gc2.mem_free())
 
     global gameMode
     global points
     global g_level
 
+    # Init
     vx = g_ship_speed;
     vy = 0;
     exitLoop = False
     destroyedPilesCount = 0
+
+    # Main loop
     while not exitLoop:
 
         # read keys
@@ -103,38 +95,42 @@ def MainPlay():
         if eventtype != pygame.NOEVENT:
             if eventtype.type == pygame.KEYDOWN:
                 if eventtype.key == pygame.BUT_A:
+
+                    # Drop bomb if it is not visible already
                     if not bombGob.visible:
                         bombGob.rect.x = shipGob.rect.x + ((shipGob.rect.width- bombGob.rect.width)//2)
                         bombGob.rect.y = shipGob.rect.y + shipGob.rect.height
                         bombGob.setvel(0,2)
                         bombGob.visible = True
 
+                # Debug: Level up
                 if g_debug_mode>0 and eventtype.key == pygame.K_UP:
                     g_level+=1
                     if g_level > 6:
                         g_level = 6;
                     RestartLevel()
 
+                # Debug: Level down
                 if g_debug_mode>0 and eventtype.key == pygame.K_DOWN:
                     g_level-=1
                     if g_level < 0:
                         g_level = 0;
                     RestartLevel()
 
-        #vx = 3
+        # Set speed
         shipGob.setvel(vx,vy)
 
-        # Check bomb collision
+        # Init collision rect for the bomb
         bombGob.collRect2.x = bombGob.rect.x + bombGob.collRect.x
         bombGob.collRect2.y = bombGob.rect.y + bombGob.collRect.y
         bombGob.collRect2.width = bombGob.collRect.width
         bombGob.collRect2.height = bombGob.collRect.height
+
+        # Check bomb collision to rockpile
         hitSprite = sprite.spritecollideany(bombGob, all_rockpiles, IsSpriteCollided)
         if hitSprite != None:
 
-            #start = utime.ticks_us()
-
-            # setup explosion
+            # Setup explosion
             explosionGob.rect.x = hitSprite.rect.x
             explosionGob.rect.y = hitSprite.rect.y
             explosionGob.vx = 0
@@ -144,10 +140,7 @@ def MainPlay():
             explosionGob.currentFrameNum = 0;
             explosionGob.setSpriteFrame()
 
-            #print('bcoll1', utime.ticks_us()-start);
-
-            # Calc dirty rect
-            #totalH =  hitSprite.rect.height + (hitSprite.numClones * hitSprite.frames[1].get_rect().height)
+            # Calc dirty rect of the rockpile
             totalH =  hitSprite.rect.height + hitSprite.frames[1].get_rect().height
             dirtyRect = pygame.Rect(hitSprite.rect.x, hitSprite.rect.y, hitSprite.rect.width, totalH)
 
@@ -163,36 +156,35 @@ def MainPlay():
                     gameMode="level done"
                     exitLoop = True
 
-            # Redraw background and piles
-            screen.fill(0, dirtyRect)
-            #all_rockpiles.update()
+            # Redraw background color in the dirty rect area only
+            screen.fill(0, dirtyRect) # TODO: can this be removed?
+
+            # Update pile state
             hitSprite.update()
 
-            #screen.fill(0, dirtyRect)
+            # Draw background image in the dirty rect area only
             screen.set_clip(dirtyRect);
             screen.blit(gamedata.backgroundSurf, 0, 0, 15) # no invisible color
             screen.set_clip();
-            #all_rockpiles.draw(screen)
 
-            # draw the rock pile
+            # Draw the rock pile
             y = hitSprite.rect.y
             screen.blit(hitSprite.image, hitSprite.rect.x, y) # blit head hwsprite
             y += hitSprite.rect.height
             rockSF = hitSprite.frames[1]
             screen.blit(rockSF, hitSprite.rect.x, y) # blit body hwsprite
 
-            # Update dirty rect
-            #print('dirtyRect=', dirtyRect)
-
+            # Draw display to the screen hw
             pygame.display.update(False, dirtyRect, True)  # Draw now, draw only
 
             # Draw points
             points += 10
             DrawPoints()
 
-        # Check ship collision
+        # Check the ship collision to rockpile
         hitSprite = sprite.spritecollideany( shipGob, all_rockpiles )
         if hitSprite != None:
+
             # setup explosion 2
             explosionGob2.rect.x = shipGob.rect.x
             explosionGob2.rect.y = shipGob.rect.y
@@ -213,45 +205,40 @@ def MainPlay():
             shipGob.vy = 999
             shipGob.disableAfterOutOfScreen = True
 
-            gameMode="lost game"
+            # Exit and move to "lost game" state
+            gameMode = "lost game"
             exitLoop = True
-
-        ### Update and Draw
-
 
         # update all gobs
         all_sprites.update()
 
-        # go round
+        # Go round
         if shipGob.rect.x > screenW:
             shipGob.rect.x = -shipGob.rect.width
             shipGob.rect.y += 14
 
-        # Win ?
-        #if (shipGob.rect.y > (screenH-25)
-        #        and shipGob.rect.x > 100):
-        #    vx = 0  # land here!
-        #    gameMode="level done"
-        #    exitLoop = True
-
         # Draw gobs
         all_gobs.draw(screen)
 
-        # Draw screen
+        # Draw the screen. do not use buffered draw.
         pygame.display.update(True)
 
-# *** MAIN LEVEL DONE
+# Level done, main loop
 def MainLevelDone():
 
     global gameMode
     global g_level
     global g_ship_speed
 
+    # Draw text
     pok.draw_text(50, 30, " LEVEL COMPLETED!", 1)
     pygame.display.update(False)
 
+    # Stop ship
+    shipGob.setvel(0,0);
+
+    # Main loop
     exitLoop = False
-    shipGob.setvel(0,0); # stop ship
     while not exitLoop:
 
         # read keys
@@ -259,18 +246,17 @@ def MainLevelDone():
         if eventtype != pygame.NOEVENT:
             if eventtype.type == pygame.KEYDOWN:
                 if eventtype.key == pygame.BUT_A:
-                    # Create whole level
+
+                    # Start the next level
                     g_level+=1
                     if g_level>6:
                         g_level = 0
                         g_ship_speed += 1
                     RestartLevel()
-                    gameMode="play"
+                    gameMode = "play"
                     exitLoop = True
 
-        ### Update and Draw
-
-        # update all gobs
+        # Update states of all gobs
         all_sprites.update()
 
         # Draw gobs
@@ -279,7 +265,7 @@ def MainLevelDone():
         # Draw screen
         pygame.display.update(True)
 
-# *** MAIN GAME LOST
+# Game lost, main loop
 def MainLostGame():
 
     global gameMode
@@ -288,32 +274,35 @@ def MainLostGame():
     global g_ship_speed
     global points
 
+    # Draw text
     pok.draw_text(60, 30, "   YOU LOST!", 1)
     text = "YOUR SCORE: " + str(points)
     pok.draw_text(60, 70, text, 1)
     pygame.display.update(False)
 
+    # Stop ship
+    shipGob.setvel(0,0);
+
+    # Main loop
     exitLoop = False
-    shipGob.setvel(0,0); # stop ship
     while not exitLoop:
 
-        # read keys
+        # Read keys
         eventtype = pygame.event.poll()
         if eventtype != pygame.NOEVENT:
             if eventtype.type == pygame.KEYDOWN:
                 if eventtype.key == pygame.BUT_A:
-                    # Create whole level
+
+                    # Restart the game from the first level
                     g_level = 0
                     g_ship_speed = 2
                     points = 0
                     RestartLevel()
-                    gameMode="play"
+                    gameMode = "play"
                     exitLoop = True
                     points = 0
 
-        ### Update and Draw
-
-        # update all gobs
+        # Update states of all gobs
         all_sprites.update()
 
         # Draw gobs
@@ -322,56 +311,43 @@ def MainLostGame():
         # Draw screen
         pygame.display.update(True)
 
+# Create level
 def RestartLevel():
-
-    # Clear sprite lists
-    #all_sprites.empty()
-    #all_rockpiles.empty()
-    #all_gobs.empty()
 
     # Set palette
     pygame.display.set_palette_16bit(g_levelParam[g_level][0])
 
-    print('create level. g_level=',g_level)
-
-    gc2.collect()
-    print('2 FREE:',gc2.mem_free())
-
-   # Create rock pile sprites
+    # Create rock pile sprites
     CreateRockPileSprites(g_levelParam[g_level][1], g_levelParam[g_level][2], g_levelParam[g_level][3], g_levelParam[g_level][4], g_levelParam[g_level][5])
 
      # Init sprites
     InitSprites()
 
+    # Update states of all piles
     all_rockpiles.update()
 
-    gc2.collect()
-    print('2.1 FREE:',gc2.mem_free())
-
-    # draw screen once.
-    #screen.fill(0)
-    # Draw background
+    # Draw background image
     screen.blit(gamedata.backgroundSurf, 0, 0, 15) # no invisible color
+
+    # Draw piles
     all_rockpiles.draw(screen)
-    gc2.collect()
-    print('2.11 FREE:',gc2.mem_free())
+
+    # Draw screen
     pygame.display.update(False)
-    gc2.collect()
-    print('2.2 FREE:',gc2.mem_free())
-
-    #pygame.display.update(False)
-
 
 # Callback which is called when the gob anim cycle is finished
 def HideGobAfterAnimCycle(gob):
     # Note: only move y so that the dirty rect for a sprite is optimum.
     gob.vy = 999
 
+# Callback which is called when a sprite collision must be checked
 def IsSpriteCollided(sprite, s):
     return( sprite.collRect2.colliderect( s.collRect2 ) )
 
-#
+# Change the pile height
 def ChangeRockPile(gob, numClones):
+
+    # Reinit the pile
     gob.frames[0] = gob.frames[1] # head rock is the same as body rock
     gob.image = gob.frames[1]
     gob.numClones = numClones
@@ -379,55 +355,35 @@ def ChangeRockPile(gob, numClones):
     gob.rect.width = gob.image.get_rect().width
     gob.rect.y = screenH - 5 - (gob.numClones*gob.frames[1].get_rect().height) - gob.frames[0].get_rect().height
 
-    #
+    # Collision rect
     gob.collRect2.x = gob.rect.x + gob.collRect.x
     gob.collRect2.y = gob.rect.y + gob.collRect.y
     gob.collRect2.width = gob.collRect.width
     gob.collRect2.height = gob.collRect.height
 
+# Create the rock pile sprites
 def CreateRockPileSprites(numPiles, rockPileSize, rockSF, rockHeadSF, rockHead1CollRect):
-
-    # Create rockpile sprites
-    #numPiles = (screenW - (8*2)) // (gamedata.rockSurf_f0.get_rect().width-2+5)
-    #pileIndexList = [0,1,2,3,4,5,6,7]
-    #towerSurfaceList = [
-    #    gamedata.rock1Surf, gamedata.rock2Surf, gamedata.rock3Surf, gamedata.rock4Surf,
-    #    gamedata.rock5Surf, gamedata.rock6Surf, gamedata.rock7Surf, gamedata.rock7Surf ]
-    #towerHeadSurfaceList = [
-    #    gamedata.rockHead1Surf, gamedata.rockHead2Surf, gamedata.rockHead3Surf, gamedata.rockHead4Surf,
-    #    gamedata.rockHead5Surf, gamedata.rockHead6Surf, gamedata.rockHead7Surf, gamedata.rock7Surf ]
-    # numPiles = len(pileIndexList)
-    #for i in range(numPiles):
 
     global g_rockpileGobList
 
     for i in range(numPiles):
-        #rockSF = towerSurfaceList[pileIndexList[i]]
 
-        # Only put head to some towers
-        #if(random.getrandbits(3) > 3 ):
-        #if True:
-        #    rockHeadSF = towerHeadSurfaceList[pileIndexList[i]]
-        #else:
-        #   rockHeadSF = rockSF
-
-        #rockSF = gamedata.rock1Surf
-        #rockHeadSF = gamedata.rockHead1Surf
-
-        # Create gob
+        # Create or initialize gob
         gob = None
         if len(g_rockpileGobList) <= i:
+            # Create gob
             gob = gameclass.GameObject([rockHeadSF, rockSF],[[0,0], [0,0]], screen, screenW, screenH)
             g_rockpileGobList.append(gob)
             all_sprites.add(g_rockpileGobList[i])
             all_rockpiles.add(g_rockpileGobList[i])
         else:
+            # Initialize gob
             gob = g_rockpileGobList[i]
             gob.frames = [rockHeadSF, rockSF]
             gob.image = gob.frames[gob.currentFrameNum]  # current image
             gob.rect = gob.frames[0].get_rect()
 
-        # Set pos
+        # Initialize the rock pile
         gob = g_rockpileGobList[i]
         gob.rect.x = 30 + i*(gob.rect.width+4)
         gob.collRect = rockHead1CollRect
@@ -436,13 +392,13 @@ def CreateRockPileSprites(numPiles, rockPileSize, rockSF, rockHeadSF, rockHead1C
         gob.rect.y = screenH - 5 - (gob.numClones*gob.frames[1].get_rect().height) - gob.frames[0].get_rect().height
         gob.visible = True
 
-        #
+        # Set the collision rect
         gob.collRect2.x = gob.rect.x + gob.collRect.x
         gob.collRect2.y = gob.rect.y + gob.collRect.y
         gob.collRect2.width = gob.collRect.width
         gob.collRect2.height = gob.collRect.height
 
-# *** MAIN
+# Create or initialize all sprites
 def InitSprites():
 
     global shipGob
@@ -451,7 +407,7 @@ def InitSprites():
     global explosionGob2
     global explosionGob3
 
-    # Create ship
+    # Create or initialize ship
     if shipGob == None:
         shipGob = gameclass.GameObject([gamedata.shipF1Surf], [[0,0]], screen, screenW, screenH)
         all_sprites.add(shipGob)
@@ -463,7 +419,7 @@ def InitSprites():
     shipGob.disableAfterOutOfScreen = False
     shipGob.visible = True
 
-    # Create bomb
+    # Create or initialize bomb
     if bombGob == None:
         bombGob = gameclass.GameObject([gamedata.bombSurf], [[0,0]], screen, screenW, screenH)
         bombGob.collRect = gamedata.bombCollRect
@@ -474,7 +430,7 @@ def InitSprites():
     bombGob.rect.x = 999
     bombGob.rect.y = 999
 
-    # Create explosion
+    # Create or initialize explosion
     if explosionGob == None:
         explosionGob = gameclass.GameObject(
             [gamedata.explosion1f1Surf, gamedata.explosion1f2Surf, gamedata.explosion1f3Surf, gamedata.explosion1f4Surf],
@@ -490,7 +446,7 @@ def InitSprites():
     explosionGob.setSpriteFrame()
     explosionGob.visible = False
 
-    # Create explosion 2
+    # Create or initialize explosion 2
     if explosionGob2 == None:
         explosionGob2 = gameclass.GameObject(
             [gamedata.explosion1f1Surf, gamedata.explosion1f2Surf, gamedata.explosion1f3Surf, gamedata.explosion1f4Surf],
@@ -506,7 +462,7 @@ def InitSprites():
     explosionGob2.setSpriteFrame()
     explosionGob2.visible = False
 
-    # Create explosion 3
+    # Create or initialize explosion 3
     if explosionGob3 == None:
         explosionGob3 = gameclass.GameObject(
             [gamedata.explosion1f1Surf, gamedata.explosion1f2Surf, gamedata.explosion1f3Surf, gamedata.explosion1f4Surf],
@@ -522,9 +478,7 @@ def InitSprites():
     explosionGob3.setSpriteFrame()
     explosionGob3.visible = False
 
-
-
-# Draw points and update rect
+# Draw points
 def DrawPoints():
 
     dirtyRect = pygame.Rect(10, 2, 8*4, 10)
@@ -534,9 +488,8 @@ def DrawPoints():
     pok.draw_text(10, 2, str(points), 1)
 
     # Update dirty rect
-    #print('rect=', updateRect)
     pygame.display.update(False, dirtyRect, True)
 
 
-# **** START MAIN
+# Main
 main()

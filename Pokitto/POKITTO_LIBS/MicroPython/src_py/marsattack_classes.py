@@ -1,7 +1,12 @@
+# Copyright (C) 2018 Hannu Viitala
+# This file is released under MIT license.
+# Go to http://opensource.org/licenses/MIT for full license details.
+
 import upygame as pygame
 import urandom as random
 import sprite
 
+# Game object (gob) class
 class GameObject(sprite.Sprite):
     def __init__(self, surfaces, frameOffsets, screen, screenW, screenH):
 
@@ -28,6 +33,7 @@ class GameObject(sprite.Sprite):
         self.screenW = screenW
         self.screenH = screenH
 
+    # Remove sprite
     def remove_internal(self, group):
 
         # Remove sprite
@@ -37,21 +43,25 @@ class GameObject(sprite.Sprite):
         # Remove
         del self.__g[group]
 
+    # Setup sprite
     def setSprite(self, spriteIndex, colorMaps):
         self.spriteIndex = spriteIndex
         self.colorMaps = colorMaps
         self.currentColorMap = self.colorMaps[self.currentFrameNum]
         self.screen.setHwSprite(self.image, self.currentColorMap, self.spriteIndex, self.rect.x, self.rect.y, True)
 
+    # Set the animation frame for the sprite
     def setSpriteFrame(self):
         self.image = self.frames[self.currentFrameNum]
         self.currentColorMap = self.colorMaps[self.currentFrameNum]
         self.screen.setHwSprite(self.image, self.currentColorMap, self.spriteIndex, self.rect.x, self.rect.y, False)
 
+    # Set sprite velocity
     def setvel(self, vx, vy):
         self.vx = vx
         self.vy = vy
 
+    # Update the state of the sprite
     def update(self):
 
         if self.visible:
@@ -59,7 +69,7 @@ class GameObject(sprite.Sprite):
             # Advance frame if animation is set
             if self.animDur > 0:
 
-                # if animation duration has elapsed, advance frame
+                # If animation duration has elapsed, advance frame
                 if self.animDurCounter == 0:
 
                     oldFrameNum = self.currentFrameNum
@@ -76,23 +86,22 @@ class GameObject(sprite.Sprite):
                             # Stop animation
                             self.animDur = 0
 
-
-                    # if the frame has been changed, draw it.
+                    # If the frame has been changed, draw it.
                     if oldFrameNum != self.currentFrameNum:
                         self.animDurCounter = self.animDur
 
                         # Set current image
                         self.image = self.frames[self.currentFrameNum]
-                        #self.rect.x += self.frameOffsets[self.currentFrameNum][0]
-                        #self.rect.y += self.frameOffsets[self.currentFrameNum][1]
 
-                        # sprite
+                        # Set the current sprite
                         if self.spriteIndex != None:
                             self.setSpriteFrame()
+
+                # No animation this time
                 else:
                     self.animDurCounter -= 1
 
-            # check out-of-screen
+            # Check out-of-screen
             if self.disableAfterOutOfScreen:
                 if (self.rect.x < -self.rect.width or self.rect.x > self.screenW or
                         self.rect.y < -self.rect.height or self.rect.y > self.screenH):
@@ -102,8 +111,7 @@ class GameObject(sprite.Sprite):
             self.rect.x += self.vx
             self.rect.y += self.vy
 
-
-# Group
+# GobGroup class
 class GobGroup(sprite.Group):
 
     # Init
@@ -111,42 +119,44 @@ class GobGroup(sprite.Group):
         sprite.Group.__init__(self, sprites)
         #self.refreshRate = refreshRate
 
-    # Draw
+    # Draw all sprites
     def draw(self, surface):
         sprites = self.sprites()
         surface_blit = surface.blit
         surface_setSprite = surface.setHwSpritePos
         for spr in sprites:
             if spr.visible:
+                # Draw either as bitmap or HW sprite
                 if spr.spriteIndex is None:
+                    # Draw bitmap to the screen buffer
                     self.spritedict[spr] = surface_blit(spr.image, spr.rect.x, spr.rect.y)
                 else:
+                    # Setup HW sprite for drawing
                     self.spritedict[spr] = spr.rect
                     surface_setSprite(spr.spriteIndex, spr.rect.x, spr.rect.y);
 
         self.lostsprites = []
 
-# Group
+# Rock pile group class
 class RockPileGroup(sprite.Group):
 
     # Init
     def __init__(self, *sprites):
         sprite.Group.__init__(self, sprites)
-        #self.refreshRate = refreshRate
 
-    # Draw
+    # Draw all rockpiles
     def draw(self, surface):
         sprites = self.sprites()
         surface_blit = surface.blit
 
         # draw sprite and pile of clones
         for spr in sprites:
-            #print('draw pile. spr.rect.x=', spr.rect.x)
             if spr.visible:
-                #print('draw pile. visible spr.rect.x=', spr.rect.x)
-                # draw on refresh intervals
+                # Draw the top sprite
                 y = spr.rect.y
                 self.spritedict[spr] = surface_blit(spr.image, spr.rect.x, y)
+
+                # Draw body sprites
                 y += spr.rect.height
                 rockSF = spr.frames[1]
                 h = rockSF.get_rect().height
