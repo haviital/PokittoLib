@@ -30,7 +30,7 @@
 #define USE_USB_SERIAL_PRINT (0)
 #else
 #define USE_USB_SERIAL_PRINT (0)
-#define USE_SEGGER_SERIAL_PRINT
+//#define USE_SEGGER_SERIAL_PRINT
 #endif
 
 #endif
