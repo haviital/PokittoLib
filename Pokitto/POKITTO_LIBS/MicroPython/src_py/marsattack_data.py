@@ -1,6 +1,8 @@
-# Copyright (C) 2018 Hannu Viitala.
-# All rights reserved.
-# Note: The graphics data is not licenced under MIT license.
+# Original "Mars Attack" picture by Jari-Pekka Flinck, 2018, can be reused under the CC-BY license
+# ( https://creativecommons.org/licenses/by/4.0/ )
+
+# Modified by Hannu Viitala, can be reused under the CC-BY license
+# ( https://creativecommons.org/licenses/by/4.0/ )
 
 # Game graphics
 

@@ -213,6 +213,48 @@ bool Pok_Core_buttons_released(uint8_t button) {
     return Core::buttons.released(button);
 }
 
+// *** Sound functions
+
+void Pok_Sound_Reset() {
+    // Set global variables
+    currentBuffer = 0;
+    currentPtr = buffers[currentBuffer];
+    endPtr = currentPtr + BUFFER_SIZE;
+
+    pokPlayStream(); // activate stream
+    Sound::ampEnable(true);
+    Sound::playMusicStream();
+
+    /*
+    //!!HV
+    for(uint32_t bufferIndex=0; bufferIndex<4; bufferIndex++) {
+        printf("\n*** buffer num : %d\n", bufferIndex);
+        for(uint32_t t=0; t<BUFFER_SIZE; t++) {
+            if(t%64 == 0) printf("\n");
+            printf("%u,", buffers[bufferIndex][t]);
+        }
+    }
+    */
+}
+
+uint8_t Pok_Sound_GetCurrentBufferIndex() {    //
+    return currentBuffer;
+}
+
+void Pok_Sound_FillBuffer(void* buf, uint16_t len, uint8_t soundBufferIndex, uint16_t soundBufferPos) {
+    //
+//    if(soundBufferPos<512)
+//        printf("%d::%u\n", soundBufferPos, *(unsigned char*)buf);
+//    else
+//        printf("%d::%u\n", soundBufferPos, *(unsigned char*)buf);
+
+    memcpy(&(buffers[soundBufferIndex][soundBufferPos]), buf, len);
+}
+
+void Pok_Sound_Play() {}
+
+void Pok_Sound_Pause() {}
+
 void Pok_Wait(uint32_t dur_ms) {
 #ifdef POK_SIM
     Simulator::wait_ms(dur_ms);

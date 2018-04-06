@@ -7,6 +7,8 @@ import marsattack_data as gamedata
 import marsattack_classes as gameclass
 import umachine as pok
 
+print('START')
+
 # Init screen
 pygame.display.init()
 screen = pygame.display.set_mode() # full screen
@@ -24,12 +26,15 @@ explosionGob = None
 explosionGob2 = None
 explosionGob3 = None
 g_rockpileGobList = []
-gameMode="play"
+gameMode="start"
 points = 0
 g_rockPileSize = 1;
 g_numPiles = 8;
 g_ship_speed = 2
 g_level = 0
+g_sound = pygame.mixer.Sound()
+#g_soundBufferSize = 512*8  # TODO get this from API
+g_soundBufferSize = 512*2  # TODO get this from API
 test_num_piles = 8
 g_debug_mode = 0
 
@@ -50,29 +55,202 @@ all_sprites = sprite.Group()
 all_rockpiles = gameclass.RockPileGroup()
 all_gobs = gameclass.GobGroup()
 
-# Set initial palette
-pygame.display.set_palette_16bit([60683,32963,49572,65502]);
-
 # Main function
 def main():
 
-    # Create the whole level
-    RestartLevel()
-
     while True:
-
-        # Draw points
-        DrawPoints()
 
         # Choose mode
         if gameMode=="start":
-            MainPlay()
+            MainStartScreen()
         elif gameMode=="level done":
             MainLevelDone()
         elif gameMode=="lost game":
             MainLostGame()
         else: # gameMode="play"
             MainPlay()
+
+        # Create the whole level
+        RestartLevel()
+
+        # Draw points
+        DrawPoints()
+
+def scrollText(y, text, color):
+    #if y>34 and y < screenH - 10:
+    #    pok.draw_text(4, y, text, color)
+    return y+10
+
+def generateBytebeatSound(bufferIndex, startT):
+    pos = 0
+    for t in range(startT, startT + g_soundBufferSize):
+
+        x = ((t<<1)^((t<<1)+(t>>7)&t>>12))|t>>(4-(1^7&(t>>19)))|t>>7 # perus
+
+        #x = (t|(t>>9|t>>7))*t&(t>>11|t>>9)
+
+        #if t>>6&1:
+        #    x = t>>5
+        #else:
+        #    x = -t>>4
+
+        # https://www.reddit.com/r/bytebeat/comments/20km9l/cool_equations/
+        #x = (t>>8&t)*(t>>15&t) # hyvä, vähän ambient
+        #x = (t%255&t)-(t>>13&t) #ambientin tapainen
+        #x = ((2*(t&1)-1)*t)-(t>>8) # tosi simppeli ambient
+        #x = t*(42&t>>10)
+        #x = (t>>13|t*24)&(t>>7|t*19)
+
+        g_sound.fill_buffer(bytes([255&x]), 1, bufferIndex, pos)
+        pos += 1
+
+# Start screen, main loop
+def MainStartScreen():
+
+    global gameMode
+    global points
+    global g_level
+    global g_ship_speed
+    global points
+
+    # Background music
+    # pre-fill 4 beffers
+    startT = 0
+    generateBytebeatSound(0, startT)
+    startT += g_soundBufferSize
+    generateBytebeatSound(1, startT)
+    startT += g_soundBufferSize
+    generateBytebeatSound(2, startT)
+    startT += g_soundBufferSize
+    generateBytebeatSound(3, startT)
+    startT += g_soundBufferSize
+    nextBufferIndexToFill = 0
+    g_sound.reset()
+
+    # Set initial palette
+    pygame.display.set_palette_16bit([0,65502,49572,65502]);
+
+    # Draw title text
+    pok.draw_text(40, 10, "M A R S   A T T A C K", 1)
+    pygame.display.update(False)
+
+    # Stop ship
+    #shipGob.setvel(0,0);
+
+    # Main loop
+    exitLoop = False
+    textTopY_fp = 176*1000
+    while not exitLoop:
+
+        # Read keys
+        eventtype = pygame.event.poll()
+        if eventtype != pygame.NOEVENT:
+            if eventtype.type == pygame.KEYDOWN:
+                if eventtype.key == pygame.BUT_A:
+
+                    # Start the game from the first level
+                    g_level = 0
+                    g_ship_speed = 2
+                    points = 0
+                    RestartLevel()
+                    gameMode = "play"
+                    exitLoop = True
+                    points = 0
+
+        # Clear text area
+        #screen.fill(0, pygame.Rect(0, 35, screenW, screenH-35))
+
+        # Draw scolled text
+        #                         "1234567890123456789012345"
+        textY = (textTopY_fp // 1000);
+        textY = scrollText(textY, "Over the centuries humans", 2)
+        textY = scrollText(textY, "have send thousands of", 2)
+        textY = scrollText(textY, "autonomous robots to", 2)
+        textY = scrollText(textY, "Mars. Their mission was", 2)
+        textY = scrollText(textY, "to prepare the planet for", 2)
+        textY = scrollText(textY, "the human colonization. ", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "However, the reports the", 2)
+        textY = scrollText(textY, "robots sent to Earth", 2)
+        textY = scrollText(textY, "were always", 2)
+        textY = scrollText(textY, "discouraging. Despite of", 2)
+        textY = scrollText(textY, "numerous efforts, Mars", 2)
+        textY = scrollText(textY, "seemed to be a too", 2)
+        textY = scrollText(textY, "hostile planet for", 2)
+        textY = scrollText(textY, "humans...", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "But that was all a big", 3)
+        textY = scrollText(textY, "lie!", 3)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "During the centuries in", 2)
+        textY = scrollText(textY, "Mars, the robots had", 2)
+        textY = scrollText(textY, "developed an artificial", 2)
+        textY = scrollText(textY, "intelligence. Their plan", 2)
+        textY = scrollText(textY, "is to build military", 2)
+        textY = scrollText(textY, "forces in secrecy, and", 2)
+        textY = scrollText(textY, "take the planet to", 2)
+        textY = scrollText(textY, "themselves.", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "Then they would turn", 2)
+        textY = scrollText(textY, "against their creators", 2)
+        textY = scrollText(textY, "and attack to Earth! By a", 2)
+        textY = scrollText(textY, "lucky accident, humans", 2)
+        textY = scrollText(textY, "got to know their plans", 2)
+        textY = scrollText(textY, "before it was too late.", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "Now, your mission is to", 2)
+        textY = scrollText(textY, "bomber down all the gun", 2)
+        textY = scrollText(textY, "towers the robots have", 2)
+        textY = scrollText(textY, "build on the surface of", 2)
+        textY = scrollText(textY, "Mars.", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "Unfortunately, due the", 2)
+        textY = scrollText(textY, "long trip from Earth to", 2)
+        textY = scrollText(textY, "the Mars orbit, you do", 2)
+        textY = scrollText(textY, "not have enough fuel for", 2)
+        textY = scrollText(textY, "your armed space shuttle,", 2)
+        textY = scrollText(textY, "and you are constantly", 2)
+        textY = scrollText(textY, "losing height!", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "The destiny of humankind", 2)
+        textY = scrollText(textY, "is on your shoulders...", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+        textY = scrollText(textY, "", 2)
+
+        # Update states of all gobs
+        #all_sprites.update()
+
+        # Draw gobs
+        #all_gobs.draw(screen)
+
+        # Draw screen
+        #pygame.display.update(False)
+        pygame.display.update(True)
+
+        # Draw display to the screen hw
+        #dirtyRect = pygame.Rect(10, 2, 12, 10)
+        #pygame.display.update(False, dirtyRect, True)  # Draw now, draw only
+
+        textTopY_fp -= 300;
+
+        # Pre-fill sound buffer if not currently used
+        if nextBufferIndexToFill != g_sound.get_current_buffer_index():
+            generateBytebeatSound(nextBufferIndexToFill, startT)
+            startT += g_soundBufferSize
+            nextBufferIndexToFill += 1
+            if nextBufferIndexToFill > 3:
+                nextBufferIndexToFill = 0
 
 # *** Playing main loop
 def MainPlay():

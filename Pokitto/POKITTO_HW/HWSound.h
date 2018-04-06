@@ -40,7 +40,7 @@
 #include "Pokitto_settings.h"
 
 #define SPEAKER 3
-#define BUFFER_SIZE 512*4 //*8 //*8 // 512 // was 512 (works really well with crabator) was 256
+#define BUFFER_SIZE 512*2 //*8 //*8 // 512 // was 512 (works really well with crabator) was 256
 
 #define SBUFSIZE 512*4
 

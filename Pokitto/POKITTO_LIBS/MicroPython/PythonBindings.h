@@ -90,6 +90,13 @@ EXTERNC bool Pok_Core_buttons_repeat(uint8_t button, uint8_t period);
 EXTERNC bool Pok_Core_buttons_held(uint8_t button, uint8_t period);
 EXTERNC bool Pok_Core_buttons_released(uint8_t button);
 
+// Sound functions
+EXTERNC void Pok_Sound_Reset();
+EXTERNC uint8_t Pok_Sound_GetCurrentBufferIndex();
+EXTERNC void Pok_Sound_FillBuffer(void* buf, uint16_t len, uint8_t soundBufferIndex, uint16_t soundBufferPos);
+EXTERNC void Pok_Sound_Play();
+EXTERNC void Pok_Sound_Pause();
+
 EXTERNC void Pok_Wait(uint32_t dur_ms);
 
 EXTERNC struct tm * localtime_cpp(const time_t * timer);

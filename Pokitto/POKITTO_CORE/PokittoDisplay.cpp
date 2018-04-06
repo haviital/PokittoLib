@@ -2407,7 +2407,7 @@ void ShowCrashScreenAndWait( const char* texLine1, const char* texLine2, const c
 void CheckStack() {
     #ifndef POK_SIM
     int currStackTop;
-    const int freeStackThreshold = 400;
+    const int freeStackThreshold = 200;
     if ((int)&currStackTop - (int)_ebss < freeStackThreshold) {
 
         // Create info string: "<stack size>:<current stack pointer>", e.g. "12345ABC:12345ABC"
