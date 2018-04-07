@@ -216,6 +216,9 @@ bool Pok_Core_buttons_released(uint8_t button) {
 // *** Sound functions
 
 void Pok_Sound_Reset() {
+
+    #if POK_STREAMING_MUSIC > 0
+
     // Set global variables
     currentBuffer = 0;
     currentPtr = buffers[currentBuffer];
@@ -235,13 +238,20 @@ void Pok_Sound_Reset() {
         }
     }
     */
+    #endif
 }
 
 uint8_t Pok_Sound_GetCurrentBufferIndex() {    //
+
+    #if POK_STREAMING_MUSIC > 0
     return currentBuffer;
+    #else
+    return 0;
+    #endif
 }
 
 void Pok_Sound_FillBuffer(void* buf, uint16_t len, uint8_t soundBufferIndex, uint16_t soundBufferPos) {
+    #if POK_STREAMING_MUSIC > 0
     //
 //    if(soundBufferPos<512)
 //        printf("%d::%u\n", soundBufferPos, *(unsigned char*)buf);
@@ -249,11 +259,21 @@ void Pok_Sound_FillBuffer(void* buf, uint16_t len, uint8_t soundBufferIndex, uin
 //        printf("%d::%u\n", soundBufferPos, *(unsigned char*)buf);
 
     memcpy(&(buffers[soundBufferIndex][soundBufferPos]), buf, len);
+    #endif
 }
 
-void Pok_Sound_Play() {}
+void Pok_Sound_Play() {
+    #if POK_STREAMING_MUSIC > 0
 
-void Pok_Sound_Pause() {}
+    #endif
+}
+
+
+void Pok_Sound_Pause() {
+    #if POK_STREAMING_MUSIC > 0
+
+    #endif
+}
 
 void Pok_Wait(uint32_t dur_ms) {
 #ifdef POK_SIM

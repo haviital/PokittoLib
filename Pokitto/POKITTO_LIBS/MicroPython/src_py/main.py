@@ -32,7 +32,7 @@ g_rockPileSize = 1;
 g_numPiles = 8;
 g_ship_speed = 2
 g_level = 0
-g_sound = pygame.mixer.Sound()
+#g_sound = pygame.mixer.Sound()
 #g_soundBufferSize = 512*8  # TODO get this from API
 g_soundBufferSize = 512*2  # TODO get this from API
 test_num_piles = 8
@@ -77,8 +77,8 @@ def main():
         DrawPoints()
 
 def scrollText(y, text, color):
-    #if y>34 and y < screenH - 10:
-    #    pok.draw_text(4, y, text, color)
+    if y>34 and y < screenH - 10:
+        pok.draw_text(4, y, text, color)
     return y+10
 
 def generateBytebeatSound(bufferIndex, startT):
@@ -101,7 +101,7 @@ def generateBytebeatSound(bufferIndex, startT):
         #x = t*(42&t>>10)
         #x = (t>>13|t*24)&(t>>7|t*19)
 
-        g_sound.fill_buffer(bytes([255&x]), 1, bufferIndex, pos)
+        #g_sound.fill_buffer(bytes([255&x]), 1, bufferIndex, pos)
         pos += 1
 
 # Start screen, main loop
@@ -125,7 +125,7 @@ def MainStartScreen():
     generateBytebeatSound(3, startT)
     startT += g_soundBufferSize
     nextBufferIndexToFill = 0
-    g_sound.reset()
+    #g_sound.reset()
 
     # Set initial palette
     pygame.display.set_palette_16bit([0,65502,49572,65502]);
@@ -139,7 +139,7 @@ def MainStartScreen():
 
     # Main loop
     exitLoop = False
-    textTopY_fp = 176*1000
+    textTopY_fp = 160*1000
     while not exitLoop:
 
         # Read keys
@@ -235,8 +235,8 @@ def MainStartScreen():
         #all_gobs.draw(screen)
 
         # Draw screen
-        #pygame.display.update(False)
-        pygame.display.update(True)
+        pygame.display.update(False)
+        #pygame.display.update(True)
 
         # Draw display to the screen hw
         #dirtyRect = pygame.Rect(10, 2, 12, 10)
@@ -245,12 +245,12 @@ def MainStartScreen():
         textTopY_fp -= 300;
 
         # Pre-fill sound buffer if not currently used
-        if nextBufferIndexToFill != g_sound.get_current_buffer_index():
-            generateBytebeatSound(nextBufferIndexToFill, startT)
-            startT += g_soundBufferSize
-            nextBufferIndexToFill += 1
-            if nextBufferIndexToFill > 3:
-                nextBufferIndexToFill = 0
+#        if nextBufferIndexToFill != g_sound.get_current_buffer_index():
+#            generateBytebeatSound(nextBufferIndexToFill, startT)
+#            startT += g_soundBufferSize
+#            nextBufferIndexToFill += 1
+#            if nextBufferIndexToFill > 3:
+#                nextBufferIndexToFill = 0
 
 # *** Playing main loop
 def MainPlay():

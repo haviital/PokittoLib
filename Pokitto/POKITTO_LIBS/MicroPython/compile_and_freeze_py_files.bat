@@ -5,7 +5,17 @@ del mpy\*.* /q
 del frozen_mpy.c
 
 @rem Compile py-files to mpy-files
-for %%a in (src_py\*) do (tools\mpy-cross -o mpy\%%~na.mpy -s %%~na.py src_py\%%~na.py)
+@echo off
+for %%a in (src_py\*) do (
+    
+    tools\mpy-cross -o mpy\%%~na.mpy -s %%~na.py src_py\%%~na.py
+    @echo Compile to bytecode: %%~na.py 
+    if ERRORLEVEL 1 ( 
+        @echo *** ERROR: Cannot compile %%~na.py to bytecode!
+        pause
+    )
+)
+@echo on
 
 @echo off
 @rem Freeze mpy-files to one c-file.
@@ -14,6 +24,13 @@ for %%a in (mpy\*) do echo  | set /p dummyName="%%a ">>tmp_freeze.bat
 echo|set /p dummyName=" > frozen_mpy.c">>tmp_freeze.bat
 @echo on
 call tmp_freeze.bat
+
+@echo off
+if ERRORLEVEL 1 ( 
+    @echo *** ERROR: Cannot freeze bytecode to C-code!
+    pause
+)
+@echo on
 
 
 
