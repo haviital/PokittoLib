@@ -40,9 +40,9 @@
 #include "Pokitto_settings.h"
 
 #define SPEAKER 3
-#define BUFFER_SIZE 512*2 //*8 //*8 // 512 // was 512 (works really well with crabator) was 256
+#define BUFFER_SIZE 256 //*8 //*8 // 512 // was 512 (works really well with crabator) was 256
 
-#define SBUFSIZE 512*4
+#define SBUFSIZE 256
 
 #if POK_BOARDREV == 1
  /** 2-layer board rev 1.3 **/

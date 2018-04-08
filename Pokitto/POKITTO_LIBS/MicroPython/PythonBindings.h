@@ -93,6 +93,8 @@ EXTERNC bool Pok_Core_buttons_released(uint8_t button);
 // Sound functions
 EXTERNC void Pok_Sound_Reset();
 EXTERNC uint8_t Pok_Sound_GetCurrentBufferIndex();
+EXTERNC uint32_t Pok_Sound_GetCurrentBufferPos();
+EXTERNC uint32_t Pok_Sound_GetBufferSize();
 EXTERNC void Pok_Sound_FillBuffer(void* buf, uint16_t len, uint8_t soundBufferIndex, uint16_t soundBufferPos);
 EXTERNC void Pok_Sound_Play();
 EXTERNC void Pok_Sound_Pause();

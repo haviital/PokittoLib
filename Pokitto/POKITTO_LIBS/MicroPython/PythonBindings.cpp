@@ -250,7 +250,26 @@ uint8_t Pok_Sound_GetCurrentBufferIndex() {    //
     #endif
 }
 
+uint32_t Pok_Sound_GetCurrentBufferPos() {    //
+
+    #if POK_STREAMING_MUSIC > 0
+    return (currentPtr - &(buffers[currentBuffer][0])) / sizeof(buffers[currentBuffer][0]);
+    #else
+    return 0;
+    #endif
+}
+
+uint32_t Pok_Sound_GetBufferSize() {    //
+
+    #if POK_STREAMING_MUSIC > 0
+    return BUFFER_SIZE;
+    #else
+    return 0;
+    #endif
+}
+
 void Pok_Sound_FillBuffer(void* buf, uint16_t len, uint8_t soundBufferIndex, uint16_t soundBufferPos) {
+
     #if POK_STREAMING_MUSIC > 0
     //
 //    if(soundBufferPos<512)

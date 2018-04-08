@@ -38,14 +38,14 @@
 #define POKSOUND_H
 
 #define SPEAKER 3
-#define BUFFER_SIZE 512*2 //*8 // 512 // was 512 (works really well with crabator) was 256
+#define BUFFER_SIZE 256 //*8 // 512 // was 512 (works really well with crabator) was 256
 
 #include "PokittoSimulator.h"
 #include <stdint.h>
 #include <stdio.h>
 
 extern FILE* soundfile;
-#define SBUFSIZE 512
+#define SBUFSIZE 256
 extern uint8_t soundfilebuffer[2][SFBUFSIZE];
 extern uint8_t activesfbuf, writesfbuf; extern uint16_t sfbufindex;
 

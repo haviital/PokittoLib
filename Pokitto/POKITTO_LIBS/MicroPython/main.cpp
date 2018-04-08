@@ -78,13 +78,24 @@ void generateBuffer(uint32_t bufferIndex, uint32_t nextT) {
 
 int main () {
 
+    // Pre-init sound before Begin()
+    // Set global variables
+
+    //currentBuffer = 0;
+    //currentPtr = buffers[currentBuffer];
+    //endPtr = currentPtr + BUFFER_SIZE;
+
+    //pokPlayStream(); // activate stream
+    //mygame.sound.ampEnable(true);
+    //mygame.sound.playMusicStream();
+
     game.begin();
 
     game.display.persistence = 1;
 
     game.display.setFont(fontC64);
 
-    game.setFrameRate(40);
+    game.setFrameRate(20);
 
 /*
     //!!HV
@@ -112,7 +123,6 @@ int main () {
         }
     }
 */
-
 
     if (game.isRunning()) {
 
