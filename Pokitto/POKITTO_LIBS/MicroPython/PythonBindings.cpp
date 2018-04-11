@@ -224,8 +224,8 @@ void Pok_Sound_Reset() {
     currentPtr = buffers[currentBuffer];
     endPtr = currentPtr + BUFFER_SIZE;
 
-    pokPlayStream(); // activate stream
-    Sound::ampEnable(true);
+    //pokPlayStream(); // activate stream
+    //Sound::ampEnable(true);
     Sound::playMusicStream();
 
     /*
@@ -283,14 +283,14 @@ void Pok_Sound_FillBuffer(void* buf, uint16_t len, uint8_t soundBufferIndex, uin
 
 void Pok_Sound_Play() {
     #if POK_STREAMING_MUSIC > 0
-
+    streamvol = 3;
     #endif
 }
 
 
 void Pok_Sound_Pause() {
     #if POK_STREAMING_MUSIC > 0
-
+    streamvol = 0;
     #endif
 }
 

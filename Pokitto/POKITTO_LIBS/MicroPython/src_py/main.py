@@ -75,19 +75,15 @@ def main():
         # Draw points
         DrawPoints()
 
-def scrollText(y, text, color):
-    #if y>34 and y < screenH - 10:
-    #    pok.draw_text(4, y, text, color)
-    return y+10
-
 def generateBytebeatSound(bufferIndex, startT):
     pos = 0
+    arr = bytearray(g_soundBufferSize)
     for t in range(startT, startT + g_soundBufferSize):
 
-        x = t & (t>>8)
-        #x = ((t<<1)^((t<<1)+(t>>7)&t>>12))|t>>(4-(1^7&(t>>19)))|t>>7 # perus
+        #arr[pos] = t & (t>>8)
+        #arr[pos] = ((t<<1)^((t<<1)+(t>>7)&t>>12))|t>>(4-(1^7&(t>>19)))|t>>7 # perus # hyvä, ei toimi 16khz
 
-        #x = (t|(t>>9|t>>7))*t&(t>>11|t>>9)
+        #arr[pos] = (t|(t>>9|t>>7))*t&(t>>11|t>>9)
 
         #if t>>6&1:
         #    x = t>>5
@@ -95,14 +91,106 @@ def generateBytebeatSound(bufferIndex, startT):
         #    x = -t>>4
 
         # https://www.reddit.com/r/bytebeat/comments/20km9l/cool_equations/
-        #x = (t>>8&t)*(t>>15&t) # hyvä, vähän ambient
-        #x = (t%255&t)-(t>>13&t) #ambientin tapainen
-        #x = ((2*(t&1)-1)*t)-(t>>8) # tosi simppeli ambient
-        #x = t*(42&t>>10)
-        #x = (t>>13|t*24)&(t>>7|t*19)
+        #arr[pos] = (t>>8&t)*(t>>15&t) # hyvä, vähän ambient
+        #arr[pos] = (t%255&t)-(t>>13&t) #ambientin tapainen. # Hyvä, toimii 16 khz
+        #arr[pos] = ((2*(t&1)-1)*t)-(t>>8) # tosi simppeli ambient #kokeilie. toimii 16 khz
+        #arr[pos] = t*(42&t>>10)
+        #arr[pos] = (t>>13|t*24)&(t>>7|t*19)
 
-        g_sound.fill_buffer(bytes([255&x]), 1, bufferIndex, pos)
+        # https://github.com/kragen/viznut-music
+        #arr[pos] = ((t*(t>>8|t>>9)&46&t>>8))^(t&t>>13|t>>6) # ihan ok, 16 khz
+        #arr[pos] = t*5&(t>>7)|t*3&(t*4>>10) # hyvä, mutta vähän tylsä 16 khz
+        #arr[pos] = t*((t>>5|t>>8)>>(t>>16))
+        #arr[pos] = t*((t>>12|t>>8)&63&t>>4) # hyvä, mutta aggressiivinen. 11 khz
+
+        arr[pos] = t * ((t>>7|t>>3)&27&t>>13)
+
         pos += 1
+
+    # Send data
+    g_sound.fill_buffer(arr, g_soundBufferSize, bufferIndex, 0)
+
+def printTextLine(drawTextLineNum, textList):
+    #print('drawTextLineNum=',drawTextLineNum)
+    #print('textList=',textList[drawTextLineNum])
+    if drawTextLineNum>-1 and drawTextLineNum<len(textList):
+        x = 4
+        offsetY = 50
+        textLine = drawTextLineNum % 12
+        y = textLine*10 + offsetY
+        dirtyRect = pygame.Rect(x, y, screenW, 10)
+        #screen.fill(0, dirtyRect)
+        #print('drawTextLineNum2=',drawTextLineNum)
+        pok.draw_text(x, y, textList[drawTextLineNum], 2)
+        pygame.display.update(False, dirtyRect, True)
+
+def CreateTexts():
+
+    textList = []
+    textList.append("Over the centuries humans")
+    textList.append("have send thousands of")
+    textList.append("autonomous robots to")
+    textList.append("Mars. Their mission was")
+    textList.append("to prepare the planet for")
+    textList.append("the human colonization. ")
+    textList.append("")
+    textList.append("However, the reports the")
+    textList.append("robots sent to Earth")
+    textList.append("were always")
+    textList.append("discouraging. Despite of")
+    textList.append("numerous efforts, Mars")
+    textList.append("seemed to be a too")
+    textList.append("hostile planet for")
+    textList.append("humans...")
+    textList.append("")
+    textList.append("But that was all a big")
+    textList.append("lie!")
+    textList.append("")
+    textList.append("During the centuries in")
+    textList.append("Mars, the robots had")
+    textList.append("developed an artificial")
+    textList.append("intelligence. Their plan")
+    textList.append("is to build military")
+    textList.append("forces in secrecy, and")
+    textList.append("take the planet to")
+    textList.append("themselves.")
+    textList.append("")
+    textList.append("Then they would turn")
+    textList.append("against their creators")
+    textList.append("and attack to Earth! By a")
+    textList.append("lucky accident, humans")
+    textList.append("got to know their plans")
+    textList.append("before it was too late.")
+    textList.append("")
+    textList.append("Now, your mission is to")
+    textList.append("bomber down all the gun")
+    textList.append("towers the robots have")
+    textList.append("build on the surface of")
+    textList.append("Mars.")
+    textList.append("")
+    textList.append("Unfortunately, due the")
+    textList.append("long trip from Earth to")
+    textList.append("the Mars orbit, you do")
+    textList.append("not have enough fuel for")
+    textList.append("your armed space shuttle,")
+    textList.append("and you are constantly")
+    textList.append("losing height!")
+    textList.append("")
+    textList.append("The destiny of humankind")
+    textList.append("is on your shoulders...")
+    textList.append("")
+    textList.append("")
+    textList.append("")
+    textList.append("")
+    textList.append("")
+    textList.append("")
+    textList.append("Coding by Hannu Viitala.")
+    textList.append("Graphics by")
+    textList.append("Jari-Pekka Flinck.")
+    textList.append("ByteBeat music algorithm")
+    textList.append("by x.")
+
+    return textList
 
 # Start screen, main loop
 def MainStartScreen():
@@ -112,6 +200,20 @@ def MainStartScreen():
     global g_level
     global g_ship_speed
     global points
+
+    # Set palette
+    pygame.display.set_palette_16bit([0,47556,60264,59196])
+
+    # Draw background image
+    screen.blit(gamedata.logoSurf, 8, 5, 0) # no invisible color
+
+    # Clear text area
+    #screen.fill(0, pygame.Rect(0, 35, screenW, screenH-35))
+
+    # Draw scolled text
+    #                         "1234567890123456789012345"
+    #textY = (printTextAtPos_fp // 1000);
+    #textY = 30
 
     # Background music
     # pre-fill 4 beffers
@@ -126,20 +228,24 @@ def MainStartScreen():
     startT += g_soundBufferSize
     nextBufferIndexToFill = 0
     g_sound.reset()
+    g_sound.play()
 
     # Set initial palette
-    pygame.display.set_palette_16bit([0,65502,49572,65502]);
+    #pygame.display.set_palette_16bit([0,65502,49572,65502]);
 
     # Draw title text
-    pok.draw_text(40, 10, "M A R S   A T T A C K", 1)
+    #pok.draw_text(40, 10, "M A R S   A T T A C K", 1)
     pygame.display.update(False)
 
     # Stop ship
     #shipGob.setvel(0,0);
 
+    textList = CreateTexts()
+
     # Main loop
     exitLoop = False
-    textTopY_fp = 160*1000
+    printTextAtPos_fp = 0
+    lastDrawnLineNum = -1
     while not exitLoop:
 
         # Read keys
@@ -149,6 +255,7 @@ def MainStartScreen():
                 if eventtype.key == pygame.BUT_A:
 
                     # Start the game from the first level
+                    g_sound.pause()
                     g_level = 0
                     g_ship_speed = 2
                     points = 0
@@ -158,86 +265,15 @@ def MainStartScreen():
                     points = 0
 
         # Draw current pos in soud buffer
-        dirtyRect = pygame.Rect(50, 2, 8*4, 10)
-        screen.fill(0, dirtyRect)
+        #dirtyRect = pygame.Rect(50, 2, 8*4, 10)
+        #screen.fill(0, dirtyRect)
         # Draw points
-        text = str(g_sound.get_current_soundbuffer_index())+", "+str(nextBufferIndexToFill)
-        pok.draw_text(50, 2, text, 1)
-        print(text)
+        #text = str(g_sound.get_current_soundbuffer_index())+", "+str(nextBufferIndexToFill)
+        #pok.draw_text(50, 2, text, 1)
+        #print(text)
         # Update dirty rect
-        pygame.display.update(False, dirtyRect, True)
+        #pygame.display.update(False, dirtyRect, True)
 
-
-        # Clear text area
-        #screen.fill(0, pygame.Rect(0, 35, screenW, screenH-35))
-
-        # Draw scolled text
-        #                         "1234567890123456789012345"
-        textY = (textTopY_fp // 1000);
-        textY = scrollText(textY, "Over the centuries humans", 2)
-        textY = scrollText(textY, "have send thousands of", 2)
-        textY = scrollText(textY, "autonomous robots to", 2)
-        textY = scrollText(textY, "Mars. Their mission was", 2)
-        textY = scrollText(textY, "to prepare the planet for", 2)
-        textY = scrollText(textY, "the human colonization. ", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "However, the reports the", 2)
-        textY = scrollText(textY, "robots sent to Earth", 2)
-        textY = scrollText(textY, "were always", 2)
-        textY = scrollText(textY, "discouraging. Despite of", 2)
-        textY = scrollText(textY, "numerous efforts, Mars", 2)
-        textY = scrollText(textY, "seemed to be a too", 2)
-        textY = scrollText(textY, "hostile planet for", 2)
-        textY = scrollText(textY, "humans...", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "But that was all a big", 3)
-        textY = scrollText(textY, "lie!", 3)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "During the centuries in", 2)
-        textY = scrollText(textY, "Mars, the robots had", 2)
-        textY = scrollText(textY, "developed an artificial", 2)
-        textY = scrollText(textY, "intelligence. Their plan", 2)
-        textY = scrollText(textY, "is to build military", 2)
-        textY = scrollText(textY, "forces in secrecy, and", 2)
-        textY = scrollText(textY, "take the planet to", 2)
-        textY = scrollText(textY, "themselves.", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "Then they would turn", 2)
-        textY = scrollText(textY, "against their creators", 2)
-        textY = scrollText(textY, "and attack to Earth! By a", 2)
-        textY = scrollText(textY, "lucky accident, humans", 2)
-        textY = scrollText(textY, "got to know their plans", 2)
-        textY = scrollText(textY, "before it was too late.", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "Now, your mission is to", 2)
-        textY = scrollText(textY, "bomber down all the gun", 2)
-        textY = scrollText(textY, "towers the robots have", 2)
-        textY = scrollText(textY, "build on the surface of", 2)
-        textY = scrollText(textY, "Mars.", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "Unfortunately, due the", 2)
-        textY = scrollText(textY, "long trip from Earth to", 2)
-        textY = scrollText(textY, "the Mars orbit, you do", 2)
-        textY = scrollText(textY, "not have enough fuel for", 2)
-        textY = scrollText(textY, "your armed space shuttle,", 2)
-        textY = scrollText(textY, "and you are constantly", 2)
-        textY = scrollText(textY, "losing height!", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "The destiny of humankind", 2)
-        textY = scrollText(textY, "is on your shoulders...", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
-        textY = scrollText(textY, "", 2)
 
         # Update states of all gobs
         #all_sprites.update()
@@ -245,15 +281,32 @@ def MainStartScreen():
         # Draw gobs
         #all_gobs.draw(screen)
 
+        drawTextLineNum = printTextAtPos_fp//1000
+        #print('drawTextLineNum',drawTextLineNum)
+        if lastDrawnLineNum < drawTextLineNum:
+            if drawTextLineNum % 12 == 0:
+                screen.fill(0, pygame.Rect(0, 40, screenW, screenH-40))
+                pygame.display.update(False)
+
+            printTextLine(drawTextLineNum, textList)
+            lastDrawnLineNum = drawTextLineNum
+
+        #
+        pygame.display.update(True)
+
         # Draw screen
         #pygame.display.update(False)
-        pygame.display.update(True)
+
 
         # Draw display to the screen hw
         #dirtyRect = pygame.Rect(10, 2, 12, 10)
         #pygame.display.update(False, dirtyRect, True)  # Draw now, draw only
 
-        textTopY_fp -= 300;
+        #print('lastDrawnLineNum=',lastDrawnLineNum)
+        printTextAtPos_fp += 50;
+        if drawTextLineNum > 75:
+            printTextAtPos_fp = 0
+            lastDrawnLineNum = -1
 
         # Pre-fill sound buffer if not currently used
         while nextBufferIndexToFill != g_sound.get_current_soundbuffer_index():

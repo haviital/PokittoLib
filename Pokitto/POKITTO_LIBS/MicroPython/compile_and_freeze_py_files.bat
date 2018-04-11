@@ -1,14 +1,14 @@
 @echo off
 
-@echo
-@echo ### STARTED TO BUID PYTHON FILES
-@echo
+@echo.
+@echo ### STARTED TO BUILD PYTHON FILES
+@echo.
 
 cd Pokitto\POKITTO_LIBS\MicroPython
 
 @rem clear all
-d@echo off
-el mpy\*.* /q
+@echo off
+del mpy\*.* /q
 del frozen_mpy.c
 
 @rem Compile py-files to mpy-files
@@ -37,9 +37,9 @@ if ERRORLEVEL 1 (
     @echo *** ERROR: Cannot freeze bytecode to C-code!
     pause
 )
-@echo
-@echo ### FINISHED TO BUID PYTHON FILES
-@echo
+@echo.
+@echo ### FINISHED TO BUILD PYTHON FILES
+@echo.
 
 @echo on
 

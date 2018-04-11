@@ -95,7 +95,7 @@ int main () {
 
     game.display.setFont(fontC64);
 
-    game.setFrameRate(20);
+    game.setFrameRate(30);
 
 /*
     //!!HV

@@ -1208,9 +1208,13 @@ Q(generator)
 
 Q(get)
 
-Q(get_current_buffer_index)
+Q(get_current_soundbuffer_index)
+
+Q(get_current_soundbuffer_pos)
 
 Q(get_rect)
+
+Q(get_soundbuffer_size)
 
 Q(getattr)
 
