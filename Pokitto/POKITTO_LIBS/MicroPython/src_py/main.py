@@ -103,7 +103,12 @@ def generateBytebeatSound(bufferIndex, startT):
         #arr[pos] = t*((t>>5|t>>8)>>(t>>16))
         #arr[pos] = t*((t>>12|t>>8)&63&t>>4) # hyvä, mutta aggressiivinen. 11 khz
 
-        arr[pos] = t * ((t>>7|t>>3)&27&t>>13)
+        #arr[pos] = (t * ((t>>7|t>>3)&27&t>>13) # paras
+        arr[pos] = ((t * ((t>>7|t>>3)&27&t>>13))&255)>>2 # paras
+
+        #arr[pos] = (((t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)) & 255) // 127 - 1
+
+        #arr[pos] = ((  ((t*5)&(t>>7)) | ((t*3)&(t>>10)) ) & 255) // 127 - 1
 
         pos += 1
 
@@ -259,7 +264,7 @@ def MainStartScreen():
                     g_level = 0
                     g_ship_speed = 2
                     points = 0
-                    RestartLevel()
+                    #RestartLevel()
                     gameMode = "play"
                     exitLoop = True
                     points = 0

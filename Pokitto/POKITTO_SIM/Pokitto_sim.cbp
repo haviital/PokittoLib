@@ -354,6 +354,15 @@
 		<Unit filename="../POKITTO_LIBS/MicroPython/src_py/example_main.py">
 			<Option target="MicroPython" />
 		</Unit>
+		<Unit filename="../POKITTO_LIBS/MicroPython/src_py/main.py">
+			<Option target="MicroPython" />
+		</Unit>
+		<Unit filename="../POKITTO_LIBS/MicroPython/src_py/marsattack_classes.py">
+			<Option target="MicroPython" />
+		</Unit>
+		<Unit filename="../POKITTO_LIBS/MicroPython/src_py/marsattack_data.py">
+			<Option target="MicroPython" />
+		</Unit>
 		<Unit filename="../POKITTO_LIBS/MicroPython/src_py/sprite.py">
 			<Option target="MicroPython" />
 		</Unit>

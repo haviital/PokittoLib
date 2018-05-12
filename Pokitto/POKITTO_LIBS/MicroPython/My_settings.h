@@ -19,13 +19,14 @@
 #define PROJ_STREAMING_MUSIC 1
 #define PROJ_ENABLE_SYNTH 0
 #define PROJ_ENABLE_SOUND       1       // 0 = all sound functions disabled
-#define PROJ_AUD_FREQ           22050       // 44100 //22050 //11025
+#define PROJ_AUD_FREQ           11025       // 44100 //22050 //11025
 #define PROJ_STREAM_TO_DAC      1      // 1 use DAC for stream, 0 = use PWM for stream
 #define PROJ_USE_PWM            1      // 1 use PWM, 0 do not use PWM
 #define PROJ_GBSOUND            0       // 1 = use Gamebuino-compatible sound interrupt (choose this or the one below)
 
 
 #define PROJ_SHOW_FPS_COUNTER
+#define USE_SEGGER_SERIAL_PRINT
 
 #define SPRITE_COUNT 8
 
