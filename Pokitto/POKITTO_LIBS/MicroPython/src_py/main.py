@@ -1,3 +1,6 @@
+# Copyright (C) 2018 Hannu Viitala
+# This file is released under MIT license.
+# Go to http://opensource.org/licenses/MIT for full license details.
 
 import gc
 import upygame as pygame
@@ -7,17 +10,12 @@ import marsattack_data as gamedata
 import marsattack_classes as gameclass
 import umachine as pok
 
-print('START')
-
 # Init screen
 pygame.display.init()
 screen = pygame.display.set_mode() # full screen
 screenRect = screen.get_rect()
 screenW = screenRect.width
 screenH = screenRect.height
-# Copyright (C) 2018 Hannu Viitala
-# This file is released under MIT license.
-# Go to http://opensource.org/licenses/MIT for full license details.
 
 # Create global objects
 shipGob = None
@@ -80,35 +78,8 @@ def generateBytebeatSound(bufferIndex, startT):
     arr = bytearray(g_soundBufferSize)
     for t in range(startT, startT + g_soundBufferSize):
 
-        #arr[pos] = t & (t>>8)
-        #arr[pos] = ((t<<1)^((t<<1)+(t>>7)&t>>12))|t>>(4-(1^7&(t>>19)))|t>>7 # perus # hyvä, ei toimi 16khz
-
-        #arr[pos] = (t|(t>>9|t>>7))*t&(t>>11|t>>9)
-
-        #if t>>6&1:
-        #    x = t>>5
-        #else:
-        #    x = -t>>4
-
-        # https://www.reddit.com/r/bytebeat/comments/20km9l/cool_equations/
-        #arr[pos] = (t>>8&t)*(t>>15&t) # hyvä, vähän ambient
-        #arr[pos] = (t%255&t)-(t>>13&t) #ambientin tapainen. # Hyvä, toimii 16 khz
-        #arr[pos] = ((2*(t&1)-1)*t)-(t>>8) # tosi simppeli ambient #kokeilie. toimii 16 khz
-        #arr[pos] = t*(42&t>>10)
-        #arr[pos] = (t>>13|t*24)&(t>>7|t*19)
-
-        # https://github.com/kragen/viznut-music
-        #arr[pos] = ((t*(t>>8|t>>9)&46&t>>8))^(t&t>>13|t>>6) # ihan ok, 16 khz
-        #arr[pos] = t*5&(t>>7)|t*3&(t*4>>10) # hyvä, mutta vähän tylsä 16 khz
-        #arr[pos] = t*((t>>5|t>>8)>>(t>>16))
-        #arr[pos] = t*((t>>12|t>>8)&63&t>>4) # hyvä, mutta aggressiivinen. 11 khz
-
-        #arr[pos] = (t * ((t>>7|t>>3)&27&t>>13) # paras
-        arr[pos] = ((t * ((t>>7|t>>3)&27&t>>13))&255)>>2 # paras
-
-        #arr[pos] = (((t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)) & 255) // 127 - 1
-
-        #arr[pos] = ((  ((t*5)&(t>>7)) | ((t*3)&(t>>10)) ) & 255) // 127 - 1
+        arr[pos] = (t * ((t>>7|t>>3)&27&t>>13)) # ByteBeat algorithm
+        arr[pos] = arr[pos] >> 2  # Decrease volume
 
         pos += 1
 
@@ -116,73 +87,75 @@ def generateBytebeatSound(bufferIndex, startT):
     g_sound.fill_buffer(arr, g_soundBufferSize, bufferIndex, 0)
 
 def printTextLine(drawTextLineNum, textList):
-    #print('drawTextLineNum=',drawTextLineNum)
-    #print('textList=',textList[drawTextLineNum])
     if drawTextLineNum>-1 and drawTextLineNum<len(textList):
         x = 4
         offsetY = 50
         textLine = drawTextLineNum % 12
         y = textLine*10 + offsetY
         dirtyRect = pygame.Rect(x, y, screenW, 10)
-        #screen.fill(0, dirtyRect)
-        #print('drawTextLineNum2=',drawTextLineNum)
         pok.draw_text(x, y, textList[drawTextLineNum], 2)
         pygame.display.update(False, dirtyRect, True)
 
 def CreateTexts():
 
     textList = []
-    textList.append("Over the centuries humans")
-    textList.append("have send thousands of")
-    textList.append("autonomous robots to")
-    textList.append("Mars. Their mission was")
-    textList.append("to prepare the planet for")
-    textList.append("the human colonization. ")
+    # Guide        ("xxxxxxxxxxxxxxxxxxxxxxxx")
+    textList.append("Over the centuries")
+    textList.append("humans have sent")
+    textList.append("thousands of autonomous")
+    textList.append("robots to Mars.")
+    textList.append("Their mission was")
+    textList.append("to prepare the planet")
+    textList.append("for human colonisation.")
     textList.append("")
-    textList.append("However, the reports the")
-    textList.append("robots sent to Earth")
-    textList.append("were always")
-    textList.append("discouraging. Despite of")
-    textList.append("numerous efforts, Mars")
-    textList.append("seemed to be a too")
-    textList.append("hostile planet for")
-    textList.append("humans...")
+    textList.append("However, the reports")
+    textList.append("that the robots")
+    textList.append("sent to Earth were")
+    textList.append("always discouraging.")
+    textList.append("Despite numerous")
+    textList.append("efforts, Mars seemed to")
+    textList.append("be a planet that was too")
+    textList.append("hostile for humans...")
     textList.append("")
-    textList.append("But that was all a big")
-    textList.append("lie!")
+    textList.append("But that was all")
+    textList.append("a big lie!")
     textList.append("")
-    textList.append("During the centuries in")
-    textList.append("Mars, the robots had")
-    textList.append("developed an artificial")
-    textList.append("intelligence. Their plan")
-    textList.append("is to build military")
-    textList.append("forces in secrecy, and")
-    textList.append("take the planet to")
-    textList.append("themselves.")
+    textList.append("Over the centuries")
+    textList.append("on Mars, the robots")
+    textList.append("evolved to have highly")
+    textList.append("developed artificial")
+    textList.append("intelligence.")
+    textList.append("Their plan is")
+    textList.append("to build military forces")
+    textList.append("in secrecy,")
+    textList.append("and take the planet")
+    textList.append("for themselves.")
     textList.append("")
-    textList.append("Then they would turn")
-    textList.append("against their creators")
-    textList.append("and attack to Earth! By a")
-    textList.append("lucky accident, humans")
-    textList.append("got to know their plans")
-    textList.append("before it was too late.")
+    textList.append("Then they would")
+    textList.append("turn against their")
+    textList.append("creators and attack")
+    textList.append("Earth! However, due to")
+    textList.append("a fortunate accident,")
+    textList.append("the humans")
+    textList.append("discovered their plans")
     textList.append("")
     textList.append("Now, your mission is to")
-    textList.append("bomber down all the gun")
-    textList.append("towers the robots have")
-    textList.append("build on the surface of")
-    textList.append("Mars.")
+    textList.append("bomb all the gun towers")
+    textList.append("that the robots")
+    textList.append("have build")
+    textList.append("on the surface of Mars.")
     textList.append("")
     textList.append("Unfortunately, due the")
-    textList.append("long trip from Earth to")
-    textList.append("the Mars orbit, you do")
-    textList.append("not have enough fuel for")
-    textList.append("your armed space shuttle,")
+    textList.append("due the long trip")
+    textList.append("from Earth to Mars,")
+    textList.append("you do not have")
+    textList.append("enough fuel for")
+    textList.append("your armed space shuttle")
     textList.append("and you are constantly")
     textList.append("losing height!")
     textList.append("")
-    textList.append("The destiny of humankind")
-    textList.append("is on your shoulders...")
+    textList.append("The fate of humankind")
+    textList.append("rests on your shoulders..")
     textList.append("")
     textList.append("")
     textList.append("")
@@ -193,7 +166,11 @@ def CreateTexts():
     textList.append("Graphics by")
     textList.append("Jari-Pekka Flinck.")
     textList.append("ByteBeat music algorithm")
-    textList.append("by x.")
+    textList.append("discovered by Mattho.")
+    textList.append("Thanks to Pharap for")
+    textList.append("proofreading.")
+    textList.append("")
+    textList.append("Rel. on 24th of May 2018")
 
     return textList
 
@@ -212,16 +189,8 @@ def MainStartScreen():
     # Draw background image
     screen.blit(gamedata.logoSurf, 8, 5, 0) # no invisible color
 
-    # Clear text area
-    #screen.fill(0, pygame.Rect(0, 35, screenW, screenH-35))
-
-    # Draw scolled text
-    #                         "1234567890123456789012345"
-    #textY = (printTextAtPos_fp // 1000);
-    #textY = 30
-
     # Background music
-    # pre-fill 4 beffers
+    # pre-fill 4 buffers
     startT = 0
     generateBytebeatSound(0, startT)
     startT += g_soundBufferSize
@@ -235,15 +204,8 @@ def MainStartScreen():
     g_sound.reset()
     g_sound.play()
 
-    # Set initial palette
-    #pygame.display.set_palette_16bit([0,65502,49572,65502]);
-
-    # Draw title text
-    #pok.draw_text(40, 10, "M A R S   A T T A C K", 1)
+    # Draw
     pygame.display.update(False)
-
-    # Stop ship
-    #shipGob.setvel(0,0);
 
     textList = CreateTexts()
 
@@ -269,45 +231,21 @@ def MainStartScreen():
                     exitLoop = True
                     points = 0
 
-        # Draw current pos in soud buffer
-        #dirtyRect = pygame.Rect(50, 2, 8*4, 10)
-        #screen.fill(0, dirtyRect)
-        # Draw points
-        #text = str(g_sound.get_current_soundbuffer_index())+", "+str(nextBufferIndexToFill)
-        #pok.draw_text(50, 2, text, 1)
-        #print(text)
-        # Update dirty rect
-        #pygame.display.update(False, dirtyRect, True)
-
-
-        # Update states of all gobs
-        #all_sprites.update()
-
-        # Draw gobs
-        #all_gobs.draw(screen)
-
+        # Draw text line
         drawTextLineNum = printTextAtPos_fp//1000
-        #print('drawTextLineNum',drawTextLineNum)
         if lastDrawnLineNum < drawTextLineNum:
             if drawTextLineNum % 12 == 0:
+                # Clear all text
                 screen.fill(0, pygame.Rect(0, 40, screenW, screenH-40))
                 pygame.display.update(False)
 
+            # Draw text
             printTextLine(drawTextLineNum, textList)
             lastDrawnLineNum = drawTextLineNum
 
-        #
+        # Update subsystems
         pygame.display.update(True)
 
-        # Draw screen
-        #pygame.display.update(False)
-
-
-        # Draw display to the screen hw
-        #dirtyRect = pygame.Rect(10, 2, 12, 10)
-        #pygame.display.update(False, dirtyRect, True)  # Draw now, draw only
-
-        #print('lastDrawnLineNum=',lastDrawnLineNum)
         printTextAtPos_fp += 50;
         if drawTextLineNum > 75:
             printTextAtPos_fp = 0
@@ -660,9 +598,9 @@ def InitSprites():
         all_sprites.add(shipGob)
         all_gobs.add(shipGob)
         shipGob.setSprite(0, [[60683,32963,49572,65502]])
-    shipGob.rect.x = 50
+    shipGob.rect.x = -shipGob.rect.width
     shipGob.rect.y = 3
-    shipGob.animDur = 0;
+    shipGob.animDur = 0
     shipGob.disableAfterOutOfScreen = False
     shipGob.visible = True
 
