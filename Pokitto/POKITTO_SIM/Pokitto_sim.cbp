@@ -297,6 +297,19 @@
 					<Add directory="../../Examples/Scroll2Layers" />
 				</Compiler>
 			</Target>
+			<Target title="PZeroDemo">
+				<Option output="bin/Debug/Pokitto_sim" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/Debug" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="../../Examples/PZeroDemo" />
+					<Add directory="../POKITTO_LIBS/FixMath" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -663,6 +676,282 @@
 		<Unit filename="../../Examples/Mode15/pokitto_icon.h">
 			<Option target="Mode15" />
 		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/GameData.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/My_settings.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball1_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball1_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball1_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball1_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball2_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball2_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball2_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball2_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball3_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball3_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball3_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball3_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball4_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball4_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball4_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball4_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball5_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball5_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball5_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ball5_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_offroad1_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_road1.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_road2.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_shadow.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship1.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship2.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship3.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship4.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship5.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship6.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_1_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_1_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_1_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_1_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_1_e.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_2_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_2_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_2_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_2_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_2_e.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_3_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_3_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_3_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_3_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_3_e.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_4_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_4_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_4_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_4_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_4_e.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_5_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_5_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_5_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_5_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_ship_5_e.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_sky.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_1_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_1_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_1_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_1_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_2_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_2_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_2_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_2_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_3_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_3_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_3_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_3_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_4_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_4_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_4_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_4_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_5_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_5_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_5_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_5_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_6_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_6_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_6_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_6_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_7_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_7_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_7_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_7_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_8_a.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_8_b.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_8_c.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/image_terrain_8_d.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/main.cpp">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/palette.h">
+			<Option target="PZeroDemo" />
+		</Unit>
 		<Unit filename="../../Examples/Pakman_GB/My_settings.h">
 			<Option target="Pakman_GB" />
 		</Unit>
@@ -797,48 +1086,48 @@
 		<Unit filename="../POKITTO_LIBS/FileIO/FileIO_SIM.cpp" />
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16.hpp">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16_exp.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16_sqrt.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16_trig.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16_trig_sin_lut.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fixmath.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fract32.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fract32.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/int64.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/uint32.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/uint32.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PZeroDemo" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/MicroPython/My_settings.h">
 			<Option target="MicroPython" />
