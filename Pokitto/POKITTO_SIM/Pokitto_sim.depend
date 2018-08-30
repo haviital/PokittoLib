@@ -1212,7 +1212,7 @@
 1508098260 c:\git\pokittolib2\pokitto\pokitto_core\pokittologos.h
 	<stdint.h>
 
-1535658460 source:c:\git\pokittolib2\pokitto\pokitto_core\pokittodisplay.cpp
+1535662313 source:c:\git\pokittolib2\pokitto\pokitto_core\pokittodisplay.cpp
 	"PokittoDisplay.h"
 	"Pokitto_settings.h"
 	"GBcompatibility.h"
@@ -1389,7 +1389,7 @@
 	<stdint.h>
 	<stdio.h>
 
-1535658460 source:c:\git\pokittolib2\pokitto\pokitto_sim\simlcd.cpp
+1535662827 source:c:\git\pokittolib2\pokitto\pokitto_sim\simlcd.cpp
 	"SimLCD.h"
 	"PokittoSimulator.h"
 	<algorithm>
@@ -4173,7 +4173,8 @@
 
 1535657358 c:\git\pokittolib2\examples\pzerodemo\my_settings.h
 
-1535658460 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\fix16.h
+1535662472 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\fix16.h
+	"Pokitto_settings.h"
 	<stdint.h>
 	"fix16.hpp"
 

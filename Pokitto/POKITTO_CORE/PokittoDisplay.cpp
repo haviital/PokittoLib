@@ -360,7 +360,12 @@ void Display::update(bool useDirectDrawMode, uint8_t updRectX, uint8_t updRectY,
         directcolor = COLOR_WHITE;
         invisiblecolor = COLOR_BLACK;
         directbgcolor = 0x0001; // Cannot be black as that is transparent color
-	directtextrotated = false;
+        if (POK_SCREENMODE == MODE_FAST_16COLOR ||
+            POK_SCREENMODE == MODE13
+        )
+            directtextrotated = false;
+        else
+            directtextrotated = true;
         adjustCharStep = 0;
         setFont(fontC64);
         enableDirectPrinting(true);
