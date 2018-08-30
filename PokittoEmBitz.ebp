@@ -2940,7 +2940,7 @@
 					<Add option="-fomit-frame-pointer" />
 					<Add option="-fdata-sections" />
 					<Add option="-ffunction-sections" />
-					<Add option="-Os" />
+					<Add option="-O3" />
 					<Add option="-g" />
 					<Add option="-funsigned-char" />
 					<Add option="-Wno-unused-parameter" />
@@ -2963,7 +2963,7 @@
 					<Add option="-fomit-frame-pointer" />
 					<Add option="-fdata-sections" />
 					<Add option="-ffunction-sections" />
-					<Add option="-Os" />
+					<Add option="-O3" />
 					<Add option="-g" />
 					<Add option="-funsigned-char" />
 					<Add option="-Wno-unused-parameter" />
