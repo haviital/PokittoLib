@@ -93,6 +93,7 @@
 #include "image_road2.h"
 #include "image_sky.h"
 
+
  // Defines blocks of 64 (8x8) tiles
  const uint8_t blockData[][8*8] = {
 
@@ -278,12 +279,7 @@
      },
 };
 
-const uint8_t tileW = 12;
-const uint8_t tileH = 8;
-
 // Map of blocks. Defines the whole game field!
-const uint8_t mapWidth = 32;
-const uint8_t mapHeight = 32;
 const uint8_t blockMap[mapWidth*mapHeight] = {
    14,14,14,14,14,14, 6, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,10,14,
    14,14,14,14,14,14, 0, 7, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,11, 1,14,
