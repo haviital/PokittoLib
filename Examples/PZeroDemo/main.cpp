@@ -40,6 +40,9 @@ const uint8_t* activeShipBitmapData = ship_bitmaps[0];
 uint32_t shipBitmapW = *(activeShipBitmapData - 2);;
 uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 
+//
+int32_t textureMode = 1;
+
 // Main
 int main () {
 
@@ -77,7 +80,7 @@ int main () {
     // *** Calculate lookup tables.
 
     // z = (zs * h) / y
-    fix16_t fxPerspectiveFactor = fix16_from_int(70*screenH);
+    fix16_t fxPerspectiveFactor = fix16_from_int(90*screenH);
     for( int32_t y = 0; y<screenH; y++) {
 
         #if 1 // 3d
@@ -326,27 +329,36 @@ void HandleGameKeys()
     }
 
     // Reverse
-    if(mygame.buttons.bBtn()) {
+    else if(mygame.buttons.bBtn()) {
 
         if(!collided || fxVel>=fxMaxSpeedCollided)
             fxVel = fxVel - (fix16_one>>4);
+    }
+    // Break a little if no A button is pressed
+    else  {
+
+        if(!collided || fxVel>=fxMaxSpeedCollided)
+            fxVel = fxVel - (fix16_one>>5);
+        if(fxVel < 0)
+            fxVel = 0;
     }
 }
 
 // Draw the setup menu and handle keys.
 void HandleSetupMenu(int32_t& lastListPos)
 {
-    const int32_t texturesLen = 3;
-    static char* texturesStr[texturesLen] =
+    const int32_t itemsCount = 4;
+    char menuStr[itemsCount][10] =
     {
-        "SHIP","TERRAIN","EDGE",
+        "SHIP","EDGE","TERRAIN","T.MODE=0"
     };
+    menuStr[3][7] = (char)(textureMode+'0');
 
     // Draw the list of texture types
     int32_t y = 0;
     mygame.display.setColor(1,2);
     mygame.display.setInvisibleColor(2);
-    for(int32_t im = lastListPos-1; im<min(texturesLen, lastListPos+2); im++)
+    for(int32_t im = lastListPos-1; im<min(itemsCount, lastListPos+2); im++)
     {
         if(im<0)
         {
@@ -354,21 +366,21 @@ void HandleSetupMenu(int32_t& lastListPos)
         }
         else if(im==lastListPos)
         {
-             mygame.display.print(12-9,y,"<");
-             mygame.display.print(texturesStr[im]);
+             mygame.display.print(12,y,"<");
+             mygame.display.print(menuStr[im]);
              mygame.display.print(">");
         }
         else
-            mygame.display.print(12,y,texturesStr[im]);
+            mygame.display.print(12,y,menuStr[im]);
         y += 9;
     }
 
     // Read keys
-    int32_t texChangeDir = 0;
+    int32_t changeDir = 0;
     if(mygame.buttons.pressed(BTN_RIGHT))
-        texChangeDir = 1;
+        changeDir = 1;
     else if(mygame.buttons.pressed(BTN_LEFT))
-        texChangeDir = -1;
+        changeDir = -1;
     else if(mygame.buttons.pressed(BTN_UP))
     {
         if(--lastListPos<0)
@@ -376,12 +388,12 @@ void HandleSetupMenu(int32_t& lastListPos)
     }
     else if(mygame.buttons.pressed(BTN_DOWN))
     {
-        if(++lastListPos>=texturesLen)
-           lastListPos = texturesLen-1;
+        if(++lastListPos>=itemsCount)
+           lastListPos = itemsCount-1;
     }
 
     // Change the texture on the game
-    if(texChangeDir!=0)
+    if(changeDir!=0)
     {
         if(lastListPos==0) // ship
         {
@@ -390,7 +402,7 @@ void HandleSetupMenu(int32_t& lastListPos)
             for(; i< ship_bitmaps_count; i++)
                 if(activeShipBitmapData==ship_bitmaps[i])
                     break;
-            i+= texChangeDir;
+            i+= changeDir;
             if(i>= ship_bitmaps_count)
                 i=0;
             if(i < 0)
@@ -399,7 +411,26 @@ void HandleSetupMenu(int32_t& lastListPos)
             shipBitmapW = *(activeShipBitmapData - 2);
             shipBitmapH = *(activeShipBitmapData - 1);
         }
-        else if(lastListPos==1) // terrain
+        else if(lastListPos==1) // edge
+        {
+            // Switch active tile bitmap data
+            int32_t i=0;
+            for(; i< edge_bitmaps_count; i+=4)
+                if(all_texture_bitmaps[1]==edge_bitmaps[i])
+                    break;
+
+            i+=4*changeDir; // next 4 textures
+
+            if(i >= edge_bitmaps_count)
+                i=0;
+            if(i < 0)
+                i=edge_bitmaps_count-4;
+            all_texture_bitmaps[1] = edge_bitmaps[i];
+            all_texture_bitmaps[2] = edge_bitmaps[i+1];
+            all_texture_bitmaps[3] = edge_bitmaps[i+2];
+            all_texture_bitmaps[4] = edge_bitmaps[i+3];
+        }
+        else if(lastListPos==2) // terrain
         {
             // Switch active tile bitmap data
             int32_t i=0;
@@ -407,7 +438,7 @@ void HandleSetupMenu(int32_t& lastListPos)
                 if(all_texture_bitmaps[7]==terrain_bitmaps[i])
                     break;
 
-            i+=4*texChangeDir; // next 4 textures
+            i+=4*changeDir; // next 4 textures
 
             if(i >= terrain_bitmaps_count)
                 i=0;
@@ -418,24 +449,13 @@ void HandleSetupMenu(int32_t& lastListPos)
             all_texture_bitmaps[9] = terrain_bitmaps[i+2];
             all_texture_bitmaps[10] = terrain_bitmaps[i+3];
         }
-        else if(lastListPos==2) // edge
+        else if(lastListPos==3) // texture mode
         {
-            // Switch active tile bitmap data
-            int32_t i=0;
-            for(; i< edge_bitmaps_count; i+=4)
-                if(all_texture_bitmaps[1]==edge_bitmaps[i])
-                    break;
-
-            i+=4*texChangeDir; // next 4 textures
-
-            if(i >= edge_bitmaps_count)
-                i=0;
-            if(i < 0)
-                i=edge_bitmaps_count-4;
-            all_texture_bitmaps[1] = edge_bitmaps[i];
-            all_texture_bitmaps[2] = edge_bitmaps[i+1];
-            all_texture_bitmaps[3] = edge_bitmaps[i+2];
-            all_texture_bitmaps[4] = edge_bitmaps[i+3];
+            textureMode+=changeDir; // next 4 textures
+            if(textureMode<0)
+                textureMode = 1;
+            if(textureMode>1)
+                textureMode = 0;
         }
     }
 }
@@ -495,7 +515,7 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
             else
             {
                 // Terrain surface tiles
-                tileIndex = 7 + (blockDataX&1) + (blockDataY & 0x1);
+                tileIndex = 7 + (blockDataX&1) + ((blockDataY&1)<<1);
             }
 
             // Get the tile.
@@ -509,7 +529,17 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
             do {
 
                 // Draw the texture pixel.
-                uint8_t color = *(tileBitmapPtr + ((finalV & 0x7)*tileW) + (finalU & 0x7));  // original size bitmap
+                // Draw pixel.
+                uint8_t color;
+//                if( textureMode!=0 && fxStepX >= fix16_from_float(2.0) )
+//                    color = *(tileBitmapPtr + ((((finalV & 0x7)>>2)+4)*tileW) + 8 + ((finalU & 0x7)>>2));  // 1/2 size mipmap
+//                else if( textureMode!=0 && fxStepX >= fix16_from_float(1.0) )
+//                    color = *(tileBitmapPtr + (((finalV & 0x7)>>1)*tileW) + 8 + ((finalU & 0x7)>>1));  // 1/2 size mipmap
+//                else
+//                    color = *(tileBitmapPtr + ((finalV & 0x7)*tileW) + (finalU & 0x7));  // original size bitmap
+
+                color = *(tileBitmapPtr + ((finalV & 0x7)*tileW) + (finalU & 0x7));  // original size bitmap
+
 
                 #if 1  // 8-bit screen buffer
                 *scrptr++ = color;
