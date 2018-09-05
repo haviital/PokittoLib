@@ -93,7 +93,14 @@ int main () {
         #endif
     }
 
-    // *** Draw scenery
+    // Get mipmap pointers.
+    for( uint32_t ii=0; ii<all_texture_bitmaps_count; ii++)
+    {
+        all_texture_bitmaps_mm1[ii] =  all_texture_bitmaps[ii] + (texW * tileH);
+        all_texture_bitmaps_mm2[ii] =  all_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
+    }
+
+     // *** Draw scenery
 
     uint16_t skyW = image_sky[0];
     uint16_t skyH = image_sky[1];
@@ -428,6 +435,13 @@ void HandleSetupMenu(int32_t& lastListPos)
             all_texture_bitmaps[2] = edge_bitmaps[i+1];
             all_texture_bitmaps[3] = edge_bitmaps[i+2];
             all_texture_bitmaps[4] = edge_bitmaps[i+3];
+
+            // Get mipmap pointers.
+            for( uint32_t i=0; i<all_texture_bitmaps_count; i++)
+            {
+                all_texture_bitmaps_mm1[i] =  all_texture_bitmaps[i] + (texW * tileH);
+                all_texture_bitmaps_mm2[i] =  all_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
+            }
         }
         else if(lastListPos==2) // terrain
         {
@@ -447,6 +461,13 @@ void HandleSetupMenu(int32_t& lastListPos)
             all_texture_bitmaps[8] = terrain_bitmaps[i+1];
             all_texture_bitmaps[9] = terrain_bitmaps[i+2];
             all_texture_bitmaps[10] = terrain_bitmaps[i+3];
+
+            // Get mipmap pointers.
+            for( uint32_t i=0; i<all_texture_bitmaps_count; i++)
+            {
+                all_texture_bitmaps_mm1[i] =  all_texture_bitmaps[i] + (texW * tileH);
+                all_texture_bitmaps_mm2[i] =  all_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
+            }
         }
         else if(lastListPos==3) // texture mode
         {

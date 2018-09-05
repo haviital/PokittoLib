@@ -36,7 +36,7 @@
 #include "image_ship_5_c.h"
 #include "image_ship_5_d.h"
 #include "image_ship_5_e.h"
-#include "image_ship6.h"
+//#include "image_ship6.h"
 #include "image_ball1_a.h"
 #include "image_ball1_b.h"
 #include "image_ball1_c.h"
@@ -315,7 +315,7 @@ const uint8_t blockMap[mapWidth*mapHeight] = {
    14,14,14,14,14,14,14,14,14, 8, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,12,
 };
 
-const uint8_t ship_bitmaps_count = 26;
+const uint8_t ship_bitmaps_count = 5*5;
 const uint8_t* ship_bitmaps [ship_bitmaps_count] = {
     image_ship_1_a+2,
     image_ship_1_b+2,
@@ -342,39 +342,39 @@ const uint8_t* ship_bitmaps [ship_bitmaps_count] = {
     image_ship_5_c+2,
     image_ship_5_d+2,
     image_ship_5_e+2,
-    image_ship6+2,
+    //image_ship6+2,
 };
 
-const uint8_t terrain_bitmaps_count = 8*4;
+const uint8_t terrain_bitmaps_count = 2*4;
 const uint8_t* terrain_bitmaps [terrain_bitmaps_count] = {
-    image_terrain_1_a+2,
-    image_terrain_1_b+2,
-    image_terrain_1_c+2,
-    image_terrain_1_d+2,
-    image_terrain_4_a+2,
-    image_terrain_4_b+2,
-    image_terrain_4_c+2,
-    image_terrain_4_d+2,
-    image_terrain_2_a+2,
-    image_terrain_2_b+2,
-    image_terrain_2_c+2,
-    image_terrain_2_d+2,
-    image_terrain_5_a+2,
-    image_terrain_5_b+2,
-    image_terrain_5_c+2,
-    image_terrain_5_d+2,
-    image_terrain_3_a+2,
-    image_terrain_3_b+2,
-    image_terrain_3_c+2,
-    image_terrain_3_d+2,
+//    image_terrain_1_a+2,
+//    image_terrain_1_b+2,
+//    image_terrain_1_c+2,
+//    image_terrain_1_d+2,
+//    image_terrain_4_a+2,
+//    image_terrain_4_b+2,
+//    image_terrain_4_c+2,
+//    image_terrain_4_d+2,
+//    image_terrain_2_a+2,
+//    image_terrain_2_b+2,
+//    image_terrain_2_c+2,
+//    image_terrain_2_d+2,
+//    image_terrain_5_a+2,
+//    image_terrain_5_b+2,
+//    image_terrain_5_c+2,
+//    image_terrain_5_d+2,
+//    image_terrain_3_a+2,
+//    image_terrain_3_b+2,
+//    image_terrain_3_c+2,
+//    image_terrain_3_d+2,
     image_terrain_6_a+2,
     image_terrain_6_b+2,
     image_terrain_6_c+2,
     image_terrain_6_d+2,
-    image_terrain_7_a+2,
-    image_terrain_7_b+2,
-    image_terrain_7_c+2,
-    image_terrain_7_d+2,
+//    image_terrain_7_a+2,
+//    image_terrain_7_b+2,
+//    image_terrain_7_c+2,
+//    image_terrain_7_d+2,
     image_terrain_8_a+2,
     image_terrain_8_b+2,
     image_terrain_8_c+2,
@@ -455,5 +455,8 @@ const uint8_t* all_texture_bitmaps[all_texture_bitmaps_count] = {
     image_terrain_6_c+2,
     image_terrain_6_d+2,
 };
+
+const uint8_t* all_texture_bitmaps_mm1[all_texture_bitmaps_count] = {0};
+const uint8_t* all_texture_bitmaps_mm2[all_texture_bitmaps_count] = {0};
 
 

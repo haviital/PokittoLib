@@ -60,7 +60,12 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
             }
 
             // Get the tile.
-            tileBitmapPtr = (uint8_t*)all_texture_bitmaps[tileIndex]; // Background tile
+            if( fxStepX >= fix16_from_int(3) )
+                tileBitmapPtr = (uint8_t*)all_texture_bitmaps_mm2[tileIndex]; // Background tile
+            else if( fxStepX >= fix16_from_float(1.5) )
+                tileBitmapPtr = (uint8_t*)all_texture_bitmaps_mm1[tileIndex]; // Background tile
+            else
+                tileBitmapPtr = (uint8_t*)all_texture_bitmaps[tileIndex]; // Background tile
 
             // *** Draw one tile row fully.
 
@@ -79,7 +84,16 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 //                else
 //                    color = *(tileBitmapPtr + ((finalV & 0x7)*tileW) + (finalU & 0x7));  // original size bitmap
 
-                color = *(tileBitmapPtr + ((finalV & 0x7)*tileW) + (finalU & 0x7));  // original size bitmap
+                //color = *(tileBitmapPtr + ((finalV & 0x7)*tileW) + (finalU & 0x7));  // original size bitmap
+
+
+
+                if( fxStepX >= fix16_from_int(3) )
+                    color = *(tileBitmapPtr + (((finalV & 0x7)>>2)*tileW) + ((finalU & 0x7)>>2));  // 1/2 size mipmap
+                else if( fxStepX >= fix16_from_float(1.5) )
+                    color = *(tileBitmapPtr + (((finalV & 0x7)>>1)*tileW) + ((finalU & 0x7)>>1));  // 1/2 size mipmap
+                else
+                    color = *(tileBitmapPtr + ((finalV & 0x7)*texW) + (finalU & 0x7));  // original size bitmap
 
 
                 #if 1  // 8-bit screen buffer
