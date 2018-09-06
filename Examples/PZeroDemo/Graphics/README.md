@@ -5,6 +5,7 @@ This folder is here for the sake of releasing the graphics used in PZero in an e
 ## Licencing
 
 All graphics created by Pharap for the PZero project are licenced under the Creative Commons Attribution-NonCommercial-ShareAlike licence ('CC BY-NC-SA').  
+All graphics created by Adekto for the PZero project are licenced under the Creative Commons Attribution-NonCommercial-ShareAlike licence ('CC BY-NC-SA').
 
 ![CC BY-NC-SA](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)
 
@@ -40,3 +41,8 @@ Created by [Pharap](https://github.com/Pharap):
 * `Pharap/Terrain/Sand.png`
 * `Pharap/Terrain/SciFi.png`
 * `Pharap/Terrain/Sea.png`
+
+Created by Adekto
+
+* `Adekto/typeV.png`
+* `Adekto/typeValte.png`
