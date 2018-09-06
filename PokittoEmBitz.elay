@@ -458,17 +458,17 @@
 	</File>
 	<File name="Examples\PZeroDemo\gfx_hdr\GameData.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2800" topLine="87" />
+			<Cursor1 position="2800" topLine="357" />
 		</Cursor>
 	</File>
 	<File name="Examples\PZeroDemo\gfxdraw.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="138" topLine="0" />
+			<Cursor1 position="4151" topLine="81" />
 		</Cursor>
 	</File>
 	<File name="Examples\PZeroDemo\main.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="117" topLine="0" />
+			<Cursor1 position="117" topLine="31" />
 		</Cursor>
 	</File>
 	<File name="Examples\PZeroDemo\main.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">

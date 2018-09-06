@@ -5,7 +5,7 @@
 //
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 {
-    const uint16_t sceneryH = 16+4;
+    const uint16_t sceneryH = 16;
     uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH*mygame.display.width); // 8-bit screen buffer
     fix16_t fxStepX = fix16_one;
     const fix16_t fxCos = fix16_cos(fxAngle);
@@ -38,7 +38,7 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
         uint32_t finalU = fix16_to_int( fxU2 );
         uint32_t finalV = fix16_to_int( fxV2 );
 
-        for( uint8_t x=0; x<110 ;  ) {
+       for( uint8_t x=0; x<110 ;  ) {
 
             // *** Get the tile number from the "map"
 
@@ -60,9 +60,9 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
             }
 
             // Get the tile.
-            if( fxStepX >= fix16_from_int(3) )
+            if( fxStepX >= fix16_from_int(2) )
                 tileBitmapPtr = (uint8_t*)all_texture_bitmaps_mm2[tileIndex]; // Background tile
-            else if( fxStepX >= fix16_from_float(1.5) )
+            else if( fxStepX >= fix16_from_float(1) )
                 tileBitmapPtr = (uint8_t*)all_texture_bitmaps_mm1[tileIndex]; // Background tile
             else
                 tileBitmapPtr = (uint8_t*)all_texture_bitmaps[tileIndex]; // Background tile
@@ -88,9 +88,9 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 
 
 
-                if( fxStepX >= fix16_from_int(3) )
+                if( fxStepX >= fix16_from_int(2) )
                     color = *(tileBitmapPtr + (((finalV & 0x7)>>2)*tileW) + ((finalU & 0x7)>>2));  // 1/2 size mipmap
-                else if( fxStepX >= fix16_from_float(1.5) )
+                else if( fxStepX >= fix16_from_float(1) )
                     color = *(tileBitmapPtr + (((finalV & 0x7)>>1)*tileW) + ((finalU & 0x7)>>1));  // 1/2 size mipmap
                 else
                     color = *(tileBitmapPtr + ((finalV & 0x7)*texW) + (finalU & 0x7));  // original size bitmap
