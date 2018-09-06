@@ -5,11 +5,14 @@ This folder is here for the sake of releasing the graphics used in PZero in an e
 ## Licencing
 
 All graphics created by Pharap for the PZero project are licenced under the Creative Commons Attribution-NonCommercial-ShareAlike licence ('CC BY-NC-SA').  
-All graphics created by Adekto for the PZero project are licenced under the Creative Commons Attribution-NonCommercial-ShareAlike licence ('CC BY-NC-SA').
 
 ![CC BY-NC-SA](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png)
 
 You can find a copy of the licence in `Graphics/BY-NC-SA.txt`.  
+
+All graphics created by Adekto for the PZero project are licenced under the Creative Commons Public Domain licence ('CC0').
+
+![CC0](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/publicdomain.png)
 
 ## Attribution & Authorship
 
