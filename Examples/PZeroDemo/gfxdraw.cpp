@@ -75,37 +75,14 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
             do {
 
                 // Draw the texture pixel.
-                // Draw pixel.
-                uint8_t color;
-//                if( textureMode!=0 && fxStepX >= fix16_from_float(2.0) )
-//                    color = *(tileBitmapPtr + ((((finalV & 0x7)>>2)+4)*tileW) + 8 + ((finalU & 0x7)>>2));  // 1/2 size mipmap
-//                else if( textureMode!=0 && fxStepX >= fix16_from_float(1.0) )
-//                    color = *(tileBitmapPtr + (((finalV & 0x7)>>1)*tileW) + 8 + ((finalU & 0x7)>>1));  // 1/2 size mipmap
-//                else
-//                    color = *(tileBitmapPtr + ((finalV & 0x7)*tileW) + (finalU & 0x7));  // original size bitmap
-
-                //color = *(tileBitmapPtr + ((finalV & 0x7)*tileW) + (finalU & 0x7));  // original size bitmap
-
-
-
+                 uint8_t color;
                 if( fxStepX >= fix16_from_int(2) )
                     color = *(tileBitmapPtr + (((finalV & 0x7)>>2)*tileW) + ((finalU & 0x7)>>2));  // 1/2 size mipmap
                 else if( fxStepX >= fix16_from_float(1) )
                     color = *(tileBitmapPtr + (((finalV & 0x7)>>1)*tileW) + ((finalU & 0x7)>>1));  // 1/2 size mipmap
                 else
                     color = *(tileBitmapPtr + ((finalV & 0x7)*texW) + (finalU & 0x7));  // original size bitmap
-
-
-                #if 1  // 8-bit screen buffer
                 *scrptr++ = color;
-                #else  // 4-bit screen buffer
-                if(x & 1) {
-                    *scrptr = (*scrptr & 0xF0) | color;
-                    scrptr++;
-                }
-                else
-                    *scrptr = (color << 4) | (*scrptr & 0x0F);
-                #endif
 
                 // Next texture coordinates.
                 fxU2 += fxStepXInU;
@@ -125,5 +102,57 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 
          }  // end for
 
+    }  // end for
+}
+
+
+void GetXYPos(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
+{
+    const uint16_t sceneryH = 16;
+    fix16_t fxStepX = fix16_one;
+    const fix16_t fxCos = fix16_cos(fxAngle);
+    const fix16_t fxSin = fix16_sin(fxAngle);
+
+    // Move caused by rotation.
+    const int32_t reqRotateCenterX = tile2PosX + 0;
+    const int32_t reqRotateCenterY = tile2PosY + 44;
+    const fix16_t fxRotatedRotateCenterX = (reqRotateCenterX * fxCos) - (reqRotateCenterY * fxSin);
+    const fix16_t fxRotatedRotateCenterY = (reqRotateCenterX * fxSin) + (reqRotateCenterY * fxCos);
+    const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fix16_from_int(reqRotateCenterX);
+    const fix16_t fxRotatedCenterDiffY = fxRotatedRotateCenterY - fix16_from_int(reqRotateCenterY);
+
+    for( uint8_t y=0; y<screenH-sceneryH ; y++ ) {
+
+        fix16_t fxZ = PerspectiveScaleY[y];
+        fix16_t fxstepXFromY = PerspectiveScaleX[y];
+        fix16_t fxFinalY =  fxZ + fix16_from_int(tile2PosY);
+
+        // *** Step for scaling
+        fxStepX = fxstepXFromY >> 7;
+        fix16_t fxStepXInU = fix16_mul(fxStepX, fxCos);
+        fix16_t fxStepXInV = fix16_mul(fxStepX, fxSin);
+
+         // *** Shear the scanline to move horizontal origo to the middle
+        fix16_t fxFinalX = -(fxstepXFromY>>1) + fix16_from_int(tile2PosX);
+        fix16_t fxU2Start = fix16_mul(fxFinalX, fxCos) - fix16_mul(fxFinalY, fxSin) - fxRotatedCenterDiffX + fxStepXInU;
+        fix16_t fxV2Start = fix16_mul(fxFinalX, fxSin) + fix16_mul(fxFinalY, fxCos) - fxRotatedCenterDiffY + fxStepXInV;
+
+        uint32_t finalU = fix16_to_int( fxU2 );
+        uint32_t finalV = fix16_to_int( fxV2 );
+
+       for( uint8_t x=0; x<110 ; x++; ) {
+
+            // Next texture coordinates.
+            fix16_t fxU2 = fxU2Start + (x * fxStepXInU);
+            fix16_t fxV2 = fxV2Start + (x * fxStepXInV);
+            finalU = fix16_to_int( fxU2 );
+            finalV = fix16_to_int( fxV2 );
+
+            // u = u2_start + (screenx*stepXInU) ==> screenx = (u - u2_start) * stepXInU = (u - u2_start) * (stepx*cos(a))
+            // ==> screenx = (u - u2_start) * (PerspectiveScaleX[screenY]*cos(a))
+
+            // u2_start = finalx * cos(a) - finalY*sin(a) - rotcenterOffsetx + (stepx*cos(a))
+
+         }  // end for
     }  // end for
 }
