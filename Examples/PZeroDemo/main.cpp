@@ -12,7 +12,7 @@ void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
-void DrawOtherCars(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
+void Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
@@ -31,7 +31,8 @@ bool isTurningRight = false;
 bool collided = false;
 
 // Camera pos
-fix16_t fxX = fix16_from_int(55);
+//fix16_t fxX = fix16_from_int(55);
+fix16_t fxX = fix16_from_int(42);
 fix16_t fxY = fix16_from_int(490);
 
 
@@ -42,7 +43,7 @@ fix16_t fxAngle = 0;
 
 // Ship bitmap
 const uint8_t* activeShipBitmapData = ship_bitmaps[0];
-uint32_t shipBitmapW = *(activeShipBitmapData - 2);;
+uint32_t shipBitmapW = *(activeShipBitmapData - 2);
 uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 
 //
@@ -137,10 +138,10 @@ int main () {
     }
 
     // Get mipmap pointers.
-    for( uint32_t ii=0; ii<all_texture_bitmaps_count; ii++)
+    for( uint32_t ii=0; ii<current_texture_bitmaps_count; ii++)
     {
-        all_texture_bitmaps_mm1[ii] =  all_texture_bitmaps[ii] + (texW * tileH);
-        all_texture_bitmaps_mm2[ii] =  all_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
+        current_texture_bitmaps_mm1[ii] =  current_texture_bitmaps[ii] + (texW * tileH);
+        current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
     }
 
      // *** Draw scenery
@@ -160,8 +161,8 @@ int main () {
 
             DrawMode7(fix16_to_int(fxX), fix16_to_int(fxY), fxAngle);
 
-            // Draw other cars
-            DrawOtherCars(fxX, fxY, fxAngle);
+            // Draw 3d objects
+            Draw3dObects(fxX, fxY, fxAngle);
 
             #if 0 // do not scale or rotate
             // *** Draw ship in 3d
@@ -490,7 +491,7 @@ void HandleSetupMenu(int32_t& lastListPos)
             // Switch active tile bitmap data
             int32_t i=0;
             for(; i< edge_bitmaps_count; i+=4)
-                if(all_texture_bitmaps[1]==edge_bitmaps[i])
+                if(current_texture_bitmaps[1]==edge_bitmaps[i])
                     break;
 
             i+=4*changeDir; // next 4 textures
@@ -499,16 +500,16 @@ void HandleSetupMenu(int32_t& lastListPos)
                 i=0;
             if(i < 0)
                 i=edge_bitmaps_count-4;
-            all_texture_bitmaps[1] = edge_bitmaps[i];
-            all_texture_bitmaps[2] = edge_bitmaps[i+1];
-            all_texture_bitmaps[3] = edge_bitmaps[i+2];
-            all_texture_bitmaps[4] = edge_bitmaps[i+3];
+            current_texture_bitmaps[1] = edge_bitmaps[i];
+            current_texture_bitmaps[2] = edge_bitmaps[i+1];
+            current_texture_bitmaps[3] = edge_bitmaps[i+2];
+            current_texture_bitmaps[4] = edge_bitmaps[i+3];
 
             // Get mipmap pointers.
-            for( uint32_t i=0; i<all_texture_bitmaps_count; i++)
+            for( uint32_t i=0; i<current_texture_bitmaps_count; i++)
             {
-                all_texture_bitmaps_mm1[i] =  all_texture_bitmaps[i] + (texW * tileH);
-                all_texture_bitmaps_mm2[i] =  all_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
+                current_texture_bitmaps_mm1[i] =  current_texture_bitmaps[i] + (texW * tileH);
+                current_texture_bitmaps_mm2[i] =  current_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
             }
         }
         else if(lastListPos==2) // terrain
@@ -516,7 +517,7 @@ void HandleSetupMenu(int32_t& lastListPos)
             // Switch active tile bitmap data
             int32_t i=0;
             for(; i< terrain_bitmaps_count; i+=4)
-                if(all_texture_bitmaps[7]==terrain_bitmaps[i])
+                if(current_texture_bitmaps[7]==terrain_bitmaps[i])
                     break;
 
             i+=4*changeDir; // next 4 textures
@@ -525,16 +526,16 @@ void HandleSetupMenu(int32_t& lastListPos)
                 i=0;
             if(i < 0)
                 i=terrain_bitmaps_count-4;
-            all_texture_bitmaps[7] = terrain_bitmaps[i];
-            all_texture_bitmaps[8] = terrain_bitmaps[i+1];
-            all_texture_bitmaps[9] = terrain_bitmaps[i+2];
-            all_texture_bitmaps[10] = terrain_bitmaps[i+3];
+            current_texture_bitmaps[7] = terrain_bitmaps[i];
+            current_texture_bitmaps[8] = terrain_bitmaps[i+1];
+            current_texture_bitmaps[9] = terrain_bitmaps[i+2];
+            current_texture_bitmaps[10] = terrain_bitmaps[i+3];
 
             // Get mipmap pointers.
-            for( uint32_t i=0; i<all_texture_bitmaps_count; i++)
+            for( uint32_t i=0; i<current_texture_bitmaps_count; i++)
             {
-                all_texture_bitmaps_mm1[i] =  all_texture_bitmaps[i] + (texW * tileH);
-                all_texture_bitmaps_mm2[i] =  all_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
+                current_texture_bitmaps_mm1[i] =  current_texture_bitmaps[i] + (texW * tileH);
+                current_texture_bitmaps_mm2[i] =  current_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
             }
         }
         else if(lastListPos==3) // texture mode
@@ -611,12 +612,8 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 {
     // Sanity check
 
-    //(-posX)>=scaledW
-    //int32_t t1 = -posX;
-    //int32_t t2 = scaledW;
-
-    if((-posX)>=(int32_t)scaledW || posX > screenW ||
-       posY < 0 || posY+scaledH > screenH    // y-clipping not implemented yet. Preventing overflow.
+    if((-posX)>=(int32_t)scaledW || posX >= screenW ||
+       posY >= screenH || posY < 0    // y-clipping  from top not implemented yet. Preventing overflow.
     )
         return;
 
@@ -630,6 +627,7 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
     uint32_t finalV = 0;
 
     // clip
+
     fix16_t fxClippedStartU = 0;
     fix16_t fxClippedStartV = 0;
     uint8_t clippedStartU = 0;
@@ -641,17 +639,21 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
     if(posX < 0) {
         fxClippedStartU = fxStepXInU * (-posX);
         clippedStartU = fix16_to_int( fxClippedStartU );
-        clippedScaledWidth = scaledW - clippedStartU;
+        clippedScaledWidth = scaledW + posX;
     }
     else
         scrptr += posX;  // Bitmap starting position on screen
 
     if(posX+scaledW > screenW) {
-        clippedScaledWidth =  screenW - posX;
+        clippedScaledWidth -=  posX + scaledW - screenW;
     }
 
-    // Draw
-    for( uint8_t y=posY; y<scaledH+posY ; y++ ) {
+     if(posY+scaledH > screenH) {
+        clippedScaledHeight -=  posY + scaledH - screenH;
+    }
+
+   // Draw
+    for( uint8_t y=posY; y<clippedScaledHeight+posY ; y++ ) {
 
         uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
         const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
@@ -663,20 +665,9 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 
             // Draw pixel.
             uint8_t color = *(bitmapScanlinePtr + finalU);
-
-            #if 1  // 8-bit screen buffer
             if(color)
                 *screenScanlinePtr = color;
             screenScanlinePtr++;
-            #else  // 4-bit screen buffer
-            if(x & 1) {
-                if(color)
-                    *screenScanlinePtr = (*screenScanlinePtr & 0xF0) | color;
-                screenScanlinePtr++;
-            }
-            else if(color)
-                *screenScanlinePtr = (color << 4) | (*screenScanlinePtr & 0x0F);
-            #endif
 
             fxU += fxStepXInU;
             finalU = fix16_to_int( fxU );
@@ -689,7 +680,7 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
    }  // end for
 }
 
-void DrawOtherCars(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
+void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
     const fix16_t fxCos = fix16_cos(-fxAngle);
     const fix16_t fxSin = fix16_sin(-fxAngle);
@@ -717,19 +708,32 @@ void DrawOtherCars(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
         fxX = fxRotatedX + fxRotCenterX;
         fxY = fxRotatedY + fxRotCenterY;
 
-        // Project 3D to 2D
+        // * Project 3D to 2D
+
+        // Get the object bitmap size
+        const uint8_t* bitmapData = ship_bitmaps[25];
+        uint32_t bitmapW = *(bitmapData - 2);
+        uint32_t bitmapH = *(bitmapData - 1);
+
+        // Bottom left cormer
         fix16_t fx3dX = fxX;
         fix16_t fx3dZ = fxY;
-        int32_t int3dY = -28.0;
-        int32_t perspectiveScaleFactor = 115.0;
-        fix16_t fxFactor = fix16_from_int(int3dY * perspectiveScaleFactor);
-        fix16_t  fxScreenX = fix16_mul(fx3dX, fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ ) );
-        fix16_t  fxScreenY = fix16_div( fxFactor, fx3dZ );
+        const int32_t int3dY = -28.0;
+        const int32_t perspectiveScaleFactor = 115.0;
+        const fix16_t fxFactor = fix16_from_int(int3dY * perspectiveScaleFactor);
+        fix16_t  fxScreenBlX = fix16_mul(fx3dX, fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ ) );
+        fix16_t  fxScreenBlY = fix16_div( fxFactor, fx3dZ );
+
+        // Top right corner
+        fx3dX = fxX + fix16_from_int( bitmapW );
+        fix16_t fxFactorTr = fix16_from_int((int3dY + bitmapH) * perspectiveScaleFactor);
+        fix16_t  fxScreenTrX = fix16_mul(fx3dX, fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ ) );
+        fix16_t  fxScreenTrY = fix16_div( fxFactorTr, fx3dZ );
 
         // Draw bitmap
         DrawScaledBitmap8bit(
-            fix16_to_int(fxScreenX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenY),
-            i == 0 ? otherCarBitmap2: otherCarBitmap,
-            4, 4, 4, 4 );
+            fix16_to_int(fxScreenBlX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenTrY),
+            bitmapData, bitmapW, bitmapH,
+            fix16_to_int(fxScreenTrX - fxScreenBlX), fix16_to_int(fxScreenTrY - fxScreenBlY));
      }
 }

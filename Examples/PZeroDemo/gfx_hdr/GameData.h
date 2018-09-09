@@ -37,6 +37,7 @@
 #include "image_ship_5_d.h"
 #include "image_ship_5_e.h"
 //#include "image_ship6.h"
+#include "image_pokitto.h"
 #include "image_ball1_a.h"
 #include "image_ball1_b.h"
 #include "image_ball1_c.h"
@@ -89,6 +90,10 @@
 #include "image_terrain_8_b.h"
 #include "image_terrain_8_c.h"
 #include "image_terrain_8_d.h"
+#include "image_start_a.h"
+#include "image_start_b.h"
+#include "image_start_c.h"
+#include "image_start_d.h"
 #include "image_road1.h"
 #include "image_road2.h"
 #include "image_sky.h"
@@ -277,6 +282,32 @@
         7, 8, 7, 8, 7, 8, 7, 8,
         9,10, 9,10, 9,10, 9,10,
      },
+
+    // block: 15
+    {
+        // 8x8 tile indexes.Left edge of the road
+         8, 1, 2,11,12,11,12,11,
+        10, 3, 4,13,14,13,14,13,
+         8, 1, 2,11,12,11,12,11,
+        10, 3, 4,13,14,13,14,13,
+         8, 1, 2,11,12,11,12,11,
+        10, 3, 4,13,14,13,14,13,
+         8, 1, 2,11,12,11,12,11,
+        10, 3, 4,13,14,13,14,13,
+     },
+
+    // block: 16
+    {
+        // 8x8 tile indexes. Right edge of the road
+       12,11,12,11,12, 1, 2, 8,
+       14,13,14,13,14, 3, 4,10,
+       12,11,12,11,12, 1, 2, 8,
+       14,13,14,13,14, 3, 4,10,
+       12,11,12,11,12, 1, 2, 8,
+       14,13,14,13,14, 3, 4,10,
+       12,11,12,11,12, 1, 2, 8,
+       14,13,14,13,14, 3, 4,10,
+    },
 };
 
 // Map of blocks. Defines the whole game field!
@@ -295,7 +326,7 @@ const uint8_t blockMap[mapWidth*mapHeight] = {
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
-    0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
+   15,16,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 9,10,
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 8,11, 1,
@@ -315,7 +346,7 @@ const uint8_t blockMap[mapWidth*mapHeight] = {
    14,14,14,14,14,14,14,14,14, 8, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,12,
 };
 
-const uint8_t ship_bitmaps_count = 5*5;
+const uint8_t ship_bitmaps_count = (5*5) + 1;
 const uint8_t* ship_bitmaps [ship_bitmaps_count] = {
     image_ship_1_a+2,
     image_ship_1_b+2,
@@ -343,6 +374,7 @@ const uint8_t* ship_bitmaps [ship_bitmaps_count] = {
     image_ship_5_d+2,
     image_ship_5_e+2,
     //image_ship6+2,
+    image_pokitto+2,
 };
 
 const uint8_t terrain_bitmaps_count = 2*4;
@@ -441,8 +473,8 @@ const uint8_t* edge_bitmaps [edge_bitmaps_count] = {
 //    image_ball5_d+2,
 };
 
-const uint8_t all_texture_bitmaps_count = 11;
-const uint8_t* all_texture_bitmaps[all_texture_bitmaps_count] = {
+const uint8_t current_texture_bitmaps_count = 15;
+const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
     image_terrain_1_a+2,
     image_ball1_a+2,
     image_ball1_b+2,
@@ -454,9 +486,13 @@ const uint8_t* all_texture_bitmaps[all_texture_bitmaps_count] = {
     image_terrain_6_b+2,
     image_terrain_6_c+2,
     image_terrain_6_d+2,
+    image_start_a+2,
+    image_start_b+2,
+    image_start_c+2,
+    image_start_d+2,
 };
 
-const uint8_t* all_texture_bitmaps_mm1[all_texture_bitmaps_count] = {0};
-const uint8_t* all_texture_bitmaps_mm2[all_texture_bitmaps_count] = {0};
+const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
+const uint8_t* current_texture_bitmaps_mm2[current_texture_bitmaps_count] = {0};
 
 
