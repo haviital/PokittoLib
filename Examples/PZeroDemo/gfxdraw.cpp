@@ -26,8 +26,7 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
         fix16_t fxFinalY =  fxZ + fix16_from_int(tile2PosY);
 
         // *** Step for scaling
-        //fxStepX = fxstepXFromY >> 7;  // divided by 128. The actual width is 110, so the scanline it is scaled up a bit horizontally
-        fxStepX = fix16_div(fxstepXFromY, fix16_from_int(screenW));
+        fxStepX = fxstepXFromY >> 7;
         fix16_t fxStepXInU = fix16_mul(fxStepX, fxCos);
         fix16_t fxStepXInV = fix16_mul(fxStepX, fxSin);
 

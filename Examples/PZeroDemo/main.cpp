@@ -122,13 +122,13 @@ int main () {
     // *** Calculate lookup tables.
 
     // z = (zs * h) / y
-    fix16_t fxPerspectiveFactor = fix16_from_int(45*screenH);
+    fix16_t fxPerspectiveFactor = fix16_from_int(90*screenH);
     for( int32_t y = 0; y<screenH; y++) {
 
         #if 1 // 3d
          // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
          // y = zk*yk /z -15
-         PerspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)y));
+         PerspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y)*2)));
          PerspectiveScaleX[y] = PerspectiveScaleY[y];
         #else // 2d
          PerspectiveScaleY[y] = fix16_from_float(y*2.0);
@@ -694,7 +694,7 @@ void DrawOtherCars(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
     const fix16_t fxCos = fix16_cos(-fxAngle);
     const fix16_t fxSin = fix16_sin(-fxAngle);
     const fix16_t fxRotCenterX = fix16_from_int(0);
-    const fix16_t fxRotCenterY = fix16_from_int(44);
+    const fix16_t fxRotCenterY = fix16_from_int(35);
     //const fix16_t fxRotCenterX = cars[0][0] - fxCamPosX;
     //const fix16_t fxRotCenterY = cars[0][1] - fxCamPosY;
 
@@ -720,11 +720,12 @@ void DrawOtherCars(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
         // Project 3D to 2D
         fix16_t fx3dX = fxX;
         fix16_t fx3dZ = fxY;
-        fix16_t fx3dY = fix16_from_float(-screenH);
-        fix16_t fxScaleFactor = fix16_from_float(45);
-        fix16_t  fxScreenX = fix16_mul(fx3dX, fix16_div( fxScaleFactor, fx3dZ ) );
-        fix16_t  fxScreenY = fix16_mul(fx3dY, fix16_div( fxScaleFactor, fx3dZ ) );
-        // s_y = 3d_y * factor/3d_z ==> 3d_z =  3d_y * factor/s_y
+        int32_t int3dY = -28.0;
+        int32_t perspectiveScaleFactor = 115.0;
+        fix16_t fxFactor = fix16_from_int(int3dY * perspectiveScaleFactor);
+        fix16_t  fxScreenX = fix16_mul(fx3dX, fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ ) );
+        fix16_t  fxScreenY = fix16_div( fxFactor, fx3dZ );
+
         // Draw bitmap
         DrawScaledBitmap8bit(
             fix16_to_int(fxScreenX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenY),
