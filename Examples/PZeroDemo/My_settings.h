@@ -21,7 +21,7 @@
 
 //#define FIXMATH_NO_64BIT
 //#define FIXMATH_NO_OVERFLOW
-#define FIXMATH_NO_ROUNDING // this increases th efps from 32 to 42. Not visible difference noticed, at least for now.
+//#define FIXMATH_NO_ROUNDING // this increases th efps from 32 to 42. Not visible difference noticed, at least for now.
 
 //#define PROJ_DEVELOPER_MODE 1
 #define PROJ_SHOW_FPS_COUNTER 1

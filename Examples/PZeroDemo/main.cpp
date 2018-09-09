@@ -12,6 +12,7 @@ void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
+void DrawOtherCars(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
@@ -29,6 +30,11 @@ bool isTurningLeft = false;
 bool isTurningRight = false;
 bool collided = false;
 
+// Camera pos
+fix16_t fxX = fix16_from_int(55);
+fix16_t fxY = fix16_from_int(490);
+
+
 // Ship velocity
 fix16_t fxRotVel = fxInitialRotVel;
 fix16_t fxVel = 0;
@@ -42,12 +48,31 @@ uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 //
 int32_t textureMode = 1;
 
+// Other cars in uv-plane
+const uint32_t carCount = 60;
+fix16_t cars[carCount][2];
+
+// 4x4 bitmap
+const uint8_t otherCarBitmap[] =
+{
+    0x02,0x02,0x02,0x02,
+    0x02,0x02,0x02,0x02,
+    0x02,0x02,0x02,0x02,
+    0x02,0x02,0x02,0x02,
+};
+// 4x4 bitmap
+const uint8_t otherCarBitmap2[] =
+{
+    0x03,0x03,0x03,0x03,
+    0x03,0x03,0x03,0x03,
+    0x03,0x03,0x03,0x03,
+    0x03,0x03,0x03,0x03,
+};
 // Main
 int main () {
 
     // Initialize variables.
     const fix16_t fxMaxSpeed = fix16_one*6;
-    fix16_t fxX = fix16_from_int(55), fxY = fix16_from_int(600);
     fix16_t fxVelOld = -1;
     fix16_t fxCos = fix16_one;
     fix16_t fxSin = 0;
@@ -67,6 +92,24 @@ int main () {
     mygame.setFrameRate(60);
     #endif // PROJ_SIM
 
+    // Setup cars
+    fix16_t fxCarOffsetX = fix16_from_int(15);
+    fix16_t fxCarOffsetY = fix16_from_int(500);
+    fix16_t fxCarStepY = fix16_from_int(20);
+    fix16_t fxRoadWidth = fix16_from_int(97);
+
+    for(uint32_t i = 0; i < carCount/2; i++)
+    {
+        // left side
+        cars[i][0] = fix16_from_int(0)+fxCarOffsetX; cars[i][1] = (fxCarStepY*i)+fxCarOffsetY;
+
+        if(i==0)
+            cars[i][0] = fix16_from_int(0)+fxCarOffsetX + fix16_from_int(20);
+
+        // right side
+        cars[i+(carCount/2)][0] = fxRoadWidth+fxCarOffsetX; cars[i+(carCount/2)][1] = (fxCarStepY*i)+fxCarOffsetY;
+    }
+
     // *** Setup sound
 
     int tonefreq=0;
@@ -85,7 +128,7 @@ int main () {
         #if 1 // 3d
          // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
          // y = zk*yk /z -15
-         PerspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+7)*2)));
+         PerspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y)*2)));
          PerspectiveScaleX[y] = PerspectiveScaleY[y];
         #else // 2d
          PerspectiveScaleY[y] = fix16_from_float(y*2.0);
@@ -116,6 +159,9 @@ int main () {
             // ** Draw the road and edges and terrain.
 
             DrawMode7(fix16_to_int(fxX), fix16_to_int(fxY), fxAngle);
+
+            // Draw other cars
+            DrawOtherCars(fxX, fxY, fxAngle);
 
             #if 0 // do not scale or rotate
             // *** Draw ship in 3d
@@ -261,8 +307,8 @@ int main () {
                 fxCos = fix16_cos(-fxAngle);
                 fxSin = fix16_sin(-fxAngle);
 
-                fxY = fxY + fix16_mul(fxVel, fxCos);
-                fxX = fxX + fix16_mul(fxVel, fxSin);
+                //fxY = fxY + fix16_mul(fxVel, fxCos);
+                //fxX = fxX + fix16_mul(fxVel, fxSin);
                 fxVelOld = fxVel;
             }
         }
@@ -296,6 +342,7 @@ void HandleGameKeys()
 //    else
     {
 
+#if 0
         // Playing
 
         // Turn left
@@ -347,6 +394,27 @@ void HandleGameKeys()
             fxVel = fxVel - (fix16_one>>5);
         if(fxVel < 0)
             fxVel = 0;
+    }
+#else
+        if(mygame.buttons.leftBtn()) {
+            fxX += fix16_one;
+        }
+        else if(mygame.buttons.rightBtn()) {
+            fxX -= fix16_one;
+        }
+        else if(mygame.buttons.upBtn()) {
+            fxY += fix16_one;
+        }
+        else if(mygame.buttons.downBtn()) {
+            fxY -= fix16_one;
+        }
+        else if(mygame.buttons.aBtn()) {
+            fxAngle += fxRotVel;
+        }
+        else if(mygame.buttons.bBtn()) {
+            fxAngle -= fxRotVel;
+        }
+#endif
     }
 }
 
@@ -619,4 +687,48 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
         finalV = fix16_to_int( fxV );
 
    }  // end for
+}
+
+void DrawOtherCars(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
+{
+    const fix16_t fxCos = fix16_cos(-fxAngle);
+    const fix16_t fxSin = fix16_sin(-fxAngle);
+    const fix16_t fxRotCenterX = fix16_from_int(0);
+    const fix16_t fxRotCenterY = fix16_from_int(44);
+    //const fix16_t fxRotCenterX = cars[0][0] - fxCamPosX;
+    //const fix16_t fxRotCenterY = cars[0][1] - fxCamPosY;
+
+    const fix16_t fxHorizonY = 0;
+
+    for( uint32_t i = 0; i < carCount; i++)
+    {
+        fix16_t fxX = cars[i][0];
+        fix16_t fxY = cars[i][1];
+
+        // Translate
+        fxX -= fxCamPosX;
+        fxY -= fxCamPosY;
+
+        // Rotate
+        fxX -= fxRotCenterX;
+        fxY -= fxRotCenterY;
+        fix16_t fxRotatedX = fix16_mul(fxX, fxCos) - fix16_mul(fxY, fxSin);
+        fix16_t fxRotatedY = fix16_mul(fxX, fxSin) + fix16_mul(fxY, fxCos);
+        fxX = fxRotatedX + fxRotCenterX;
+        fxY = fxRotatedY + fxRotCenterY;
+
+        // Project 3D to 2D
+        fix16_t fx3dX = fxX;
+        fix16_t fx3dZ = fxY;
+        fix16_t fx3dY = fix16_from_float(-32.0);
+        fix16_t fxScaleFactor = fix16_from_float(115.0);
+        fix16_t  fxScreenX = fix16_mul(fx3dX, fix16_div( fxScaleFactor, fx3dZ ) );
+        fix16_t  fxScreenY = fix16_mul(fx3dY, fix16_div( fxScaleFactor, fx3dZ ) );
+
+        // Draw bitmap
+        DrawScaledBitmap8bit(
+            fix16_to_int(fxScreenX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenY),
+            i == 0 ? otherCarBitmap2: otherCarBitmap,
+            4, 4, 4, 4 );
+     }
 }
