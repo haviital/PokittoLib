@@ -720,20 +720,33 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
         fix16_t fx3dZ = fxY;
         const int32_t int3dY = -28.0;
         const int32_t perspectiveScaleFactor = 115.0;
-        const fix16_t fxFactor = fix16_from_int(int3dY * perspectiveScaleFactor);
-        fix16_t  fxScreenBlX = fix16_mul(fx3dX, fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ ) );
-        fix16_t  fxScreenBlY = fix16_div( fxFactor, fx3dZ );
+        const fix16_t fxFactorY = fix16_from_int(int3dY * perspectiveScaleFactor);
+        const fix16_t fxFactorX = fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ );
+
+        fix16_t fxTest10 = fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ );
+        fix16_t fxTest102 = fix16_mul(fx3dX, fxTest10);
+
+        fix16_t  fxScreenBlX = fix16_mul(fx3dX, fxFactorX );
+        fix16_t  fxScreenBlY = fix16_div( fxFactorY, fx3dZ );
 
         // Top right corner
         fx3dX = fxX + fix16_from_int( bitmapW );
         fix16_t fxFactorTr = fix16_from_int((int3dY + bitmapH) * perspectiveScaleFactor);
-        fix16_t  fxScreenTrX = fix16_mul(fx3dX, fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ ) );
+        fix16_t  fxScreenTrX = fix16_mul(fx3dX, fxFactorX );
         fix16_t  fxScreenTrY = fix16_div( fxFactorTr, fx3dZ );
 
         // Draw bitmap
         DrawScaledBitmap8bit(
             fix16_to_int(fxScreenBlX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenTrY),
             bitmapData, bitmapW, bitmapH,
-            fix16_to_int(fxScreenTrX - fxScreenBlX), fix16_to_int(fxScreenTrY - fxScreenBlY));
+            fix16_to_int(fxScreenBlX - fxScreenTrX), fix16_to_int( fxScreenBlY - fxScreenTrY));
+
+        if(snd.trackIsPlaying[0]) //!!HV
+        {
+            fix16_t fxTest = fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ );
+            fix16_t fxTest2 = fix16_mul(fxX, fxTest);
+            fxAngle = 0;
+        }
+
      }
 }
