@@ -50,7 +50,7 @@ uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 int32_t textureMode = 1;
 
 // Other cars in uv-plane
-const uint32_t carCount = 60;
+const uint32_t carCount = 32;
 fix16_t cars[carCount][2];
 
 // 4x4 bitmap
@@ -96,7 +96,7 @@ int main () {
     // Setup cars
     fix16_t fxCarOffsetX = fix16_from_int(15);
     fix16_t fxCarOffsetY = fix16_from_int(500);
-    fix16_t fxCarStepY = fix16_from_int(20);
+    fix16_t fxCarStepY = fix16_from_int(40);
     fix16_t fxRoadWidth = fix16_from_int(97);
 
     for(uint32_t i = 0; i < carCount/2; i++)
@@ -738,18 +738,25 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
         //    bitmapData, bitmapW, bitmapH,
         //    fix16_to_int( fxScreenBlX - fxScreenTrX ), fix16_to_int(fxScreenBlY - fxScreenTrY));
 
-        int32_t scaledWidth = fix16_to_int(fxScreenTrX - fxScreenBlX);
-        int32_t scaledHeight = fix16_to_int(fxScreenTrY - fxScreenBlY);
+        int32_t scaledWidth = fix16_to_int((fxScreenTrX - fxScreenBlX)>>1);
+        int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY)>>1);
+//        DrawScaledBitmap8bit(
+//            fix16_to_int(fxScreenBlX) - (scaledWidth>>1)  + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
+//            bitmapData,
+//            bitmapW, bitmapH, scaledWidth, scaledHeight );
         DrawScaledBitmap8bit(
-            fix16_to_int(fxScreenBlX) + (scaledWidth>>1)  + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
+            fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY) - scaledHeight,
             bitmapData,
             bitmapW, bitmapH, scaledWidth, scaledHeight );
 
-        // Draw bitmap
-        //DrawScaledBitmap8bit(
-        //    fix16_to_int(fxScreenBlX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
-        //    i == 0 ? otherCarBitmap2: otherCarBitmap,
-        //    4, 4, 4, 4 );
+//        DrawScaledBitmap8bit(
+//            fix16_to_int(fxScreenBlX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
+//            otherCarBitmap,
+//            4, 4, 4, 4 );
+//        DrawScaledBitmap8bit(
+//            fix16_to_int(fxScreenTrX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
+//            otherCarBitmap2,
+//            4, 4, 4, 4 );
 
      }
 }
