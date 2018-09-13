@@ -5,7 +5,6 @@
 //
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 {
-    const uint16_t sceneryH = 0;
     uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH*mygame.display.width); // 8-bit screen buffer
     fix16_t fxStepX = fix16_one;
     const fix16_t fxCos = fix16_cos(fxAngle);

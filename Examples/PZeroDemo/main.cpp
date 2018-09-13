@@ -35,7 +35,6 @@ bool collided = false;
 fix16_t fxX = fix16_from_int(42);
 fix16_t fxY = fix16_from_int(490);
 
-
 // Ship velocity
 fix16_t fxRotVel = fxInitialRotVel;
 fix16_t fxVel = 0;
@@ -94,10 +93,10 @@ int main () {
     #endif // PROJ_SIM
 
     // Setup cars
-    fix16_t fxCarOffsetX = fix16_from_int(15);
+    fix16_t fxCarOffsetX = fix16_from_int(0);
     fix16_t fxCarOffsetY = fix16_from_int(500);
     fix16_t fxCarStepY = fix16_from_int(40);
-    fix16_t fxRoadWidth = fix16_from_int(97);
+    fix16_t fxRoadWidth = fix16_from_int(97+30);
 
     for(uint32_t i = 0; i < carCount/2; i++)
     {
@@ -129,7 +128,7 @@ int main () {
         #if 1 // 3d
          // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
          // y = zk*yk /z -15
-         PerspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y)*2)));
+         PerspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*2)));
          PerspectiveScaleX[y] = PerspectiveScaleY[y];
         #else // 2d
          PerspectiveScaleY[y] = fix16_from_float(y*2.0);
@@ -164,50 +163,8 @@ int main () {
             // Draw 3d objects
             Draw3dObects(fxX, fxY, fxAngle);
 
-            #if 0 // do not scale or rotate
-            // *** Draw ship in 3d
 
-            // Rotate ship position vector to the front of view frustum. Rotate on xz-plane.
-            fix16_t fxRotCenterX = fix16_from_int(0);
-            fix16_t fxRotCenterY = fix16_from_int(-100);
-
-            fix16_t fxTransShipX = fxShipX - fxRotCenterX;
-            fix16_t fxTransShipY = fxShipY - fxRotCenterY;
-
-            // Rotate
-            fix16_t fxRotShipX = fix16_mul(fxTransShipX, fxCos) - fix16_mul(fxTransShipY, fxSin);
-            fix16_t fxRotShipY = fix16_mul(fxTransShipX, fxSin) + fix16_mul(fxTransShipY, fxCos);
-
-            fxRotShipX += fxRotCenterX;
-            fxRotShipY += fxRotCenterY;
-
-            #if 1 // 3D
-            // Perspective scaling
-
-            // y = zk*yk /z -15
-            const fix16_t fxYOffset = fix16_from_int(0);
-            fix16_t fxScaledY = fix16_div(fxPerspectiveFactor, fxRotShipY) -  fxYOffset;
-
-            // Get new x
-            fix16_t fxShipSizeFactor = fix16_div(fxScaledY, fxRotShipY);
-            fix16_t fxScaledX = fix16_mul(fxRotShipX, fxShipSizeFactor);
-            const fix16_t fxTopOfScreenY = fix16_from_int(30);
-            fix16_t fxShipOnScreenY = fxScaledY - fxTopOfScreenY;
-            #else // 2D
-            fix16_t fxShipSizeFactor = fix16_from_float(0.5);
-            fix16_t fxScaledX = fix16_mul(fxRotShipX, fxShipSizeFactor);
-            fix16_t fxScaledY = fix16_mul(fxRotShipY, fxShipSizeFactor);
-            fix16_t fxShipOnScreenY = fix16_from_int(0) - fxScaledY;
-            #endif
-            DrawScaledBitmap8bit( fix16_to_int(fxScaledX) + (screenW>>1),
-                                  fix16_to_int(fxShipOnScreenY) + (screenH>>1),
-                                  shipBitmap,
-                                  shipBitmapW, shipBitmapH,
-                                  fix16_to_int( shipBitmapW * fxShipSizeFactor),
-                                  fix16_to_int( shipBitmapH * fxShipSizeFactor));
-            #endif
-
-             // ** Draw the ship shadow
+            // ** Draw the ship shadow
 
             uint16_t shadowW = image_shadow[0];
             uint16_t shadowH = image_shadow[1];
@@ -308,8 +265,8 @@ int main () {
                 fxCos = fix16_cos(-fxAngle);
                 fxSin = fix16_sin(-fxAngle);
 
-                //fxY = fxY + fix16_mul(fxVel, fxCos);
-                //fxX = fxX + fix16_mul(fxVel, fxSin);
+                fxY = fxY + fix16_mul(fxVel, fxCos);
+                fxX = fxX + fix16_mul(fxVel, fxSin);
                 fxVelOld = fxVel;
             }
         }
@@ -343,7 +300,7 @@ void HandleGameKeys()
 //    else
     {
 
-#if 0
+#if 1
         // Playing
 
         // Turn left
@@ -415,8 +372,8 @@ void HandleGameKeys()
         else if(mygame.buttons.bBtn()) {
             fxAngle -= fxRotVel;
         }
-#endif
     }
+#endif
 }
 
 // Draw the setup menu and handle keys.
@@ -691,7 +648,7 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
     //const fix16_t fxRotCenterX = cars[0][0] - fxCamPosX;
     //const fix16_t fxRotCenterY = cars[0][1] - fxCamPosY;
 
-    const fix16_t fxHorizonY = 0;
+    const int32_t horizonY = 0 + sceneryH;
 
     for( int32_t i = carCount-1; i >= 0; i--)
     {
@@ -738,14 +695,14 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
         //    bitmapData, bitmapW, bitmapH,
         //    fix16_to_int( fxScreenBlX - fxScreenTrX ), fix16_to_int(fxScreenBlY - fxScreenTrY));
 
-        int32_t scaledWidth = fix16_to_int((fxScreenTrX - fxScreenBlX)>>1);
-        int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY)>>1);
+        int32_t scaledWidth = fix16_to_int((fxScreenTrX - fxScreenBlX));
+        int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY));
 //        DrawScaledBitmap8bit(
 //            fix16_to_int(fxScreenBlX) - (scaledWidth>>1)  + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
 //            bitmapData,
 //            bitmapW, bitmapH, scaledWidth, scaledHeight );
         DrawScaledBitmap8bit(
-            fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY) - scaledHeight,
+            fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
             bitmapData,
             bitmapW, bitmapH, scaledWidth, scaledHeight );
 

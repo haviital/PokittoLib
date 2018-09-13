@@ -13,6 +13,9 @@ const uint8_t texH = 12;
 const uint8_t tileW = 8;
 const uint8_t tileH = 8;
 
+const uint16_t sceneryH = 16;
+const uint16_t screenShiftY = 5;
+
 // extern
 extern Pokitto::Core mygame;
 extern Pokitto::Sound snd;

@@ -37,7 +37,8 @@
 #include "image_ship_5_d.h"
 #include "image_ship_5_e.h"
 //#include "image_ship6.h"
-#include "image_pokitto.h"
+//#include "image_pokitto.h"
+#include "image_cactus.h"
 #include "image_ball1_a.h"
 #include "image_ball1_b.h"
 #include "image_ball1_c.h"
@@ -374,7 +375,8 @@ const uint8_t* ship_bitmaps [ship_bitmaps_count] = {
     image_ship_5_d+2,
     image_ship_5_e+2,
     //image_ship6+2,
-    image_pokitto+2,
+    //image_pokitto+2,
+    image_cactus+2,
 };
 
 const uint8_t terrain_bitmaps_count = 2*4;
