@@ -642,10 +642,17 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 //            fix16_to_int(fxScreenBlX) - (scaledWidth>>1)  + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
 //            bitmapData,
 //            bitmapW, bitmapH, scaledWidth, scaledHeight );
+
+        //DrawScaledBitmap8bit(
+        //    fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
+        //    bitmapData,
+        //    bitmapW, bitmapH, scaledWidth, scaledHeight );
+
         DrawScaledBitmap8bit(
             fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
             bitmapData,
-            bitmapW, bitmapH, scaledWidth, scaledHeight );
+            bitmapW, bitmapH, bitmapW, bitmapH );
+
 
 //        DrawScaledBitmap8bit(
 //            fix16_to_int(fxScreenBlX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),

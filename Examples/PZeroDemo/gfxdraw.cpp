@@ -204,31 +204,34 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
             uint32_t x = 0;
             uint8_t color = 0;
 
-            // Draw 8 pixels, unrolled.
-            color = *(bitmapScanlinePtr + xIndices[x++]);
-            if(color) *screenScanlinePtr = color;
-            screenScanlinePtr++;
-            color = *(bitmapScanlinePtr + xIndices[x++]);
-            if(color) *screenScanlinePtr = color;
-            screenScanlinePtr++;
-            color = *(bitmapScanlinePtr + xIndices[x++]);
-            if(color) *screenScanlinePtr = color;
-            screenScanlinePtr++;
-            color = *(bitmapScanlinePtr + xIndices[x++]);
-            if(color) *screenScanlinePtr = color;
-            screenScanlinePtr++;
-            color = *(bitmapScanlinePtr + xIndices[x++]);
-            if(color) *screenScanlinePtr = color;
-            screenScanlinePtr++;
-            color = *(bitmapScanlinePtr + xIndices[x++]);
-            if(color) *screenScanlinePtr = color;
-            screenScanlinePtr++;
-            color = *(bitmapScanlinePtr + xIndices[x++]);
-            if(color) *screenScanlinePtr = color;
-            screenScanlinePtr++;
-            color = *(bitmapScanlinePtr + xIndices[x++]);
-            if(color) *screenScanlinePtr = color;
-            screenScanlinePtr++;
+            while(clippedScaledWidth - x >= 8)
+            {
+                // Draw 8 pixels, unrolled.
+                color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+            }
 
             // Draw the rest of the pixels.
             for( ; x<clippedScaledWidth;) {
