@@ -154,7 +154,6 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
         clippedScaledHeight -=  posY + scaledH - screenH;
     }
 
-
     // Precompute x indices
     uint8_t xIndices [256];
     fix16_t fxU = fxClippedStartU;
@@ -165,30 +164,86 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
         finalU = fix16_to_int( fxU ); // is rounding applied?
     }
 
-   // Draw
-    for( uint8_t y=posY; y<clippedScaledHeight+posY ; y++ ) {
+    if(clippedScaledWidth < 8)
+    {
+       // Draw
+        for( uint32_t y=posY; y<clippedScaledHeight+posY ; y++ ) {
 
-        uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width + clippedScaledWidth);
-        const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
-        fxU = fxClippedStartU;
-        uint32_t finalU = clippedStartU;
+            uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+            const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
+            fxU = fxClippedStartU;
+            uint32_t finalU = clippedStartU;
 
-        // *** Draw one pixel row.
-        uint32_t x=clippedScaledWidth;
-        do
-        {
-            // Draw pixel.
-            x--;
-            uint8_t color = *(bitmapScanlinePtr + xIndices[x]);
-            if(color)
-                *screenScanlinePtr = color;
-            screenScanlinePtr--;
+            // *** Draw one pixel row.
+            for( uint32_t x=0; x<clippedScaledWidth; x++) {
 
-        }  while(x!=0);
+                // Draw pixel.
+                uint8_t color = *(bitmapScanlinePtr + xIndices[x]);
+                if(color)
+                    *screenScanlinePtr = color;
+                screenScanlinePtr++;
 
-        fxV += fxStepXInV;
-        finalV = fix16_to_int( fxV );
+            }  // end for
 
-   }  // end for
+            fxV += fxStepXInV;
+            finalV = fix16_to_int( fxV );
+
+       }  // end for
+    }
+    else // bitmapW >= 8 pixels
+    {
+       // Draw
+        for( uint32_t y=posY; y<clippedScaledHeight+posY ; y++ ) {
+
+            uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+            const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
+            fxU = fxClippedStartU;
+            uint32_t finalU = clippedStartU;
+
+            // *** Draw one pixel row.
+            uint32_t x = 0;
+            uint8_t color = 0;
+
+            // Draw 8 pixels, unrolled.
+            color = *(bitmapScanlinePtr + xIndices[x++]);
+            if(color) *screenScanlinePtr = color;
+            screenScanlinePtr++;
+            color = *(bitmapScanlinePtr + xIndices[x++]);
+            if(color) *screenScanlinePtr = color;
+            screenScanlinePtr++;
+            color = *(bitmapScanlinePtr + xIndices[x++]);
+            if(color) *screenScanlinePtr = color;
+            screenScanlinePtr++;
+            color = *(bitmapScanlinePtr + xIndices[x++]);
+            if(color) *screenScanlinePtr = color;
+            screenScanlinePtr++;
+            color = *(bitmapScanlinePtr + xIndices[x++]);
+            if(color) *screenScanlinePtr = color;
+            screenScanlinePtr++;
+            color = *(bitmapScanlinePtr + xIndices[x++]);
+            if(color) *screenScanlinePtr = color;
+            screenScanlinePtr++;
+            color = *(bitmapScanlinePtr + xIndices[x++]);
+            if(color) *screenScanlinePtr = color;
+            screenScanlinePtr++;
+            color = *(bitmapScanlinePtr + xIndices[x++]);
+            if(color) *screenScanlinePtr = color;
+            screenScanlinePtr++;
+
+            // Draw the rest of the pixels.
+            for( ; x<clippedScaledWidth;) {
+
+                // Draw pixel.
+                uint8_t color = *(bitmapScanlinePtr + xIndices[x++]);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+
+            }  // end for
+
+            fxV += fxStepXInV;
+            finalV = fix16_to_int( fxV );
+
+       }  // end for
+    }
 }
 
