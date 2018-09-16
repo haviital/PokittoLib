@@ -160,7 +160,7 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
     fix16_t fxU = fxClippedStartU;
     uint32_t finalU = clippedStartU;
     for( uint8_t x=0; x<clippedScaledWidth; x++) {
-        xIndices[clippedScaledWidth - 1 - x] = finalU;
+        xIndices[x] = finalU;
         fxU += fxStepXInU;
         finalU = fix16_to_int( fxU ); // is rounding applied?
     }
@@ -168,21 +168,23 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
    // Draw
     for( uint8_t y=posY; y<clippedScaledHeight+posY ; y++ ) {
 
-        uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+        uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width + clippedScaledWidth);
         const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
         fxU = fxClippedStartU;
         uint32_t finalU = clippedStartU;
 
         // *** Draw one pixel row.
-        for( uint8_t x=clippedScaledWidth-1; x>=0; x--) {
-
+        uint32_t x=clippedScaledWidth;
+        do
+        {
             // Draw pixel.
+            x--;
             uint8_t color = *(bitmapScanlinePtr + xIndices[x]);
             if(color)
                 *screenScanlinePtr = color;
-            screenScanlinePtr++;
+            screenScanlinePtr--;
 
-        }  // end for
+        }  while(x!=0);
 
         fxV += fxStepXInV;
         finalV = fix16_to_int( fxV );
