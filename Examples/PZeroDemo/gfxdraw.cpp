@@ -105,3 +105,88 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 
     }  // end for
 }
+
+// Draw ans scale the foreground tiles, i.e. text as a tile map.
+// TODO: top-y-clipping
+void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH )
+{
+    // Sanity check
+
+    if((-posX)>=(int32_t)scaledW || posX >= screenW ||
+       scaledW <= 0 ||  scaledW > 256 ||
+       scaledH <= 0 ||  scaledH > 256 ||
+       posY >= screenH || posY < 0    // y-clipping  from top not implemented yet. Preventing overflow.
+    )
+        return;
+
+    uint8_t* scrptr = mygame.display.getBuffer(); // 8-bit screen buffer
+
+    // Screen coordinates, x,y. Bitmap coordinates: u, v
+
+    fix16_t fxStepXInU = fix16_div(fix16_from_int(bitmapW), fix16_from_int(scaledW));
+    fix16_t fxStepXInV = fix16_div(fix16_from_int(bitmapH), fix16_from_int(scaledH));
+    fix16_t fxV = 0;
+    uint32_t finalV = 0;
+
+    // clip
+
+    fix16_t fxClippedStartU = 0;
+    fix16_t fxClippedStartV = 0;
+    uint8_t clippedStartU = 0;
+    uint8_t clippedStartV = 0;
+    uint8_t clippedScaledWidth = scaledW;
+    uint8_t clippedScaledHeight = scaledH;
+    //uint8_t startBitmapX = posX;
+    //uint8_t endBitmapX = posX+scaledW;
+    if(posX < 0) {
+        fxClippedStartU = fxStepXInU * (-posX);
+        clippedStartU = fix16_to_int( fxClippedStartU );
+        clippedScaledWidth = scaledW + posX;
+    }
+    else
+        scrptr += posX;  // Bitmap starting position on screen
+
+    if(posX+scaledW > screenW) {
+        clippedScaledWidth -=  posX + scaledW - screenW;
+    }
+
+     if(posY+scaledH > screenH) {
+        clippedScaledHeight -=  posY + scaledH - screenH;
+    }
+
+
+    // Precompute x indices
+    uint8_t xIndices [256];
+    fix16_t fxU = fxClippedStartU;
+    uint32_t finalU = clippedStartU;
+    for( uint8_t x=0; x<clippedScaledWidth; x++) {
+        xIndices[clippedScaledWidth - 1 - x] = finalU;
+        fxU += fxStepXInU;
+        finalU = fix16_to_int( fxU ); // is rounding applied?
+    }
+
+   // Draw
+    for( uint8_t y=posY; y<clippedScaledHeight+posY ; y++ ) {
+
+        uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+        const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
+        fxU = fxClippedStartU;
+        uint32_t finalU = clippedStartU;
+
+        // *** Draw one pixel row.
+        for( uint8_t x=clippedScaledWidth-1; x>=0; x--) {
+
+            // Draw pixel.
+            uint8_t color = *(bitmapScanlinePtr + xIndices[x]);
+            if(color)
+                *screenScanlinePtr = color;
+            screenScanlinePtr++;
+
+        }  // end for
+
+        fxV += fxStepXInV;
+        finalV = fix16_to_int( fxV );
+
+   }  // end for
+}
+

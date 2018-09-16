@@ -4,15 +4,154 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
 <body>
 <tt>
-Build started on: <u>14-09-2018 at 00:05.58</u><br />
-Build ended on: <u>14-09-2018 at 00:06.10</u><p />
+Build started on: <u>16-09-2018 at 19:36.07</u><br />
+Build ended on: <u>16-09-2018 at 19:36.22</u><p />
 <b>-------------- Build: PZeroDemo in PokittoEmBitz ---------------</b><br />
-Target is up to date (PZeroDemo).<br />
+arm-none-eabi-g++.exe -mcpu=cortex-m0plus  -mthumb    -O3 -fno-exceptions -fno-rtti -std=gnu++11 -Wextra -Wall -fomit-frame-pointer -fdata-sections -ffunction-sections -g -save-temps=obj -funsigned-char -mtune=cortex-m0plus -Wno-unused-parameter -Wno-missing-field-initializers -fmessage-length=0 -fno-builtin -fno-delete-null-pointer-checks -DMBED_RTOS_SINGLE_THREAD -Wvla -include mbed_config.h  -DTARGET_LPC11U68 -D__MBED__=1 -DDEVICE_I2CSLAVE=1 -DTARGET_LIKE_MBED -DTARGET_NXP -D__MBED_CMSIS_RTOS_CM -DDEVICE_RTC=1 -DTOOLCHAIN_object -D__CMSIS_RTOS -DTOOLCHAIN_GCC -DTARGET_CORTEX_M -DTARGET_M0P -DTARGET_UVISOR_UNSUPPORTED -DDEVICE_SERIAL=1 -DDEVICE_INTERRUPTIN=1 -DTARGET_LPCTarget -DTARGET_CORTEX -DDEVICE_I2C=1 -D__CORTEX_M0PLUS -DTARGET_FF_ARDUINO -DTARGET_RELEASE -DMBED_BUILD_TIMESTAMP=1507563655.72 -DARM_MATH_CM0PLUS -DTARGET_LPC11U6X -DDEVICE_SLEEP=1 -DTOOLCHAIN_GCC_ARM -DDEVICE_SPI=1 -DDEVICE_ANALOGIN=1 -DDEVICE_PWMOUT=1 -DTARGET_LIKE_CORTEX_M0  -c Examples\PZeroDemo\gfxdraw.cpp -o .objs\examples\pzerodemo\gfxdraw.o -MMD -I. -IPokitto -IPokitto\POKITTO_CORE -IPokitto\POKITTO_CORE\FONTS -IPokitto\POKITTO_CORE\PALETTES -IPokitto\POKITTO_HW -IPokitto\POKITTO_LIBS -IPokitto\POKITTO_LIBS\Synth -IPokitto\libpff -IPokitto\mbed-pokitto -IPokitto\mbed-pokitto\api -IPokitto\mbed-pokitto\common -IPokitto\mbed-pokitto\hal -IPokitto\mbed-pokitto\targets -IPokitto\mbed-pokitto\targets\cmsis -IPokitto\mbed-pokitto\targets\cmsis\TARGET_NXP -IPokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X -IPokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X\TOOLCHAIN_GCC_ARM -IPokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X\TOOLCHAIN_GCC_ARM\TARGET_LPC11U68 -IPokitto\mbed-pokitto\targets\cmsis\TOOLCHAIN_GCC -IPokitto\mbed-pokitto\targets\hal -IPokitto\mbed-pokitto\targets\hal\TARGET_NXP -IPokitto\mbed-pokitto\targets\hal\TARGET_NXP\TARGET_LPC11U6X -IExamples\PZeroDemo -IPokitto\POKITTO_LIBS\FixMath -I.\Examples\PZeroDemo\gfx_hdr -I.\Examples\PZeroDemo -I.\Pokitto\libpff -I.\Pokitto\mbed-pokitto\api -I.\Pokitto\mbed-pokitto\hal -I.\Pokitto\mbed-pokitto\targets\cmsis -I.\Pokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X -I.\Pokitto\mbed-pokitto\targets\hal\TARGET_NXP\TARGET_LPC11U6X -I.\Pokitto -I.\Pokitto\POKITTO_CORE -I.\Pokitto\POKITTO_HW -I.\Pokitto\POKITTO_LIBS\FixMath -I.\Pokitto\POKITTO_LIBS\Synth -I"C:\Program Files (x86)\EmBitz\1.11\share\em_armgcc\bin\..\arm-none-eabi\include" -I"C:\Program Files (x86)\EmBitz\1.11\share\em_armgcc\bin\..\arm-none-eabi" -I"C:\Program Files (x86)\EmBitz\1.11\share\em_armgcc\bin\..\lib\cmsis\include"<br />
+In file included from Pokitto/Pokitto.h:40:0,<br />
+                 from Examples\PZeroDemo\gfxdraw.cpp:1:<br />
+<font color="#0000ff">Pokitto/Pokitto_settings.h:410:0: warning: "POK_FPS" redefined</font><br />
+ #define POK_FPS PROJ_FPS<br />
+ ^<br />
+<font color="#818181"><i>Pokitto/Pokitto_settings.h:292:0: note: this is the location of the previous definition</i></font><br />
+     #define POK_FPS 30<br />
+ ^<br />
+In file included from Pokitto/Pokitto.h:50:0,<br />
+                 from Examples\PZeroDemo\gfxdraw.cpp:1:<br />
+<font color="#0000ff">Pokitto\POKITTO_HW/PokittoEEPROM.h:42:30: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+     operator const uint8_t() const       { return **this; }<br />
+                              ^<br />
+In file included from Pokitto/Pokitto.h:50:0,<br />
+                 from Examples\PZeroDemo\gfxdraw.cpp:1:<br />
+<font color="#0000ff">Pokitto\POKITTO_HW/PokittoEEPROM.h:91:26: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+     operator const int() const          { return index; }<br />
+                          ^<br />
+In file included from Pokitto\POKITTO_LIBS\FixMath/fix16.h:169:0,<br />
+                 from Examples\PZeroDemo\gfxdraw.cpp:2:<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:98:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator==(const Fix16 &other)  const { return (value == other.value);             }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:99:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator==(const fix16_t other) const { return (value == other);                   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:100:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator==(const double other)  const { return (value == fix16_from_dbl(other));   }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:101:43: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator==(const float other)   const { return (value == fix16_from_float(other)); }<br />
+                                           ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:102:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator==(const int16_t other) const { return (value == fix16_from_int(other));   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:104:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator!=(const Fix16 &other)  const { return (value != other.value);             }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:105:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator!=(const fix16_t other) const { return (value != other);                   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:106:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator!=(const double other)  const { return (value != fix16_from_dbl(other));   }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:107:43: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator!=(const float other)   const { return (value != fix16_from_float(other)); }<br />
+                                           ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:108:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator!=(const int16_t other) const { return (value != fix16_from_int(other));   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:110:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator<=(const Fix16 &other)  const { return (value <= other.value);             }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:111:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator<=(const fix16_t other) const { return (value <= other);                   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:112:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator<=(const double other)  const { return (value <= fix16_from_dbl(other));   }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:113:43: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator<=(const float other)   const { return (value <= fix16_from_float(other)); }<br />
+                                           ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:114:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator<=(const int16_t other) const { return (value <= fix16_from_int(other));   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:116:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator>=(const Fix16 &other)  const { return (value >= other.value);             }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:117:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator>=(const fix16_t other) const { return (value >= other);                   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:118:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator>=(const double other)  const { return (value >= fix16_from_dbl(other));   }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:119:43: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator>=(const float other)   const { return (value >= fix16_from_float(other)); }<br />
+                                           ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:120:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator>=(const int16_t other) const { return (value >= fix16_from_int(other));   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:122:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator< (const Fix16 &other)  const { return (value <  other.value);             }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:123:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator< (const fix16_t other) const { return (value <  other);                   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:124:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator< (const double other)  const { return (value <  fix16_from_dbl(other));   }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:125:43: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator< (const float other)   const { return (value <  fix16_from_float(other)); }<br />
+                                           ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:126:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator< (const int16_t other) const { return (value <  fix16_from_int(other));   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:128:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator> (const Fix16 &other)  const { return (value >  other.value);             }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:129:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator> (const fix16_t other) const { return (value >  other);                   }<br />
+                                             ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:130:44: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator> (const double other)  const { return (value >  fix16_from_dbl(other));   }<br />
+                                            ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:131:43: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator> (const float other)   const { return (value >  fix16_from_float(other)); }<br />
+                                           ^<br />
+<font color="#0000ff">Pokitto\POKITTO_LIBS\FixMath/fix16.hpp:132:45: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
+   const int operator> (const int16_t other) const { return (value >  fix16_from_int(other));   }<br />
+                                             ^<br />
+Examples\PZeroDemo\gfxdraw.cpp: In function 'void DrawScaledBitmap8bit(int32_t, int32_t, const uint8_t*, uint32_t, uint32_t, uint32_t, uint32_t)':<br />
+<font color="#0000ff">Examples\PZeroDemo\gfxdraw.cpp:177:47: warning: comparison is always true due to limited range of data type [-Wtype-limits]</font><br />
+         for( uint8_t x=clippedScaledWidth-1; x>=0; x--) {<br />
+                                               ^<br />
+<font color="#0000ff">Examples\PZeroDemo\gfxdraw.cpp:174:18: warning: unused variable 'finalU' [-Wunused-variable]</font><br />
+         uint32_t finalU = clippedStartU;<br />
+                  ^<br />
+<font color="#0000ff">Examples\PZeroDemo\gfxdraw.cpp:134:13: warning: unused variable 'fxClippedStartV' [-Wunused-variable]</font><br />
+     fix16_t fxClippedStartV = 0;<br />
+             ^<br />
+<font color="#0000ff">Examples\PZeroDemo\gfxdraw.cpp:136:13: warning: unused variable 'clippedStartV' [-Wunused-variable]</font><br />
+     uint8_t clippedStartV = 0;<br />
+             ^<br />
+In file included from Pokitto/Pokitto.h:50:0,<br />
+                 from Examples\PZeroDemo\gfxdraw.cpp:1:<br />
+Pokitto\POKITTO_HW/PokittoEEPROM.h: At global scope:<br />
+<font color="#0000ff">Pokitto\POKITTO_HW/PokittoEEPROM.h:144:20: warning: 'EEPROM' defined but not used [-Wunused-variable]</font><br />
+ static EEPROMClass EEPROM;<br />
+                    ^<br />
+In file included from Pokitto\POKITTO_CORE/PokittoGlobs.h:48:0,<br />
+                 from Pokitto\POKITTO_CORE/PokittoDisplay.h:73,<br />
+                 from Pokitto\POKITTO_CORE/PokittoCore.h:57,<br />
+                 from Pokitto/Pokitto.h:41,<br />
+                 from Examples\PZeroDemo\gfxdraw.cpp:1:<br />
+<font color="#0000ff">Pokitto\POKITTO_HW/HWLCD.h:164:13: warning: 'void Pokitto::setup_gpio()' defined but not used [-Wunused-function]</font><br />
+ static void setup_gpio()<br />
+             ^<br />
+arm-none-eabi-gcc.exe -mcpu=cortex-m0plus  -mthumb    -O3 -fno-exceptions -std=gnu99 -Wextra -Wall -fomit-frame-pointer -fdata-sections -ffunction-sections -g -funsigned-char -Wno-unused-parameter -Wno-missing-field-initializers -fmessage-length=0 -fno-builtin -fno-delete-null-pointer-checks -DMBED_RTOS_SINGLE_THREAD -include mbed_config.h  -Wl,-script="Pokitto/mbed-pokitto/targets/cmsis/TARGET_NXP/TARGET_LPC11U6X/TOOLCHAIN_GCC_ARM/TARGET_LPC11U68/LPC11U68.ld" -o .\build\pzero.elf .objs\examples\pzerodemo\gfxdraw.o .objs\examples\pzerodemo\main.o .objs\pokitto\libpff\mmc.o .objs\pokitto\libpff\pff.o .objs\pokitto\mbed-pokitto\common\assert.o .objs\pokitto\mbed-pokitto\common\board.o .objs\pokitto\mbed-pokitto\common\busin.o .objs\pokitto\mbed-pokitto\common\businout.o .objs\pokitto\mbed-pokitto\common\busout.o .objs\pokitto\mbed-pokitto\common\callchain.o .objs\pokitto\mbed-pokitto\common\can.o .objs\pokitto\mbed-pokitto\common\error.o .objs\pokitto\mbed-pokitto\common\ethernet.o .objs\pokitto\mbed-pokitto\common\filebase.o .objs\pokitto\mbed-pokitto\common\filelike.o .objs\pokitto\mbed-pokitto\common\filepath.o .objs\pokitto\mbed-pokitto\common\filesystemlike.o .objs\pokitto\mbed-pokitto\common\gpio.o .objs\pokitto\mbed-pokitto\common\i2c.o .objs\pokitto\mbed-pokitto\common\i2cslave.o .objs\pokitto\mbed-pokitto\common\interruptin.o .objs\pokitto\mbed-pokitto\common\interruptmanager.o .objs\pokitto\mbed-pokitto\common\localfilesystem.o .objs\pokitto\mbed-pokitto\common\lp_ticker_api.o .objs\pokitto\mbed-pokitto\common\mbed_interface.o .objs\pokitto\mbed-pokitto\common\pinmap_common.o .objs\pokitto\mbed-pokitto\common\rawserial.o .objs\pokitto\mbed-pokitto\common\retarget.o .objs\pokitto\mbed-pokitto\common\rtc_time.o .objs\pokitto\mbed-pokitto\common\semihost_api.o .objs\pokitto\mbed-pokitto\common\serial.o .objs\pokitto\mbed-pokitto\common\serialbase.o .objs\pokitto\mbed-pokitto\common\spi.o .objs\pokitto\mbed-pokitto\common\spislave.o .objs\pokitto\mbed-pokitto\common\stream.o .objs\pokitto\mbed-pokitto\common\ticker.o .objs\pokitto\mbed-pokitto\common\ticker_api.o .objs\pokitto\mbed-pokitto\common\timeout.o .objs\pokitto\mbed-pokitto\common\timer.o .objs\pokitto\mbed-pokitto\common\timerevent.o .objs\pokitto\mbed-pokitto\common\us_ticker_api.o .objs\pokitto\mbed-pokitto\common\wait_api.o .objs\pokitto\mbed-pokitto\targets\cmsis\target_nxp\target_lpc11u6x\cmsis_nvic.o .objs\pokitto\mbed-pokitto\targets\cmsis\target_nxp\target_lpc11u6x\system_lpc11u6x.o .objs\pokitto\mbed-pokitto\targets\cmsis\target_nxp\target_lpc11u6x\toolchain_gcc_arm\target_lpc11u68\startup_lpc11u68.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\analogin_api.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\gpio_api.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\gpio_irq_api.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\i2c_api.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\pinmap.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\pwmout_api.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\rtc_api.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\serial_api.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\sleep.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\spi_api.o .objs\pokitto\mbed-pokitto\targets\hal\target_nxp\target_lpc11u6x\us_ticker.o .objs\pokitto\pokitto_core\fonts\adventurer12x16.o .objs\pokitto\pokitto_core\fonts\donut7x10.o .objs\pokitto\pokitto_core\fonts\dragon6x8.o .objs\pokitto\pokitto_core\fonts\font3x3.o .objs\pokitto\pokitto_core\fonts\font3x5.o .objs\pokitto\pokitto_core\fonts\font5x7.o .objs\pokitto\pokitto_core\fonts\fontc64.o .objs\pokitto\pokitto_core\fonts\fontc64uigfx.o .objs\pokitto\pokitto_core\fonts\fontmonkey.o .objs\pokitto\pokitto_core\fonts\karateka8x11.o .objs\pokitto\pokitto_core\fonts\koubit7x7.o .objs\pokitto\pokitto_core\fonts\mini4x6.o .objs\pokitto\pokitto_core\fonts\runes6x8.o .objs\pokitto\pokitto_core\fonts\tic806x6.o .objs\pokitto\pokitto_core\fonts\tight4x7.o .objs\pokitto\pokitto_core\fonts\tiny5x7.o .objs\pokitto\pokitto_core\fonts\zxspec.o .objs\pokitto\pokitto_core\palettes\palaction.o .objs\pokitto\pokitto_core\palettes\palcga.o .objs\pokitto\pokitto_core\palettes\paldb16.o .objs\pokitto\pokitto_core\palettes\paldefault.o .objs\pokitto\pokitto_core\palettes\palgameboy.o .objs\pokitto\pokitto_core\palettes\palmagma.o .objs\pokitto\pokitto_core\palettes\palmono.o .objs\pokitto\pokitto_core\palettes\palpico.o .objs\pokitto\pokitto_core\palettes\palrainbow.o .objs\pokitto\pokitto_core\palettes\palzxspec.o .objs\pokitto\pokitto_core\pokittobacklight.o .objs\pokitto\pokitto_core\pokittobattery.o .objs\pokitto\pokitto_core\pokittobuttons.o .objs\pokitto\pokitto_core\pokittoconsole.o .objs\pokitto\pokitto_core\pokittocookie.o .objs\pokitto\pokitto_core\pokittocore.o .objs\pokitto\pokitto_core\pokittodisk.o .objs\pokitto\pokitto_core\pokittodisplay.o .objs\pokitto\pokitto_core\pokittoitoa.o .objs\pokitto\pokitto_core\pokittologos.o .objs\pokitto\pokitto_core\pokittopalette.o .objs\pokitto\pokitto_core\pokittosound.o .objs\pokitto\pokitto_hw\clock_11u6x.o .objs\pokitto\pokitto_hw\dma_11u6x.o .objs\pokitto\pokitto_hw\hwbuttons.o .objs\pokitto\pokitto_hw\hwlcd.o .objs\pokitto\pokitto_hw\hwsound.o .objs\pokitto\pokitto_hw\iap.o .objs\pokitto\pokitto_hw\pokitto_extport.o .objs\pokitto\pokitto_hw\pokittoclock.o .objs\pokitto\pokitto_hw\pokittohw.o .objs\pokitto\pokitto_hw\softwarei2c.o .objs\pokitto\pokitto_hw\timer_11u6x.o .objs\pokitto\pokitto_libs\fixmath\fix16.o .objs\pokitto\pokitto_libs\fixmath\fix16_exp.o .objs\pokitto\pokitto_libs\fixmath\fix16_sqrt.o .objs\pokitto\pokitto_libs\fixmath\fix16_trig.o .objs\pokitto\pokitto_libs\fixmath\fract32.o .objs\pokitto\pokitto_libs\fixmath\uint32.o .objs\pokitto\pokitto_libs\synth\synth.o .objs\pokitto\pokitto_libs\synth\synth_envfuncs.o .objs\pokitto\pokitto_libs\synth\synth_helpers.o .objs\pokitto\pokitto_libs\synth\synth_mixfuncs.o .objs\pokitto\pokitto_libs\synth\synth_oscfuncs.o .objs\pokitto\pokitto_libs\synth\synth_songfuncs.o .objs\pokitto\pokitto_libs\synth\synth_wavefuncs.o   -Wl,-Map=.\build\pzero.map -specs=nano.specs -lstdc++  -Wl,--gc-sections -Wl,-n    -lsupc++ -lm -lc -lgcc -lnosys<br />
+arm-none-eabi-objcopy.exe -O ihex .\build\pzero.elf .\build\pzero.hex<br />
 arm-none-eabi-objcopy.exe -I ihex .\build\pzero.hex -O binary .\build\pzero.bin<br />
 .\build\lpcrc .\build\pzero.bin<br />
-succesfully updated crc to: efff36cd<br />
-<font color="#0000ff">Process terminated with status 0 (0 minutes, 12 seconds)</font><br />
-<font color="#0000ff">0 errors, 0 warnings (0 minutes, 12 seconds)</font><br />
+succesfully updated crc to: efff3815<br />
+<font color="#0000ff">Process terminated with status 0 (0 minutes, 14 seconds)</font><br />
+<font color="#0000ff">0 errors, 39 warnings (0 minutes, 14 seconds)</font><br />
 </tt>
 </body>
 </html>

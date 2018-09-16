@@ -48,9 +48,18 @@ uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 //
 int32_t textureMode = 1;
 
+struct Object3d
+{
+    fix16_t fxX;
+    fix16_t fxY;
+    const uint8_t* bitmap;
+    int16_t bitmapW;
+    int16_t bitmapH;
+};
+
 // Other cars in uv-plane
-const uint32_t carCount = 32;
-fix16_t cars[carCount][2];
+const uint32_t objects3dCount = 32;
+Object3d objects3d[ objects3dCount ];
 
 // 4x4 bitmap
 const uint8_t otherCarBitmap[] =
@@ -98,16 +107,24 @@ int main () {
     fix16_t fxCarStepY = fix16_from_int(40);
     fix16_t fxRoadWidth = fix16_from_int(97+30);
 
-    for(uint32_t i = 0; i < carCount/2; i++)
+    for(uint32_t i = 0; i < objects3dCount/2; i++)
     {
         // left side
-        cars[i][0] = fix16_from_int(0)+fxCarOffsetX; cars[i][1] = (fxCarStepY*i)+fxCarOffsetY;
+        objects3d[i].fxX = fix16_from_int(0)+fxCarOffsetX;
+        objects3d[i].fxY = (fxCarStepY*i)+fxCarOffsetY;
+        objects3d[i].bitmap = ship_bitmaps[25];
+        objects3d[i].bitmapW =*(ship_bitmaps[25] - 2);
+        objects3d[i].bitmapH =*(ship_bitmaps[25] - 1);
 
         if(i==0)
-            cars[i][0] = fix16_from_int(0)+fxCarOffsetX + fix16_from_int(20);
+            objects3d[i].fxX = fix16_from_int(0) + fxCarOffsetX + fix16_from_int(20);
 
         // right side
-        cars[i+(carCount/2)][0] = fxRoadWidth+fxCarOffsetX; cars[i+(carCount/2)][1] = (fxCarStepY*i)+fxCarOffsetY;
+        objects3d[i+(objects3dCount/2)].fxX = fxRoadWidth+fxCarOffsetX;
+        objects3d[i+(objects3dCount/2)].fxY = (fxCarStepY*i)+fxCarOffsetY;
+        objects3d[i+(objects3dCount/2)].bitmap = ship_bitmaps[15];
+        objects3d[i+(objects3dCount/2)].bitmapW =*(ship_bitmaps[15] - 2);
+        objects3d[i+(objects3dCount/2)].bitmapH =*(ship_bitmaps[15] - 1);
     }
 
     // *** Setup sound
@@ -563,82 +580,6 @@ uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int3
     return tileIndex;
 }
 
-// Draw ans scale the foreground tiles, i.e. text as a tile map.
-// TODO: y-clipping
-void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH )
-{
-    // Sanity check
-
-    if((-posX)>=(int32_t)scaledW || posX >= screenW ||
-       scaledW <= 0 ||  scaledW > 256 ||
-       scaledH <= 0 ||  scaledH > 256 ||
-       posY >= screenH || posY < 0    // y-clipping  from top not implemented yet. Preventing overflow.
-    )
-        return;
-
-    uint8_t* scrptr = mygame.display.getBuffer(); // 8-bit screen buffer
-
-    // Screen coordinates, x,y. Bitmap coordinates: u, v
-
-    fix16_t fxStepXInU = fix16_div(fix16_from_int(bitmapW), fix16_from_int(scaledW));
-    fix16_t fxStepXInV = fix16_div(fix16_from_int(bitmapH), fix16_from_int(scaledH));
-    fix16_t fxV = 0;
-    uint32_t finalV = 0;
-
-    // clip
-
-    fix16_t fxClippedStartU = 0;
-    fix16_t fxClippedStartV = 0;
-    uint8_t clippedStartU = 0;
-    uint8_t clippedStartV = 0;
-    uint8_t clippedScaledWidth = scaledW;
-    uint8_t clippedScaledHeight = scaledH;
-    //uint8_t startBitmapX = posX;
-    //uint8_t endBitmapX = posX+scaledW;
-    if(posX < 0) {
-        fxClippedStartU = fxStepXInU * (-posX);
-        clippedStartU = fix16_to_int( fxClippedStartU );
-        clippedScaledWidth = scaledW + posX;
-    }
-    else
-        scrptr += posX;  // Bitmap starting position on screen
-
-    if(posX+scaledW > screenW) {
-        clippedScaledWidth -=  posX + scaledW - screenW;
-    }
-
-     if(posY+scaledH > screenH) {
-        clippedScaledHeight -=  posY + scaledH - screenH;
-    }
-
-   // Draw
-    for( uint8_t y=posY; y<clippedScaledHeight+posY ; y++ ) {
-
-        uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
-        const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
-        fix16_t fxU = fxClippedStartU;
-        uint32_t finalU = clippedStartU;
-
-        // *** Draw one pixel row.
-        for( uint8_t x=0; x<clippedScaledWidth; x++) {
-
-            // Draw pixel.
-            uint8_t color = *(bitmapScanlinePtr + finalU);
-            if(color)
-                *screenScanlinePtr = color;
-            screenScanlinePtr++;
-
-            fxU += fxStepXInU;
-            finalU = fix16_to_int( fxU );
-
-        }  // end for
-
-        fxV += fxStepXInV;
-        finalV = fix16_to_int( fxV );
-
-   }  // end for
-}
-
 void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
     const fix16_t fxCos = fix16_cos(-fxAngle);
@@ -650,10 +591,10 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 
     const int32_t horizonY = 0 + sceneryH;
 
-    for( int32_t i = carCount-1; i >= 0; i--)
+    for( int32_t i = objects3dCount-1; i >= 0; i--)
     {
-        fix16_t fxX = cars[i][0];
-        fix16_t fxY = cars[i][1];
+        fix16_t fxX = objects3d[i].fxX;
+        fix16_t fxY = objects3d[i].fxY;
 
         // Translate
         fxX -= fxCamPosX;
@@ -670,9 +611,9 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
         // * Project 3D to 2D
 
         // Get the object bitmap size
-        const uint8_t* bitmapData = ship_bitmaps[25];
-        uint32_t bitmapW = *(bitmapData - 2);
-        uint32_t bitmapH = *(bitmapData - 1);
+        const uint8_t* bitmapData = objects3d[i].bitmap;
+        uint32_t bitmapW = objects3d[i].bitmapW;
+        uint32_t bitmapH = objects3d[i].bitmapH;
 
         // Bottom left cormer
         fix16_t fx3dX = fxX;
