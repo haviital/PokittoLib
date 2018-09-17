@@ -7,6 +7,7 @@ Pokitto::Core mygame;
 Pokitto::Sound snd;
 
 // Prototypes
+void SetObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight);
 void HandleGameKeys();
 void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
@@ -32,8 +33,8 @@ bool collided = false;
 
 // Camera pos
 //fix16_t fxX = fix16_from_int(55);
-fix16_t fxX = fix16_from_int(42);
-fix16_t fxY = fix16_from_int(490);
+fix16_t fxCamX = fix16_from_int(42);
+fix16_t fxCamY = fix16_from_int(490);
 
 // Ship velocity
 fix16_t fxRotVel = fxInitialRotVel;
@@ -41,7 +42,7 @@ fix16_t fxVel = 0;
 fix16_t fxAngle = 0;
 
 // Ship bitmap
-const uint8_t* activeShipBitmapData = ship_bitmaps[0];
+const uint8_t* activeShipBitmapData = billboard_object_bitmaps[0];
 uint32_t shipBitmapW = *(activeShipBitmapData - 2);
 uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 
@@ -52,14 +53,32 @@ struct Object3d
 {
     fix16_t fxX;
     fix16_t fxY;
+    fix16_t fxScaledWidth;
+    fix16_t fxScaledHeight;
     const uint8_t* bitmap;
     int16_t bitmapW;
     int16_t bitmapH;
+
+    fix16_t fxXInView;
+    fix16_t fxYInView;
+    fix16_t fxDistancePot;
 };
+
+/*
+struct DrawListItem
+{
+    Object3d* obj;
+    fix16_t fxDistancePot;
+};
+*/
+
+// Drawing order list
+const uint32_t drawListMaxCount = 100;
+Object3d* drawList[drawListMaxCount] = {0};
 
 // Other cars in uv-plane
 const uint32_t objects3dCount = 32;
-Object3d objects3d[ objects3dCount ];
+Object3d objects3d[ objects3dCount ] = {0};
 
 // 4x4 bitmap
 const uint8_t otherCarBitmap[] =
@@ -103,28 +122,73 @@ int main () {
 
     // Setup cars
     fix16_t fxCarOffsetX = fix16_from_int(0);
-    fix16_t fxCarOffsetY = fix16_from_int(500);
-    fix16_t fxCarStepY = fix16_from_int(40);
+    fix16_t fxCarOffsetY = fix16_from_int(650);
+    fix16_t fxCarStepY = fix16_from_int(80);
     fix16_t fxRoadWidth = fix16_from_int(97+30);
+    fix16_t fxScaledSizeFactor = fix16_from_float(0.6);
+    fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
 
-    for(uint32_t i = 0; i < objects3dCount/2; i++)
+    // Set cactuses
+    const uint8_t* cactus_bm = billboard_object_bitmaps[25];
+    SetObject(0, fxCarOffsetX, (fxCarStepY*0)+fxCarOffsetY, cactus_bm,
+              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
+              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
+
+    // Set stones
+    const uint8_t* stone_bm = billboard_object_bitmaps[26];
+    SetObject(1, fxRoadWidth+fxCarOffsetX, (fxCarStepY*5)+fxCarOffsetY, stone_bm,
+              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
+
+    // Set cars
+    SetObject(2, (fxRoadWidth/3)+fxCarOffsetX, (fxCarStepY*8)+fxCarOffsetY, billboard_object_bitmaps[1],
+              *(billboard_object_bitmaps[1] - 2) * fxScaledSizeFactor,
+              *(billboard_object_bitmaps[1] - 1) * fxScaledSizeFactor );
+
+#if 0
+    for(uint32_t i = 0; i < objects3dCount/4; i++)
     {
         // left side
         objects3d[i].fxX = fix16_from_int(0)+fxCarOffsetX;
         objects3d[i].fxY = (fxCarStepY*i)+fxCarOffsetY;
-        objects3d[i].bitmap = ship_bitmaps[25];
-        objects3d[i].bitmapW =*(ship_bitmaps[25] - 2);
-        objects3d[i].bitmapH =*(ship_bitmaps[25] - 1);
+        objects3d[i].bitmap = billboard_object_bitmaps[25];
+        objects3d[i].bitmapW =*(billboard_object_bitmaps[25] - 2);
+        objects3d[i].bitmapH =*(billboard_object_bitmaps[25] - 1);
+        objects3d[i].fxScaledWidth = fix16_from_int(objects3d[i].bitmapW);
+        objects3d[i].fxScaledHeight = fix16_from_int(objects3d[i].bitmapH);
 
-        if(i==0)
-            objects3d[i].fxX = fix16_from_int(0) + fxCarOffsetX + fix16_from_int(20);
+        // Cars row in the middle
+        objects3d[i+(objects3dCount/4)].fxX = fxRoadWidth/3+fxCarOffsetX;
+        objects3d[i+(objects3dCount/4)].fxY = (fxCarStepY*i)+fxCarOffsetY;
+        objects3d[i+(objects3dCount/4)].bitmap = billboard_object_bitmaps[i];
+        objects3d[i+(objects3dCount/4)].bitmapW =*(billboard_object_bitmaps[i] - 2);
+        objects3d[i+(objects3dCount/4)].bitmapH =*(billboard_object_bitmaps[i] - 1);
+        objects3d[i+(objects3dCount/4)].fxScaledWidth = objects3d[i+(objects3dCount/4)].bitmapW * fxScaledSizeFactor;
+        objects3d[i+(objects3dCount/4)].fxScaledHeight = objects3d[i+(objects3dCount/4)].bitmapH * fxScaledSizeFactor;
+
+        // Cars row in the middle
+        objects3d[i+(2*objects3dCount/4)].fxX = 2*fxRoadWidth/3+fxCarOffsetX;
+        objects3d[i+(2*objects3dCount/4)].fxY = (fxCarStepY*i)+fxCarOffsetY;
+        objects3d[i+(2*objects3dCount/4)].bitmap = billboard_object_bitmaps[i+8];26
+        objects3d[i+(2*objects3dCount/4)].bitmapW =*(billboard_object_bitmaps[i+8] - 2);
+        objects3d[i+(2*objects3dCount/4)].bitmapH =*(billboard_object_bitmaps[i+8] - 1);
+        objects3d[i+(2*objects3dCount/4)].fxScaledWidth = objects3d[i+(2*objects3dCount/4)].bitmapW * fxScaledSizeFactor;
+        objects3d[i+(2*objects3dCount/4)].fxScaledHeight = objects3d[i+(2*objects3dCount/4)].bitmapH * fxScaledSizeFactor;
 
         // right side
-        objects3d[i+(objects3dCount/2)].fxX = fxRoadWidth+fxCarOffsetX;
-        objects3d[i+(objects3dCount/2)].fxY = (fxCarStepY*i)+fxCarOffsetY;
-        objects3d[i+(objects3dCount/2)].bitmap = ship_bitmaps[15];
-        objects3d[i+(objects3dCount/2)].bitmapW =*(ship_bitmaps[15] - 2);
-        objects3d[i+(objects3dCount/2)].bitmapH =*(ship_bitmaps[15] - 1);
+        objects3d[i+(3*objects3dCount/4)].fxX = fxRoadWidth+fxCarOffsetX;
+        objects3d[i+(3*objects3dCount/4)].fxY = (fxCarStepY*i)+fxCarOffsetY;
+        objects3d[i+(3*objects3dCount/4)].bitmap = billboard_object_bitmaps[26];
+        objects3d[i+(3*objects3dCount/4)].bitmapW =*(billboard_object_bitmaps[26] - 2);
+        objects3d[i+(3*objects3dCount/4)].bitmapH =*(billboard_object_bitmaps[26] - 1);
+        objects3d[i+(3*objects3dCount/4)].fxScaledWidth = fix16_from_int(objects3d[i+(3*objects3dCount/4)].bitmapW);
+        objects3d[i+(3*objects3dCount/4)].fxScaledHeight = fix16_from_int(objects3d[i+(3*objects3dCount/4)].bitmapH);
+    }
+#endif
+
+    static_assert( objects3dCount <= drawListMaxCount, "error");
+    for( int32_t i = 0; i < objects3dCount; i++)
+    {
+        drawList[i] = &(objects3d[i]);
     }
 
     // *** Setup sound
@@ -175,10 +239,10 @@ int main () {
 
             // ** Draw the road and edges and terrain.
 
-            DrawMode7(fix16_to_int(fxX), fix16_to_int(fxY), fxAngle);
+            DrawMode7(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle);
 
             // Draw 3d objects
-            Draw3dObects(fxX, fxY, fxAngle);
+            Draw3dObects(fxCamX, fxCamY, fxAngle);
 
 
             // ** Draw the ship shadow
@@ -195,7 +259,7 @@ int main () {
             // Move ship up and down when collided
             int32_t shipY = 56;
             if(collided) {
-                fix16_t fxBumbAngle = fxX + fxY;
+                fix16_t fxBumbAngle = fxCamX + fxCamY;
                 fix16_t fxBumpHeight = fix16_sin(fxBumbAngle) * 4;
                 shipY -= abs(fix16_to_int(fxBumpHeight));
             }
@@ -207,7 +271,7 @@ int main () {
 
             // Check collision
             prevCollided = collided;
-            uint8_t tileIndex = GetTileIndex(fix16_to_int(fxX), fix16_to_int(fxY), fxAngle, 55, 56);
+            uint8_t tileIndex = GetTileIndex(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle, 55, 56);
             if( tileIndex != 5 && tileIndex != 6 ) {
                 collided = true;
                 wavetype = 5;
@@ -282,8 +346,8 @@ int main () {
                 fxCos = fix16_cos(-fxAngle);
                 fxSin = fix16_sin(-fxAngle);
 
-                fxY = fxY + fix16_mul(fxVel, fxCos);
-                fxX = fxX + fix16_mul(fxVel, fxSin);
+                fxCamY = fxCamY + fix16_mul(fxVel, fxCos);
+                fxCamX = fxCamX + fix16_mul(fxVel, fxSin);
                 fxVelOld = fxVel;
             }
         }
@@ -293,61 +357,38 @@ int main () {
 // Handle keys
 void HandleGameKeys()
 {
-    //
-//    if(mygame.buttons.bBtn())
-//    {
-//
-//        // Test: move world
-//
-//        if(mygame.buttons.leftBtn()) {
-//            fxX -= fix16_one;
-//        }
-//        else if(mygame.buttons.rightBtn()) {
-//            fxX += fix16_one;
-//        }
-//        if(mygame.buttons.upBtn()) {
-//            //fxVel = fxVel + (fix16_one>>4);
-//            fxY += fix16_one>>4;
-//        }
-//        else if(mygame.buttons.downBtn()) {
-//            //fxVel = fxVel - (fix16_one>>4);
-//            fxY -= fix16_one>>4;
-//        }
-//    }
-//    else
-    {
 
 #if 1
         // Playing
 
         // Turn left
-        if(mygame.buttons.leftBtn()) {
-            if( ! isTurningLeft )
-                fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning
-            fxAngle += fxRotVel;
-            isTurningLeft = true;
-            fxRotVel = fix16_mul(fxRotVel, fxRotAccFactor);
-        }
-        else {
-            if( isTurningLeft )
-                fxRotVel = fxInitialRotVel;
-            isTurningLeft = false;
-        }
-
-        // Turn right
-        if(mygame.buttons.rightBtn()) {
-            if( ! isTurningRight )
-                fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning
-            fxAngle -= fxRotVel;
-            isTurningRight = true;
-            fxRotVel = fix16_mul(fxRotVel, fxRotAccFactor);
-        }
-        else {
-            if( isTurningRight )
-                fxRotVel = fxInitialRotVel;
-            isTurningRight = false;
-        }
+    if(mygame.buttons.leftBtn()) {
+        if( ! isTurningLeft )
+            fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning
+        fxAngle += fxRotVel;
+        isTurningLeft = true;
+        fxRotVel = fix16_mul(fxRotVel, fxRotAccFactor);
     }
+    else {
+        if( isTurningLeft )
+            fxRotVel = fxInitialRotVel;
+        isTurningLeft = false;
+    }
+
+    // Turn right
+    if(mygame.buttons.rightBtn()) {
+        if( ! isTurningRight )
+            fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning
+        fxAngle -= fxRotVel;
+        isTurningRight = true;
+        fxRotVel = fix16_mul(fxRotVel, fxRotAccFactor);
+    }
+    else {
+        if( isTurningRight )
+            fxRotVel = fxInitialRotVel;
+        isTurningRight = false;
+    }
+
 
     // Thrust
     if(mygame.buttons.aBtn()) {
@@ -371,25 +412,25 @@ void HandleGameKeys()
             fxVel = 0;
     }
 #else
-        if(mygame.buttons.leftBtn()) {
-            fxX += fix16_one;
-        }
-        else if(mygame.buttons.rightBtn()) {
-            fxX -= fix16_one;
-        }
-        else if(mygame.buttons.upBtn()) {
-            fxY += fix16_one;
-        }
-        else if(mygame.buttons.downBtn()) {
-            fxY -= fix16_one;
-        }
-        else if(mygame.buttons.aBtn()) {
-            fxAngle += fxRotVel;
-        }
-        else if(mygame.buttons.bBtn()) {
-            fxAngle -= fxRotVel;
-        }
+    if(mygame.buttons.leftBtn()) {
+        fxCamX += fix16_one;
     }
+    else if(mygame.buttons.rightBtn()) {
+        fxCamX -= fix16_one;
+    }
+    else if(mygame.buttons.upBtn()) {
+        fxCamY += fix16_one;
+    }
+    else if(mygame.buttons.downBtn()) {
+        fxCamY -= fix16_one;
+    }
+    else if(mygame.buttons.aBtn()) {
+        fxAngle += fxRotVel;
+    }
+    else if(mygame.buttons.bBtn()) {
+        fxAngle -= fxRotVel;
+    }
+
 #endif
 }
 
@@ -448,15 +489,15 @@ void HandleSetupMenu(int32_t& lastListPos)
         {
              // Switch active bitmap data
             int32_t i=0;
-            for(; i< ship_bitmaps_count; i++)
-                if(activeShipBitmapData==ship_bitmaps[i])
+            for(; i< billboard_object_bitmaps_count; i++)
+                if(activeShipBitmapData==billboard_object_bitmaps[i])
                     break;
             i+= changeDir;
-            if(i>= ship_bitmaps_count)
+            if(i>= billboard_object_bitmaps_count)
                 i=0;
             if(i < 0)
-                i=ship_bitmaps_count-1;
-            activeShipBitmapData=ship_bitmaps[i];
+                i=billboard_object_bitmaps_count-1;
+            activeShipBitmapData=billboard_object_bitmaps[i];
             shipBitmapW = *(activeShipBitmapData - 2);
             shipBitmapH = *(activeShipBitmapData - 1);
         }
@@ -580,83 +621,126 @@ uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int3
     return tileIndex;
 }
 
+void SetObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight)
+{
+    objects3d[index].fxX = fxX;
+    objects3d[index].fxY = fxY;
+    objects3d[index].bitmap = bitmap;
+    objects3d[index].bitmapW =*(bitmap - 2);
+    objects3d[index].bitmapH =*(bitmap - 1);
+    objects3d[index].fxScaledWidth = fxScaledWidth;
+    objects3d[index].fxScaledHeight = fxScaledHeight;
+}
+
 void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
     const fix16_t fxCos = fix16_cos(-fxAngle);
     const fix16_t fxSin = fix16_sin(-fxAngle);
     const fix16_t fxRotCenterX = fix16_from_int(0);
     const fix16_t fxRotCenterY = fix16_from_int(35);
-    //const fix16_t fxRotCenterX = cars[0][0] - fxCamPosX;
-    //const fix16_t fxRotCenterY = cars[0][1] - fxCamPosY;
-
     const int32_t horizonY = 0 + sceneryH;
 
-    for( int32_t i = objects3dCount-1; i >= 0; i--)
+    for( int32_t i = 0; i < drawListMaxCount; i++)
     {
-        fix16_t fxX = objects3d[i].fxX;
-        fix16_t fxY = objects3d[i].fxY;
+        Object3d* obj = drawList[i];
+        if( obj != NULL )
+        {
+            fix16_t fxX = obj->fxX;
+            fix16_t fxY = obj->fxY;
 
-        // Translate
-        fxX -= fxCamPosX;
-        fxY -= fxCamPosY;
+            // Translate the object to view (camera) domain.
+            fxX -= fxCamPosX;
+            fxY -= fxCamPosY;
 
-        // Rotate
-        fxX -= fxRotCenterX;
-        fxY -= fxRotCenterY;
-        fix16_t fxRotatedX = fix16_mul(fxX, fxCos) - fix16_mul(fxY, fxSin);
-        fix16_t fxRotatedY = fix16_mul(fxX, fxSin) + fix16_mul(fxY, fxCos);
-        fxX = fxRotatedX + fxRotCenterX;
-        fxY = fxRotatedY + fxRotCenterY;
+            // Check for fast exit, if the object is too far.
+            const int32_t viewFrustumLimit = 500;
+            const fix16_t fxViewFrustumLimit = fix16_from_int(viewFrustumLimit);
+            if( fxX > fxViewFrustumLimit || fxX < -fxViewFrustumLimit ||
+                fxY > fxViewFrustumLimit || fxY < -fxViewFrustumLimit )
+            {
+                // Object is too far. Do not draw.
+                obj->fxDistancePot = fix16_max;
+            }
+            else
+            {
+                // Rotate around the rotating center.
+                fxX -= fxRotCenterX;
+                fxY -= fxRotCenterY;
+                fix16_t fxRotatedX = fix16_mul(fxX, fxCos) - fix16_mul(fxY, fxSin);
+                fix16_t fxRotatedY = fix16_mul(fxX, fxSin) + fix16_mul(fxY, fxCos);
+                fxX = fxRotatedX + fxRotCenterX;
+                fxY = fxRotatedY + fxRotCenterY;
 
-        // * Project 3D to 2D
+                obj->fxXInView = fxX;
+                obj->fxYInView = fxY;
 
-        // Get the object bitmap size
-        const uint8_t* bitmapData = objects3d[i].bitmap;
-        uint32_t bitmapW = objects3d[i].bitmapW;
-        uint32_t bitmapH = objects3d[i].bitmapH;
+                // Calculate distance.
+                // Scale down so that it will not overflow
+                fix16_t fxX2 = fxX >> 4;
+                fix16_t fxY2 = fxY >> 4;
+                #ifdef POK_SIM
+                //if(abs(fxX2)>fix16_max)
+                #endif // POK_SIM
+                fix16_t fxDistancePot = fix16_mul(fxX2, fxX2) + fix16_mul(fxY2,fxY2);
+                const fix16_t fxViewFrustumDistancePotLimit =
+                    fix16_from_int((viewFrustumLimit>>3)*(viewFrustumLimit>>4));
+                if( fxDistancePot > fxViewFrustumDistancePotLimit )
+                    obj->fxDistancePot = fix16_max;
+                else
+                    obj->fxDistancePot = fxDistancePot;
 
-        // Bottom left cormer
-        fix16_t fx3dX = fxX;
-        fix16_t fx3dZ = fxY;
-        const int32_t int3dY = -28.0;
-        const int32_t perspectiveScaleFactor = 115.0;
-        const fix16_t fxFactor = fix16_from_int(int3dY * perspectiveScaleFactor);
-        fix16_t  fxScreenBlX = fix16_mul(fx3dX, fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ ) );
-        fix16_t  fxScreenBlY = fix16_div( fxFactor, fx3dZ );
+            }  // end if
 
-        // Top right corner
-        fx3dX = fxX + fix16_from_int( bitmapW );
-        fix16_t fxFactorTr = fix16_from_int((int3dY + bitmapH) * perspectiveScaleFactor);
-        fix16_t  fxScreenTrX = fix16_mul(fx3dX, fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ ) );
-        fix16_t  fxScreenTrY = fix16_div( fxFactorTr, fx3dZ );
+        }  // end if
 
-        // Draw bitmap
-        //DrawScaledBitmap8bit(
-        //    fix16_to_int(fxScreenBlX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenTrY),
-        //    bitmapData, bitmapW, bitmapH,
-        //    fix16_to_int( fxScreenBlX - fxScreenTrX ), fix16_to_int(fxScreenBlY - fxScreenTrY));
+        // Project and draw previous object, if not the first item in the list and the previous object is not too far (invisible).
+        if( i > 0 && drawList[i-1]->fxDistancePot != fix16_max )
+        {
+            // If this object is farther than the previous one. Swap (bubble sort) before drawing.
+            Object3d* drawablePrevObj = drawList[i-1];
+            if( obj != NULL && obj->fxDistancePot > drawablePrevObj->fxDistancePot )
+            {
+                // Swap
+                drawList[i-1] = obj;
+                drawList[i] = drawablePrevObj;
+            }
 
-        int32_t scaledWidth = fix16_to_int((fxScreenTrX - fxScreenBlX));
-        int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY));
-//        DrawScaledBitmap8bit(
-//            fix16_to_int(fxScreenBlX) - (scaledWidth>>1)  + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
-//            bitmapData,
-//            bitmapW, bitmapH, scaledWidth, scaledHeight );
+            // * Project 3D to 2D
 
-        DrawScaledBitmap8bit(
-            fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
-            bitmapData,
-            bitmapW, bitmapH, scaledWidth, scaledHeight );
+            // Get the object bitmap size
+            const uint8_t* bitmapData = drawablePrevObj->bitmap;
+            uint32_t bitmapW = drawablePrevObj->bitmapW;
+            uint32_t bitmapH = drawablePrevObj->bitmapH;
+            fix16_t fxScaledWidth = drawablePrevObj->fxScaledWidth;
+            fix16_t fxScaledHeight = drawablePrevObj->fxScaledHeight;
+
+            // Bottom left corner
+            fix16_t fx3dX = drawablePrevObj->fxXInView;
+            fix16_t fx3dZ = drawablePrevObj->fxYInView;
+            fix16_t fx3dY = fix16_from_int(-34.0);
+            const int32_t perspectiveScaleFactor = 115.0;
+            fix16_t  fxZFactor = fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ );
+            fix16_t  fxScreenBlX = fix16_mul(fx3dX, fxZFactor );
+            fix16_t  fxScreenBlY = fix16_mul( fx3dY, fxZFactor );
+
+            // Top right corner
+            fx3dX += fxScaledWidth;
+            fix16_t  fxScreenTrX = fix16_mul(fx3dX, fxZFactor );
+            fix16_t  fxScreenTrY = fix16_mul( fx3dY + fxScaledHeight, fxZFactor );
+
+            // Draw scaled bitmap
+            int32_t scaledWidth = fix16_to_int((fxScreenTrX - fxScreenBlX));
+            int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY));
+            DrawScaledBitmap8bit(
+                fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
+                bitmapData,
+                bitmapW, bitmapH, scaledWidth, scaledHeight );
+
+        }  // end if
+
+        // end of list?
+         if( obj == NULL ) break;
 
 
-//        DrawScaledBitmap8bit(
-//            fix16_to_int(fxScreenBlX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
-//            otherCarBitmap,
-//            4, 4, 4, 4 );
-//        DrawScaledBitmap8bit(
-//            fix16_to_int(fxScreenTrX) + 63, fix16_to_int(fxHorizonY) - fix16_to_int(fxScreenBlY),
-//            otherCarBitmap2,
-//            4, 4, 4, 4 );
-
-     }
+    }  // end for
 }

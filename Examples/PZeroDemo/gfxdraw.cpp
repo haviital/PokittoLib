@@ -130,7 +130,7 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 
     // clip
 
-    fix16_t fxClippedStartU = 0;
+    fix16_t fxClippedStartU = fxStepXInU/2;
     fix16_t fxClippedStartV = 0;
     uint8_t clippedStartU = 0;
     uint8_t clippedStartV = 0;
@@ -154,14 +154,14 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
         clippedScaledHeight -=  posY + scaledH - screenH;
     }
 
-    // Precompute x indices
+    // Precompute x indicesfxClippedStartU
     uint8_t xIndices [256];
-    fix16_t fxU = fxClippedStartU;
+    fix16_t fxU = fxClippedStartU + (fix16_one / 2);  // Do rounding in advance
     uint32_t finalU = clippedStartU;
     for( uint8_t x=0; x<clippedScaledWidth; x++) {
         xIndices[x] = finalU;
         fxU += fxStepXInU;
-        finalU = fix16_to_int( fxU ); // is rounding applied?
+        finalU = fix16_to_int( fxU )-1; // scale from (1,size) to (0, size-1)
     }
 
     if(clippedScaledWidth < 8)
