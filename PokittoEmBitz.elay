@@ -466,9 +466,9 @@
 			<Cursor1 position="9268" topLine="220" />
 		</Cursor>
 	</File>
-	<File name="Examples\PZeroDemo\main.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="204" zoom_1="0" zoom_2="0">
+	<File name="Examples\PZeroDemo\main.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="204" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3280" topLine="115" />
+			<Cursor1 position="3280" topLine="112" />
 		</Cursor>
 	</File>
 	<File name="Examples\PZeroDemo\main.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -672,7 +672,7 @@
 			<Cursor1 position="4248" topLine="99" />
 		</Cursor>
 	</File>
-	<File name="Pokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X\TOOLCHAIN_GCC_ARM\TARGET_LPC11U68\startup_LPC11U68.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Pokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X\TOOLCHAIN_GCC_ARM\TARGET_LPC11U68\startup_LPC11U68.cpp" open="1" top="1" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="6398" topLine="130" />
 		</Cursor>

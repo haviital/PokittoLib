@@ -40,6 +40,7 @@
 //#include "image_pokitto.h"
 #include "image_cactus.h"
 #include "image_rock1.h"
+#include "image_ship1b_m1.h"
 #include "image_ball1_a.h"
 #include "image_ball1_b.h"
 #include "image_ball1_c.h"
@@ -348,7 +349,8 @@ const uint8_t blockMap[mapWidth*mapHeight] = {
    14,14,14,14,14,14,14,14,14, 8, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,12,
 };
 
-const uint8_t billboard_object_bitmaps_count = (5*5) + 2;
+const uint8_t billboard_object_bitmaps_count = 25 + 2;
+
 const uint8_t* billboard_object_bitmaps [billboard_object_bitmaps_count] = {
     image_ship_1_a+2,
     image_ship_1_b+2,
@@ -380,6 +382,97 @@ const uint8_t* billboard_object_bitmaps [billboard_object_bitmaps_count] = {
     image_cactus+2,
     image_rock1+2,
 };
+
+const uint8_t* billboard_object_bitmaps_m0[billboard_object_bitmaps_count] = {
+    NULL,
+    image_ship_1_b,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+};
+
+const uint8_t* billboard_object_bitmaps_m1[billboard_object_bitmaps_count] = {
+    NULL,
+    image_ship1b_m1,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+};
+
+const uint8_t* billboard_object_bitmaps_m2[billboard_object_bitmaps_count] = {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+};
+
 
 const uint8_t terrain_bitmaps_count = 2*4;
 const uint8_t* terrain_bitmaps [terrain_bitmaps_count] = {

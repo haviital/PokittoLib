@@ -12,6 +12,7 @@ void HandleGameKeys();
 void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
+void DrawScaledBitmap8bitMipmap(int32_t posX, int32_t posY, const uint8_t* pokbitmapPtrs[], uint32_t scaledW, uint32_t scaledH );
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
 void Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 
@@ -77,8 +78,9 @@ const uint32_t drawListMaxCount = 100;
 Object3d* drawList[drawListMaxCount] = {0};
 
 // Other cars in uv-plane
-const uint32_t objects3dCount = 32;
-Object3d objects3d[ objects3dCount ] = {0};
+const uint32_t objects3dMaxCount = 32;
+uint32_t objects3dCount = 0;
+Object3d objects3d[ objects3dMaxCount ] = {0};
 
 // 4x4 bitmap
 const uint8_t otherCarBitmap[] =
@@ -130,20 +132,81 @@ int main () {
 
     // Set cactuses
     const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-    SetObject(0, fxCarOffsetX, (fxCarStepY*0)+fxCarOffsetY, cactus_bm,
+    uint8_t i = 0;
+    SetObject(i++, fix16_from_int(3), fix16_from_int(632), cactus_bm,
+              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
+              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
+    SetObject(i++, fix16_from_int(243), fix16_from_int(1465), cactus_bm,
+              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
+              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
+    SetObject(i++, fix16_from_int(706), fix16_from_int(1425), cactus_bm,
+              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
+              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
+    SetObject(i++, fix16_from_int(667), fix16_from_int(2024), cactus_bm,
+              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
+              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
+    SetObject(i++, fix16_from_int(1174), fix16_from_int(1844), cactus_bm,
+              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
+              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
+    SetObject(i++, fix16_from_int(2050), fix16_from_int(1851), cactus_bm,
+              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
+              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
+    SetObject(i++, fix16_from_int(1922), fix16_from_int(1130), cactus_bm,
+              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
+              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
+    SetObject(i++, fix16_from_int(1986), fix16_from_int(35), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
 
     // Set stones
     const uint8_t* stone_bm = billboard_object_bitmaps[26];
-    SetObject(1, fxRoadWidth+fxCarOffsetX, (fxCarStepY*5)+fxCarOffsetY, stone_bm,
+    SetObject(i++, fix16_from_int(131), fix16_from_int(1056), stone_bm,
+              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
+    SetObject(i++, fix16_from_int(582), fix16_from_int(1469), stone_bm,
+              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
+    SetObject(i++, fix16_from_int(953), fix16_from_int(2042), stone_bm,
+              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
+    SetObject(i++, fix16_from_int(1839), fix16_from_int(1920), stone_bm,
+              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
+    SetObject(i++, fix16_from_int(521), fix16_from_int(127), stone_bm,
+              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
+    SetObject(i++, fix16_from_int(581), fix16_from_int(505), stone_bm,
+              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
+    SetObject(i++, fix16_from_int(333), fix16_from_int(634), stone_bm,
+              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
+    SetObject(i++, fix16_from_int(6), fix16_from_int(1220), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
 
     // Set cars
-    SetObject(2, (fxRoadWidth/3)+fxCarOffsetX, (fxCarStepY*8)+fxCarOffsetY, billboard_object_bitmaps[1],
+    SetObject(i++, fix16_from_int(42), fix16_from_int(1290), billboard_object_bitmaps[1],
               *(billboard_object_bitmaps[1] - 2) * fxScaledSizeFactor,
               *(billboard_object_bitmaps[1] - 1) * fxScaledSizeFactor );
+    SetObject(i++, fix16_from_int(72), fix16_from_int(1290), billboard_object_bitmaps[2],
+              *(billboard_object_bitmaps[2] - 2) * fxScaledSizeFactor,
+              *(billboard_object_bitmaps[2] - 1) * fxScaledSizeFactor );
+//    SetObject(i++, fix16_from_int(1320), fix16_from_int(1975), billboard_object_bitmaps[2],
+//              *(billboard_object_bitmaps[2] - 2) * fxScaledSizeFactor,
+//              *(billboard_object_bitmaps[2] - 1) * fxScaledSizeFactor );
+    SetObject(i++, fix16_from_int(1960), fix16_from_int(1479), billboard_object_bitmaps[3],
+              *(billboard_object_bitmaps[3] - 2) * fxScaledSizeFactor,
+              *(billboard_object_bitmaps[3] - 1) * fxScaledSizeFactor );
+    SetObject(i++, fix16_from_int(1922), fix16_from_int(430), billboard_object_bitmaps[18],
+              *(billboard_object_bitmaps[18] - 2) * fxScaledSizeFactor,
+              *(billboard_object_bitmaps[18] - 1) * fxScaledSizeFactor );
+    SetObject(i++, fix16_from_int(1624), fix16_from_int(80), billboard_object_bitmaps[5],
+              *(billboard_object_bitmaps[5] - 2) * fxScaledSizeFactor,
+              *(billboard_object_bitmaps[5] - 1) * fxScaledSizeFactor );
+    SetObject(i++, fix16_from_int(1012),fix16_from_int(-190), billboard_object_bitmaps[6],
+              *(billboard_object_bitmaps[6] - 2) * fxScaledSizeFactor,
+              *(billboard_object_bitmaps[6] - 1) * fxScaledSizeFactor );
+    SetObject(i++, fix16_from_int(554),fix16_from_int(412), billboard_object_bitmaps[10],
+              *(billboard_object_bitmaps[10] - 2) * fxScaledSizeFactor,
+              *(billboard_object_bitmaps[10] - 1) * fxScaledSizeFactor );
+    SetObject(i++, fix16_from_int(236),fix16_from_int(598), billboard_object_bitmaps[14],
+              *(billboard_object_bitmaps[14] - 2) * fxScaledSizeFactor,
+              *(billboard_object_bitmaps[14] - 1) * fxScaledSizeFactor );
 
+    objects3dCount = i;
 #if 0
     for(uint32_t i = 0; i < objects3dCount/4; i++)
     {
@@ -185,7 +248,7 @@ int main () {
     }
 #endif
 
-    static_assert( objects3dCount <= drawListMaxCount, "error");
+    static_assert( objects3dMaxCount <= drawListMaxCount, "error");
     for( int32_t i = 0; i < objects3dCount; i++)
     {
         drawList[i] = &(objects3d[i]);
@@ -291,6 +354,15 @@ int main () {
                     DrawScaledBitmap8bit( x, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
             }
 
+            // Print coordinates on screen
+            #if 1
+            char text[128];
+            mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10));
+            mygame.display.print(", ");
+            mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10));
+            mygame.display.print("     ");
+            #endif
+
             // Open/close the setup menu
             if(mygame.buttons.pressed(BTN_C))
             {
@@ -358,7 +430,7 @@ int main () {
 void HandleGameKeys()
 {
 
-#if 1
+#if 0
         // Playing
 
         // Turn left
@@ -731,10 +803,23 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
             // Draw scaled bitmap
             int32_t scaledWidth = fix16_to_int((fxScreenTrX - fxScreenBlX));
             int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY));
-            DrawScaledBitmap8bit(
-                fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
-                bitmapData,
-                bitmapW, bitmapH, scaledWidth, scaledHeight );
+            if( bitmapData != billboard_object_bitmaps[1] )
+            {
+                DrawScaledBitmap8bit(
+                    fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
+                    bitmapData,
+                    bitmapW, bitmapH, scaledWidth, scaledHeight );
+            }
+            else
+            {
+                const uint8_t* pokbitmapPtrs[3] = {billboard_object_bitmaps_m0[1], billboard_object_bitmaps_m1[1], billboard_object_bitmaps_m2[1]};
+                //uint32_t bitmapWArray[3] = {(uint32_t)*(billboard_object_bitmaps[1]-2), (uint32_t)*(billboard_object_bitmaps_m1[1]-2), (uint32_t)*(billboard_object_bitmaps_m2[1]-2)};
+                //uint32_t bitmapHArray[3] = {(uint32_t)*(billboard_object_bitmaps[1]-1), (uint32_t)*(billboard_object_bitmaps_m1[1]-1), (uint32_t)*(billboard_object_bitmaps_m2[1]-1)};
+                DrawScaledBitmap8bitMipmap(
+                    fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
+                    pokbitmapPtrs, scaledWidth, scaledHeight );
+            }
+
 
         }  // end if
 

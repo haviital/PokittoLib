@@ -2,6 +2,8 @@
 #include "fix16.h"
 #include "main.h"
 
+void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
+
 //
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 {
@@ -106,7 +108,25 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
     }  // end for
 }
 
-// Draw ans scale the foreground tiles, i.e. text as a tile map.
+// Draw and scale the bitmap.
+// TODO: top-y-clipping
+void DrawScaledBitmap8bitMipmap(int32_t posX, int32_t posY, const uint8_t* pokbitmapPtrs[], uint32_t scaledW, uint32_t scaledH )
+{
+    // Sanity check
+    // TODO
+
+    // Suppose the proporions do not change in scaling
+    int32_t mipmapIndex = 0; // Default is the original bitmap
+    if(pokbitmapPtrs[1] != NULL && scaledW <= *(pokbitmapPtrs[1]))
+        mipmapIndex = 1;
+    else if(pokbitmapPtrs[2] != NULL && scaledW <= *(pokbitmapPtrs[2]))
+        mipmapIndex = 2;
+
+    // This should be inlined
+    DrawScaledBitmap8bit(posX, posY, pokbitmapPtrs[mipmapIndex]+2, *(pokbitmapPtrs[mipmapIndex]), *(pokbitmapPtrs[mipmapIndex]+1), scaledW, scaledH );
+}
+
+// Draw and scale the bitmap.
 // TODO: top-y-clipping
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH )
 {
@@ -157,7 +177,7 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
     // Precompute x indicesfxClippedStartU
     uint8_t xIndices [256];
     fix16_t fxU = fxClippedStartU + (fix16_one / 2);  // Do rounding in advance
-    uint32_t finalU = clippedStartU;
+    uint32_t finalU = fix16_to_int( fxU )-1; // scale from (1,size) to (0, size-1);
     for( uint8_t x=0; x<clippedScaledWidth; x++) {
         xIndices[x] = finalU;
         fxU += fxStepXInU;
