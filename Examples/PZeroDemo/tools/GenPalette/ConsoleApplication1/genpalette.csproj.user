@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartArguments>image_shadow.bmp image_ship.bmp image_ship6.bmp image_ball1.bmp image_ball2.bmp image_ball3.bmp image_ball4.bmp image_ball5.bmp image_offroad1_a.bmp image_terrain_1 image_terrain_2 image_terrain_3 image_terrain_4 image_terrain_5 image_terrain_6 image_terrain_7 image_terrain_8 image_road1.bmp image_road2.bmp image_sky.bmp</StartArguments>
+    <StartWorkingDirectory>C:\hannu\projects\F-Zero-esque\genhdr\</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartArguments>image_shadow.bmp image_ship.bmp image_ship6.bmp image_ball1.bmp image_ball2.bmp image_ball3.bmp image_ball4.bmp image_ball5.bmp image_offroad1_a.bmp image_terrain_1 image_terrain_2 image_terrain_3 image_terrain_4 image_terrain_5 image_terrain_6 image_terrain_7 image_terrain_8 image_road1.bmp image_road2.bmp image_sky.bmp</StartArguments>
+    <StartWorkingDirectory>C:\hannu\projects\F-Zero-esque\genhdr\</StartWorkingDirectory>
+  </PropertyGroup>
+</Project>

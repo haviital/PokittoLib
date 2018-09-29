@@ -1,0 +1,12 @@
+C:\hannu\projects\F-Zero-esque\ConsoleApplication1\ConsoleApplication1\bin\Release\genpalette.exe.config
+C:\hannu\projects\F-Zero-esque\ConsoleApplication1\ConsoleApplication1\bin\Release\genpalette.exe
+C:\hannu\projects\F-Zero-esque\ConsoleApplication1\ConsoleApplication1\bin\Release\genpalette.pdb
+C:\hannu\projects\F-Zero-esque\ConsoleApplication1\ConsoleApplication1\obj\Release\genpalette.csprojResolveAssemblyReference.cache
+C:\hannu\projects\F-Zero-esque\ConsoleApplication1\ConsoleApplication1\obj\Release\genpalette.exe
+C:\hannu\projects\F-Zero-esque\ConsoleApplication1\ConsoleApplication1\obj\Release\genpalette.pdb
+C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\bin\Release\genpalette.exe.config
+C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\obj\Release\genpalette.exe
+C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\obj\Release\genpalette.pdb
+C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\bin\Release\genpalette.exe
+C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\bin\Release\genpalette.pdb
+C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\obj\Release\genpalette.csprojResolveAssemblyReference.cache
