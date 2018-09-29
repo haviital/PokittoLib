@@ -110,24 +110,6 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 
 // Draw and scale the bitmap.
 // TODO: top-y-clipping
-void DrawScaledBitmap8bitMipmap(int32_t posX, int32_t posY, const uint8_t* pokbitmapPtrs[], uint32_t scaledW, uint32_t scaledH )
-{
-    // Sanity check
-    // TODO
-
-    // Suppose the proporions do not change in scaling
-    int32_t mipmapIndex = 0; // Default is the original bitmap
-    if(pokbitmapPtrs[1] != NULL && scaledW <= *(pokbitmapPtrs[1]))
-        mipmapIndex = 1;
-    else if(pokbitmapPtrs[2] != NULL && scaledW <= *(pokbitmapPtrs[2]))
-        mipmapIndex = 2;
-
-    // This should be inlined
-    DrawScaledBitmap8bit(posX, posY, pokbitmapPtrs[mipmapIndex]+2, *(pokbitmapPtrs[mipmapIndex]), *(pokbitmapPtrs[mipmapIndex]+1), scaledW, scaledH );
-}
-
-// Draw and scale the bitmap.
-// TODO: top-y-clipping
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH )
 {
     // Sanity check
@@ -150,7 +132,12 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 
     // clip
 
+    // Pre-centralize and pre-rounding the horizontal scaled scanline.
+    // - Pre-centralize: add: (step-1) / 2
+    // - Pre-rounding: add 0.5
+    // - both combined:  add (step/2)
     fix16_t fxClippedStartU = fxStepXInU/2;
+
     fix16_t fxClippedStartV = 0;
     uint8_t clippedStartU = 0;
     uint8_t clippedStartV = 0;
@@ -176,12 +163,13 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 
     // Precompute x indicesfxClippedStartU
     uint8_t xIndices [256];
-    fix16_t fxU = fxClippedStartU + (fix16_one / 2);  // Do rounding in advance
-    uint32_t finalU = fix16_to_int( fxU )-1; // scale from (1,size) to (0, size-1);
+    //fix16_t fxU = fxClippedStartU + (fix16_one / 2);  // Do rounding in advance
+    fix16_t fxU = fxClippedStartU;  // Do rounding in advance
+    uint32_t finalU = fix16_to_int( fxU );
     for( uint8_t x=0; x<clippedScaledWidth; x++) {
         xIndices[x] = finalU;
         fxU += fxStepXInU;
-        finalU = fix16_to_int( fxU )-1; // scale from (1,size) to (0, size-1)
+        finalU = fix16_to_int( fxU );
     }
 
     if(clippedScaledWidth < 8)

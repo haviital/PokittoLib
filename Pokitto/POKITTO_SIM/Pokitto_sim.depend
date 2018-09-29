@@ -4166,7 +4166,7 @@
 	"SimEEPROM.h"
 	<stdio.h>
 
-1538174417 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+1538255860 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -4549,14 +4549,14 @@
 1509278641 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\uint32.h
 	<stdint.h>
 
-1538217075 source:c:\git\pokittolib2\examples\pzerodemo\gfxdraw.cpp
+1538255755 source:c:\git\pokittolib2\examples\pzerodemo\gfxdraw.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
 
 1536873969 c:\git\pokittolib2\examples\pzerodemo\main.h
 
-1538174884 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
+1538255567 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
 	"Pokitto.h"
 	"fix16.h"
 	"palette.h"
@@ -4588,7 +4588,6 @@
 	"image_ship_5_e.h"
 	"image_cactus.h"
 	"image_rock1.h"
-	"image_ship1b_m1.h"
 	"image_ball1_a.h"
 	"image_ball1_b.h"
 	"image_ball1_c.h"
@@ -4649,145 +4648,145 @@
 	"image_road2.h"
 	"image_sky.h"
 
-1538172317 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\palette.h
+1538255653 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\palette.h
 	<stdint.h>
 
-1538172317 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_shadow.h
+1538255654 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_shadow.h
 	<stdint.h>
 
-1538172317 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_a.h
+1538255654 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_a.h
 	<stdint.h>
 
-1538172317 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_b.h
+1538255655 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_b.h
 	<stdint.h>
 
-1538172317 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_c.h
+1538255655 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_c.h
 	<stdint.h>
 
-1538172318 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_d.h
+1538255655 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_d.h
 	<stdint.h>
 
-1538172318 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_e.h
+1538255655 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_1_e.h
 	<stdint.h>
 
-1538172318 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_a.h
+1538255656 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_a.h
 	<stdint.h>
 
-1538172318 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_b.h
+1538255656 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_b.h
 	<stdint.h>
 
-1538172318 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_c.h
+1538255656 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_c.h
 	<stdint.h>
 
-1538172319 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_d.h
+1538255656 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_d.h
 	<stdint.h>
 
-1538172319 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_e.h
+1538255656 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_2_e.h
 	<stdint.h>
 
-1538172319 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_a.h
+1538255657 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_a.h
 	<stdint.h>
 
-1538172319 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_b.h
+1538255657 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_b.h
 	<stdint.h>
 
-1538172319 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_c.h
+1538255657 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_c.h
 	<stdint.h>
 
-1538172320 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_d.h
+1538255657 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_d.h
 	<stdint.h>
 
-1538172320 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_e.h
+1538255657 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_3_e.h
 	<stdint.h>
 
-1538172320 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_a.h
+1538255658 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_a.h
 	<stdint.h>
 
-1538172320 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_b.h
+1538255658 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_b.h
 	<stdint.h>
 
-1538172320 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_c.h
+1538255658 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_c.h
 	<stdint.h>
 
-1538172320 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_d.h
+1538255658 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_d.h
 	<stdint.h>
 
-1538172321 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_e.h
+1538255658 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_4_e.h
 	<stdint.h>
 
-1538172321 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_a.h
+1538255659 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_a.h
 	<stdint.h>
 
-1538172321 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_b.h
+1538255659 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_b.h
 	<stdint.h>
 
-1538172321 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_c.h
+1538255659 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_c.h
 	<stdint.h>
 
-1538172321 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_d.h
+1538255659 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_d.h
 	<stdint.h>
 
-1538172321 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_e.h
+1538255659 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship_5_e.h
 	<stdint.h>
 
-1538172322 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball1_a.h
+1538255662 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball1_a.h
 	<stdint.h>
 
-1538172323 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball1_b.h
+1538255662 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball1_b.h
 	<stdint.h>
 
-1538172323 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball1_c.h
+1538255663 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball1_c.h
 	<stdint.h>
 
-1538172324 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball1_d.h
+1538255663 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball1_d.h
 	<stdint.h>
 
-1538172324 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball2_a.h
+1538255663 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball2_a.h
 	<stdint.h>
 
-1538172324 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball2_b.h
+1538255664 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball2_b.h
 	<stdint.h>
 
-1538172324 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball2_c.h
+1538255664 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball2_c.h
 	<stdint.h>
 
-1538172325 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball2_d.h
+1538255664 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball2_d.h
 	<stdint.h>
 
-1538172325 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball3_a.h
+1538255665 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball3_a.h
 	<stdint.h>
 
-1538172325 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball3_b.h
+1538255665 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball3_b.h
 	<stdint.h>
 
-1538172325 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball3_c.h
+1538255665 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball3_c.h
 	<stdint.h>
 
-1538172325 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball3_d.h
+1538255665 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball3_d.h
 	<stdint.h>
 
-1538172325 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball4_a.h
+1538255665 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball4_a.h
 	<stdint.h>
 
-1538172326 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball4_b.h
+1538255666 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball4_b.h
 	<stdint.h>
 
-1538172326 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball4_c.h
+1538255666 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball4_c.h
 	<stdint.h>
 
-1538172326 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball4_d.h
+1538255666 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball4_d.h
 	<stdint.h>
 
-1538172327 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball5_a.h
+1538255666 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball5_a.h
 	<stdint.h>
 
-1538172327 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball5_b.h
+1538255667 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball5_b.h
 	<stdint.h>
 
-1538172327 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball5_c.h
+1538255667 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball5_c.h
 	<stdint.h>
 
-1538172327 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball5_d.h
+1538255667 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ball5_d.h
 	<stdint.h>
 
 1536096637 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_1_a.h
@@ -4850,70 +4849,70 @@
 1536096641 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_5_d.h
 	<stdint.h>
 
-1538172337 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_6_a.h
+1538255677 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_6_a.h
 	<stdint.h>
 
-1538172337 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_6_b.h
+1538255678 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_6_b.h
 	<stdint.h>
 
-1538172338 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_6_c.h
+1538255678 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_6_c.h
 	<stdint.h>
 
-1538172338 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_6_d.h
+1538255679 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_6_d.h
 	<stdint.h>
 
-1538172339 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_7_a.h
+1538255679 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_7_a.h
 	<stdint.h>
 
-1538172339 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_7_b.h
+1538255680 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_7_b.h
 	<stdint.h>
 
-1538172340 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_7_c.h
+1538255680 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_7_c.h
 	<stdint.h>
 
-1538172340 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_7_d.h
+1538255681 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_7_d.h
 	<stdint.h>
 
-1538172341 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_8_a.h
+1538255681 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_8_a.h
 	<stdint.h>
 
-1538172341 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_8_b.h
+1538255682 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_8_b.h
 	<stdint.h>
 
-1538172341 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_8_c.h
+1538255682 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_8_c.h
 	<stdint.h>
 
-1538172342 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_8_d.h
+1538255682 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_terrain_8_d.h
 	<stdint.h>
 
-1538172344 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_road1.h
+1538255683 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_road1.h
 	<stdint.h>
 
-1538172344 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_road2.h
+1538255683 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_road2.h
 	<stdint.h>
 
-1538172344 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_sky.h
+1538255684 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_sky.h
 	<stdint.h>
 
 1536530048 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_pokitto.h
 	<stdint.h>
 
-1538172342 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_start_a.h
+1538255683 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_start_a.h
 	<stdint.h>
 
-1538172343 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_start_b.h
+1538255683 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_start_b.h
 	<stdint.h>
 
-1538172343 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_start_c.h
+1538255683 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_start_c.h
 	<stdint.h>
 
-1538172344 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_start_d.h
+1538255683 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_start_d.h
 	<stdint.h>
 
-1538172322 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_cactus.h
+1538255659 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_cactus.h
 	<stdint.h>
 
-1538172322 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_rock1.h
+1538255660 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_rock1.h
 	<stdint.h>
 
 1538172178 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_ship1b_m1.h

@@ -12,7 +12,6 @@ void HandleGameKeys();
 void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
-void DrawScaledBitmap8bitMipmap(int32_t posX, int32_t posY, const uint8_t* pokbitmapPtrs[], uint32_t scaledW, uint32_t scaledH );
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
 void Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 
@@ -181,12 +180,9 @@ int main () {
     SetObject(i++, fix16_from_int(42), fix16_from_int(1290), billboard_object_bitmaps[1],
               *(billboard_object_bitmaps[1] - 2) * fxScaledSizeFactor,
               *(billboard_object_bitmaps[1] - 1) * fxScaledSizeFactor );
-    SetObject(i++, fix16_from_int(72), fix16_from_int(1290), billboard_object_bitmaps[2],
+    SetObject(i++, fix16_from_int(1320), fix16_from_int(1975), billboard_object_bitmaps[2],
               *(billboard_object_bitmaps[2] - 2) * fxScaledSizeFactor,
               *(billboard_object_bitmaps[2] - 1) * fxScaledSizeFactor );
-//    SetObject(i++, fix16_from_int(1320), fix16_from_int(1975), billboard_object_bitmaps[2],
-//              *(billboard_object_bitmaps[2] - 2) * fxScaledSizeFactor,
-//              *(billboard_object_bitmaps[2] - 1) * fxScaledSizeFactor );
     SetObject(i++, fix16_from_int(1960), fix16_from_int(1479), billboard_object_bitmaps[3],
               *(billboard_object_bitmaps[3] - 2) * fxScaledSizeFactor,
               *(billboard_object_bitmaps[3] - 1) * fxScaledSizeFactor );
@@ -355,7 +351,7 @@ int main () {
             }
 
             // Print coordinates on screen
-            #if 1
+            #if 0
             char text[128];
             mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10));
             mygame.display.print(", ");
@@ -430,7 +426,7 @@ int main () {
 void HandleGameKeys()
 {
 
-#if 0
+#if 1
         // Playing
 
         // Turn left
@@ -803,29 +799,15 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
             // Draw scaled bitmap
             int32_t scaledWidth = fix16_to_int((fxScreenTrX - fxScreenBlX));
             int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY));
-            if( bitmapData != billboard_object_bitmaps[1] )
-            {
-                DrawScaledBitmap8bit(
-                    fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
-                    bitmapData,
-                    bitmapW, bitmapH, scaledWidth, scaledHeight );
-            }
-            else
-            {
-                const uint8_t* pokbitmapPtrs[3] = {billboard_object_bitmaps_m0[1], billboard_object_bitmaps_m1[1], billboard_object_bitmaps_m2[1]};
-                //uint32_t bitmapWArray[3] = {(uint32_t)*(billboard_object_bitmaps[1]-2), (uint32_t)*(billboard_object_bitmaps_m1[1]-2), (uint32_t)*(billboard_object_bitmaps_m2[1]-2)};
-                //uint32_t bitmapHArray[3] = {(uint32_t)*(billboard_object_bitmaps[1]-1), (uint32_t)*(billboard_object_bitmaps_m1[1]-1), (uint32_t)*(billboard_object_bitmaps_m2[1]-1)};
-                DrawScaledBitmap8bitMipmap(
-                    fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
-                    pokbitmapPtrs, scaledWidth, scaledHeight );
-            }
-
+            DrawScaledBitmap8bit(
+                fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
+                bitmapData,
+                bitmapW, bitmapH, scaledWidth, scaledHeight );
 
         }  // end if
 
         // end of list?
          if( obj == NULL ) break;
-
 
     }  // end for
 }
