@@ -99,7 +99,7 @@
 #include "image_road1.h"
 #include "image_road2.h"
 #include "image_sky.h"
-
+#include "image_light.h"
 
  // Defines blocks of 64 (8x8) tiles
  const uint8_t blockData[][8*8] = {
@@ -287,7 +287,7 @@
 
     // block: 15
     {
-        // 8x8 tile indexes.Left edge of the road
+        // 8x8 tile indexes.Left edge of the road. Start grid.
          8, 1, 2,11,12,11,12,11,
         10, 3, 4,13,14,13,14,13,
          8, 1, 2,11,12,11,12,11,
@@ -300,7 +300,7 @@
 
     // block: 16
     {
-        // 8x8 tile indexes. Right edge of the road
+        // 8x8 tile indexes. Right edge of the road. Start grid.
        12,11,12,11,12, 1, 2, 8,
        14,13,14,13,14, 3, 4,10,
        12,11,12,11,12, 1, 2, 8,
@@ -309,6 +309,31 @@
        14,13,14,13,14, 3, 4,10,
        12,11,12,11,12, 1, 2, 8,
        14,13,14,13,14, 3, 4,10,
+    },
+    // block: 17
+    {
+        // 8x8 tile indexes.Left edge of the road. Light strip.
+         8, 1, 2,15,15,15,15,15,
+        10, 3, 4,15,15,15,15,15,
+         8, 1, 2,15,15,15,15,15,
+        10, 3, 4,15,15,15,15,15,
+         8, 1, 2,15,15,15,15,15,
+        10, 3, 4,15,15,15,15,15,
+         8, 1, 2,15,15,15,15,15,
+        10, 3, 4,15,15,15,15,15,
+     },
+
+    // block: 18
+    {
+        // 8x8 tile indexes. Right edge of the road. Light strip.
+        15,15,15,15,15, 1, 2, 8,
+        15,15,15,15,15, 3, 4,10,
+        15,15,15,15,15, 1, 2, 8,
+        15,15,15,15,15, 3, 4,10,
+        15,15,15,15,15, 1, 2, 8,
+        15,15,15,15,15, 3, 4,10,
+        15,15,15,15,15, 1, 2, 8,
+        15,15,15,15,15, 3, 4,10,
     },
 };
 
@@ -323,7 +348,7 @@ const uint8_t blockMap[mapWidth*mapHeight] = {
    14,14,14,14,14,14, 0, 9, 4, 4, 4,10,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
    14,14,14,14,14,14, 8, 5, 5, 5,11, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
     6, 4, 4, 4, 4, 4, 4, 4, 4, 4,13, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
-    0, 7, 5, 5, 5, 5, 5, 5, 5, 5, 5,12,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
+    0, 7, 5, 5, 5, 5, 5, 5, 5, 5, 5,12,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,17,18,14,
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
     0, 1,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14, 0, 1,14,
@@ -478,7 +503,7 @@ const uint8_t* edge_bitmaps [edge_bitmaps_count] = {
 //    image_ball5_d+2,
 };
 
-const uint8_t current_texture_bitmaps_count = 15;
+const uint8_t current_texture_bitmaps_count = 16;
 const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
     NULL,
     image_ball1_a+2,
@@ -495,6 +520,7 @@ const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
     image_start_b+2,
     image_start_c+2,
     image_start_d+2,
+    image_light+2,
 };
 
 const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};

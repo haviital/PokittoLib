@@ -1,4 +1,5 @@
 #include "Pokitto.h"
+#include "PokittoCookie.h"
 #include "fix16.h"
 #include "main.h"
 #include "gfx_hdr/GameData.h"
@@ -7,13 +8,15 @@ Pokitto::Core mygame;
 Pokitto::Sound snd;
 
 // Prototypes
+void InitGameObjects();
 void SetObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight);
 void HandleGameKeys();
 void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
-void Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
+bool Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
+bool HandleStartGameMenu( int32_t lastLap_ms );
 
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
@@ -97,6 +100,26 @@ const uint8_t otherCarBitmap2[] =
     0x03,0x03,0x03,0x03,
     0x03,0x03,0x03,0x03,
 };
+
+enum LapTimingState {
+    enumReadyToStart = 0,
+    enumStarted = 1,
+    enumOnTimedTrack = 2,
+    enumOnHalfWayPoint = 3,
+    enumFinished = 4,
+
+};
+
+class mycookie : public Pokitto::Cookie
+{
+public:
+    uint32_t bestLap_ms = 0;
+    uint32_t version = 1;
+};
+
+// Create an instance of cookie.
+mycookie highscore;
+
 // Main
 int main () {
 
@@ -109,8 +132,16 @@ int main () {
     bool isManualRotation = true;
     bool isSetupMenuActive = false;
     int32_t lastSetupListPos = 1;
-    //fix16_t fxShipX = fix16_from_int(5);
-    //fix16_t fxShipY = fix16_from_float(80);
+    uint32_t start_ms = 0;
+    uint32_t final_lap_time_ms = 0;
+    LapTimingState lapTimingState = enumReadyToStart;
+    bool isStartMenuOpen = true;
+
+    // Load cookie
+    // NOTE: This must be before Pokitto::core::begin(). Otherwise the audio interrupt do not work!
+    highscore.begin("PZERO2", highscore); //initialize cookie
+    highscore.loadCookie();
+    highscore.version = 1;
 
     // *** Setup PokittoLib
 
@@ -121,7 +152,286 @@ int main () {
     mygame.setFrameRate(60);
     #endif // PROJ_SIM
 
-    // Setup cars
+    // Init game object.
+    InitGameObjects();
+
+    // *** Setup sound
+
+    int tonefreq=0;
+    uint8_t amplitude = 255;//127;
+    uint8_t wavetype = 1, wavetypeCrash = 4, arpmode=1;
+    snd.ampEnable(1);
+    snd.playTone(1,tonefreq,amplitude,wavetype,arpmode);
+    //snd.playTone(1,100,255,0);
+
+    //uint8_t const discrete_vol_levels[8]      {0,32,64,96,128,160,192,224};
+    //Pokitto::Sound::globalVolume = discrete_vol_levels[7];
+    //snd.setVolume(Pokitto::Sound::globalVolume);
+
+
+    // *** Calculate lookup tables.
+
+    // z = (zs * h) / y
+    fix16_t fxPerspectiveFactor = fix16_from_int(90*screenH);
+    for( int32_t y = 0; y<screenH; y++) {
+
+        #if 1 // 3d
+         // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
+         // y = zk*yk /z -15
+         PerspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*2)));
+         PerspectiveScaleX[y] = PerspectiveScaleY[y];
+        #else // 2d
+         PerspectiveScaleY[y] = fix16_from_float(y*2.0);
+         PerspectiveScaleX[y] = fix16_from_float(100*2.0);
+        #endif
+    }
+
+    // Get mipmap pointers.
+    for( uint32_t ii=0; ii<current_texture_bitmaps_count; ii++)
+    {
+        current_texture_bitmaps_mm1[ii] =  current_texture_bitmaps[ii] + (texW * tileH);
+        current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
+    }
+
+     // *** Draw scenery
+
+    uint16_t skyW = image_sky[0];
+    uint16_t skyH = image_sky[1];
+    const uint8_t* skyBitmapPtr = &(image_sky[2]);
+    for( int32_t x = 0; x<110; x+=skyW)
+        DrawScaledBitmap8bit( x, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
+
+    //
+    start_ms = mygame.getTime();
+
+    // *** The game loop
+    while (mygame.isRunning()) {
+
+        if (mygame.update()) {
+
+            // ** Draw the road and edges and terrain.
+
+            DrawMode7(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle);
+
+            // Draw 3d objects
+            bool isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxAngle);
+
+
+            // ** Draw the ship shadow
+
+            uint16_t shadowW = image_shadow[0];
+            uint16_t shadowH = image_shadow[1];
+            const uint8_t* shadowBitmapPtr = &(image_shadow[2]);
+            DrawScaledBitmap8bit( 55-(shadowW>>1), 56+7,
+                                  shadowBitmapPtr,
+                                  shadowW, shadowH, shadowW, shadowH);
+
+            // *** Draw ship bitmap
+
+            // Move ship up and down when collided
+            int32_t shipY = 56;
+            if(collided) {
+                fix16_t fxBumbAngle = fxCamX + fxCamY;
+                fix16_t fxBumpHeight = fix16_sin(fxBumbAngle) * 4;
+                shipY -= abs(fix16_to_int(fxBumpHeight));
+            }
+
+            // Draw the bitmpa (currently not scaled)
+            DrawScaledBitmap8bit( 55-(shipBitmapW>>1), shipY,
+                                  activeShipBitmapData,
+                                  shipBitmapW, shipBitmapH, shipBitmapW, shipBitmapH);
+
+            // *** Draw the lap counter
+
+            // Draw background
+            int32_t startX = 110-5;  // 5 pixel margin
+            startX -= 5*6; // 5 chars
+            int32_t bgX = (startX/skyW) * skyW;
+            DrawScaledBitmap8bit( bgX, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
+            DrawScaledBitmap8bit( bgX+skyW, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
+
+            // get curren lap time
+            uint32_t current_lap_time_ms = 0;
+            if( lapTimingState == enumReadyToStart )
+                current_lap_time_ms = 0;
+            else if( lapTimingState == enumFinished )
+                current_lap_time_ms = final_lap_time_ms;
+            else
+                current_lap_time_ms = mygame.getTime() - start_ms;
+
+            // Draw lap time
+            int32_t lapStartX = 110-5;  // 5 pixel margin
+            lapStartX -= 5*6; // 5 chars
+            DrawLapTime(current_lap_time_ms, lapStartX, 1, fix16_one );
+
+            // *** Check collision
+            prevCollided = collided;
+            uint8_t tileIndex = GetTileIndex(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle, 55, 56);
+            if( isCollidedToPlayerShip ||
+                (
+                    tileIndex != 5 && tileIndex != 6 &&
+                    (tileIndex < 11 || tileIndex > 15)
+                )
+            )
+            {
+                collided = true;
+                wavetype = 5;
+            }
+            else {
+                collided = false;
+                wavetype = 1;
+            }
+
+            // *** starting line
+            bool isOnStartingGrid = ( tileIndex >= 11 && tileIndex <= 14);
+            bool isOnHalfWayPoint = (tileIndex == 15);
+
+            // Hit the starting line
+            switch(lapTimingState)
+            {
+            case enumReadyToStart:
+                if( isOnStartingGrid )
+                {
+                    lapTimingState = enumStarted;
+                    start_ms = mygame.getTime();  // started
+                }
+                break;
+            case enumStarted:
+                if( ! isOnStartingGrid )
+                {
+                    lapTimingState = enumOnTimedTrack;
+                    //lapTimingState = enumOnHalfWayPoint;
+                }
+                break;
+            case enumOnTimedTrack:
+                if( isOnHalfWayPoint )
+                {
+                    lapTimingState = enumOnHalfWayPoint;
+                 }
+                break;
+            case enumOnHalfWayPoint:
+                if( isOnStartingGrid )
+                {
+                    // Finished!
+                    final_lap_time_ms = mygame.getTime() - start_ms;
+                    lapTimingState = enumFinished;
+                    isStartMenuOpen = true;
+
+                    // Save cookie if this is the best time
+                    if(highscore.bestLap_ms == 0 || final_lap_time_ms < highscore.bestLap_ms)
+                    {
+                        highscore.bestLap_ms = final_lap_time_ms;
+                        highscore.saveCookie();
+                    }
+                }
+                break;
+            case enumFinished:
+                break;
+            }
+
+            // Draw scenery behind the menu
+            if( isSetupMenuActive )
+            {
+                uint16_t skyW = image_sky[0];
+                uint16_t skyH = image_sky[1];
+                const uint8_t* skyBitmapPtr = &(image_sky[2]);
+                for( int32_t x = 0; x<110; x+=skyW)
+                    DrawScaledBitmap8bit( x, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
+            }
+
+            // Print coordinates on screen
+            #if 0
+            char text[128];
+            mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10));
+            mygame.display.print(", ");
+            mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10));
+            mygame.display.print("     ");
+            #endif
+
+
+
+
+            #if 0
+            // Open/close the setup menu
+            if(mygame.buttons.pressed(BTN_C))
+            {
+               // Setup menu open close
+               isSetupMenuActive = ! isSetupMenuActive;
+            }
+            #endif
+            if( isSetupMenuActive )
+            {
+                // Draw and handle the setup menu keys.
+                HandleSetupMenu(/*OUT*/ lastSetupListPos);
+            }
+            else if( isStartMenuOpen )
+            {
+                //
+                isStartMenuOpen = HandleStartGameMenu( final_lap_time_ms );
+                if( !isStartMenuOpen )
+                    lapTimingState = enumReadyToStart;
+            }
+            else
+            {
+                // Check buttons
+                HandleGameKeys();
+
+                // Limit turning speed
+                if(fxRotVel>fxInitialRotVel*10)
+                    fxRotVel = fxInitialRotVel*10;
+
+                // Limit speed
+                if(fxVel>fxMaxSpeed)
+                    fxVel = fxMaxSpeed;
+                else if(fxVel<-fxMaxSpeed)
+                    fxVel = -fxMaxSpeed;
+
+                // If colliding, slow down
+                if( collided ) {
+
+                    // Break or stop
+                    if( isCollidedToPlayerShip )
+                    {
+                        fxVel = fix16_one;
+                    }
+                    else if(fxVel>fxMaxSpeedCollided)
+                    {
+                        fxVel = fxVel - (fix16_one>>4);
+                        if(fxVel<0)
+                            fxVel = 0;
+                    }
+                    else if(fxVel<-fxMaxSpeedCollided)
+                    {
+                        fxVel = fxVel + (fix16_one>>4);
+                        if(fxVel>0)
+                            fxVel = 0;
+                    }
+                }
+
+                // Change sound effect if needed.
+                if(fxVelOld != fxVel || prevCollided != collided ) {
+                    tonefreq = fix16_to_int(abs(fxVel*5));
+                    if(tonefreq>50) tonefreq = 50;
+                    snd.playTone(1,tonefreq,amplitude,wavetype,arpmode);
+                }
+
+                // Move the  texture plane
+
+                fxCos = fix16_cos(-fxAngle);
+                fxSin = fix16_sin(-fxAngle);
+
+                fxCamY = fxCamY + fix16_mul(fxVel, fxCos);
+                fxCamX = fxCamX + fix16_mul(fxVel, fxSin);
+                fxVelOld = fxVel;
+            }
+        }
+    }
+}
+
+// Init game objects
+void InitGameObjects()
+{
+    // Setup game objects
     fix16_t fxCarOffsetX = fix16_from_int(0);
     fix16_t fxCarOffsetY = fix16_from_int(650);
     fix16_t fxCarStepY = fix16_from_int(80);
@@ -203,46 +513,6 @@ int main () {
               *(billboard_object_bitmaps[14] - 1) * fxScaledSizeFactor );
 
     objects3dCount = i;
-#if 0
-    for(uint32_t i = 0; i < objects3dCount/4; i++)
-    {
-        // left side
-        objects3d[i].fxX = fix16_from_int(0)+fxCarOffsetX;
-        objects3d[i].fxY = (fxCarStepY*i)+fxCarOffsetY;
-        objects3d[i].bitmap = billboard_object_bitmaps[25];
-        objects3d[i].bitmapW =*(billboard_object_bitmaps[25] - 2);
-        objects3d[i].bitmapH =*(billboard_object_bitmaps[25] - 1);
-        objects3d[i].fxScaledWidth = fix16_from_int(objects3d[i].bitmapW);
-        objects3d[i].fxScaledHeight = fix16_from_int(objects3d[i].bitmapH);
-
-        // Cars row in the middle
-        objects3d[i+(objects3dCount/4)].fxX = fxRoadWidth/3+fxCarOffsetX;
-        objects3d[i+(objects3dCount/4)].fxY = (fxCarStepY*i)+fxCarOffsetY;
-        objects3d[i+(objects3dCount/4)].bitmap = billboard_object_bitmaps[i];
-        objects3d[i+(objects3dCount/4)].bitmapW =*(billboard_object_bitmaps[i] - 2);
-        objects3d[i+(objects3dCount/4)].bitmapH =*(billboard_object_bitmaps[i] - 1);
-        objects3d[i+(objects3dCount/4)].fxScaledWidth = objects3d[i+(objects3dCount/4)].bitmapW * fxScaledSizeFactor;
-        objects3d[i+(objects3dCount/4)].fxScaledHeight = objects3d[i+(objects3dCount/4)].bitmapH * fxScaledSizeFactor;
-
-        // Cars row in the middle
-        objects3d[i+(2*objects3dCount/4)].fxX = 2*fxRoadWidth/3+fxCarOffsetX;
-        objects3d[i+(2*objects3dCount/4)].fxY = (fxCarStepY*i)+fxCarOffsetY;
-        objects3d[i+(2*objects3dCount/4)].bitmap = billboard_object_bitmaps[i+8];26
-        objects3d[i+(2*objects3dCount/4)].bitmapW =*(billboard_object_bitmaps[i+8] - 2);
-        objects3d[i+(2*objects3dCount/4)].bitmapH =*(billboard_object_bitmaps[i+8] - 1);
-        objects3d[i+(2*objects3dCount/4)].fxScaledWidth = objects3d[i+(2*objects3dCount/4)].bitmapW * fxScaledSizeFactor;
-        objects3d[i+(2*objects3dCount/4)].fxScaledHeight = objects3d[i+(2*objects3dCount/4)].bitmapH * fxScaledSizeFactor;
-
-        // right side
-        objects3d[i+(3*objects3dCount/4)].fxX = fxRoadWidth+fxCarOffsetX;
-        objects3d[i+(3*objects3dCount/4)].fxY = (fxCarStepY*i)+fxCarOffsetY;
-        objects3d[i+(3*objects3dCount/4)].bitmap = billboard_object_bitmaps[26];
-        objects3d[i+(3*objects3dCount/4)].bitmapW =*(billboard_object_bitmaps[26] - 2);
-        objects3d[i+(3*objects3dCount/4)].bitmapH =*(billboard_object_bitmaps[26] - 1);
-        objects3d[i+(3*objects3dCount/4)].fxScaledWidth = fix16_from_int(objects3d[i+(3*objects3dCount/4)].bitmapW);
-        objects3d[i+(3*objects3dCount/4)].fxScaledHeight = fix16_from_int(objects3d[i+(3*objects3dCount/4)].bitmapH);
-    }
-#endif
 
     static_assert( objects3dMaxCount <= drawListMaxCount, "error");
     for( int32_t i = 0; i < objects3dCount; i++)
@@ -250,176 +520,6 @@ int main () {
         drawList[i] = &(objects3d[i]);
     }
 
-    // *** Setup sound
-
-    int tonefreq=0;
-    uint8_t amplitude = 255;//127;
-    uint8_t wavetype = 1, wavetypeCrash = 4, arpmode=1;
-    snd.ampEnable(1);
-    snd.playTone(1,tonefreq,amplitude,wavetype,arpmode);
-    //snd.playTone(1,100,255,0);
-
-    // *** Calculate lookup tables.
-
-    // z = (zs * h) / y
-    fix16_t fxPerspectiveFactor = fix16_from_int(90*screenH);
-    for( int32_t y = 0; y<screenH; y++) {
-
-        #if 1 // 3d
-         // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
-         // y = zk*yk /z -15
-         PerspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*2)));
-         PerspectiveScaleX[y] = PerspectiveScaleY[y];
-        #else // 2d
-         PerspectiveScaleY[y] = fix16_from_float(y*2.0);
-         PerspectiveScaleX[y] = fix16_from_float(100*2.0);
-        #endif
-    }
-
-    // Get mipmap pointers.
-    for( uint32_t ii=0; ii<current_texture_bitmaps_count; ii++)
-    {
-        current_texture_bitmaps_mm1[ii] =  current_texture_bitmaps[ii] + (texW * tileH);
-        current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
-    }
-
-     // *** Draw scenery
-
-    uint16_t skyW = image_sky[0];
-    uint16_t skyH = image_sky[1];
-    const uint8_t* skyBitmapPtr = &(image_sky[2]);
-    for( int32_t x = 0; x<110; x+=skyW)
-        DrawScaledBitmap8bit( x, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
-
-    // *** The game loop
-    while (mygame.isRunning()) {
-
-        if (mygame.update()) {
-
-            // ** Draw the road and edges and terrain.
-
-            DrawMode7(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle);
-
-            // Draw 3d objects
-            Draw3dObects(fxCamX, fxCamY, fxAngle);
-
-
-            // ** Draw the ship shadow
-
-            uint16_t shadowW = image_shadow[0];
-            uint16_t shadowH = image_shadow[1];
-            const uint8_t* shadowBitmapPtr = &(image_shadow[2]);
-            DrawScaledBitmap8bit( 55-(shadowW>>1), 56+7,
-                                  shadowBitmapPtr,
-                                  shadowW, shadowH, shadowW, shadowH);
-
-            // *** Draw ship bitmap
-
-            // Move ship up and down when collided
-            int32_t shipY = 56;
-            if(collided) {
-                fix16_t fxBumbAngle = fxCamX + fxCamY;
-                fix16_t fxBumpHeight = fix16_sin(fxBumbAngle) * 4;
-                shipY -= abs(fix16_to_int(fxBumpHeight));
-            }
-
-            // Draw the bitmpa (currently not scaled)
-            DrawScaledBitmap8bit( 55-(shipBitmapW>>1), shipY,
-                                  activeShipBitmapData,
-                                  shipBitmapW, shipBitmapH, shipBitmapW, shipBitmapH);
-
-            // Check collision
-            prevCollided = collided;
-            uint8_t tileIndex = GetTileIndex(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle, 55, 56);
-            if( tileIndex != 5 && tileIndex != 6 ) {
-                collided = true;
-                wavetype = 5;
-            }
-            else {
-                collided = false;
-                wavetype = 1;
-            }
-
-            // Draw scenery behind the menu
-            if( isSetupMenuActive )
-            {
-                uint16_t skyW = image_sky[0];
-                uint16_t skyH = image_sky[1];
-                const uint8_t* skyBitmapPtr = &(image_sky[2]);
-                for( int32_t x = 0; x<110; x+=skyW)
-                    DrawScaledBitmap8bit( x, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
-            }
-
-            // Print coordinates on screen
-            #if 0
-            char text[128];
-            mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10));
-            mygame.display.print(", ");
-            mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10));
-            mygame.display.print("     ");
-            #endif
-
-            // Open/close the setup menu
-            if(mygame.buttons.pressed(BTN_C))
-            {
-               // Setup menu open close
-               isSetupMenuActive = ! isSetupMenuActive;
-            }
-
-            if( isSetupMenuActive )
-            {
-                // Draw and handle the setup menu keys.
-                HandleSetupMenu(/*OUT*/ lastSetupListPos);
-            }
-            else
-            {
-                // Check buttons
-                HandleGameKeys();
-
-                // Limit turning speed
-                if(fxRotVel>fxInitialRotVel*10)
-                    fxRotVel = fxInitialRotVel*10;
-
-                // Limit speed
-                if(fxVel>fxMaxSpeed)
-                    fxVel = fxMaxSpeed;
-                else if(fxVel<-fxMaxSpeed)
-                    fxVel = -fxMaxSpeed;
-
-                // If colliding, slow down
-                if( collided ) {
-
-                    // Break
-                    if(fxVel>fxMaxSpeedCollided) {
-                        fxVel = fxVel - (fix16_one>>4);
-                        if(fxVel<0)
-                            fxVel = 0;
-                    }
-                    else if(fxVel<-fxMaxSpeedCollided){
-                        fxVel = fxVel + (fix16_one>>4);
-                        if(fxVel>0)
-                            fxVel = 0;
-                    }
-                }
-
-                // Change sound effect if needed.
-                if(fxVelOld != fxVel || prevCollided != collided ) {
-                    tonefreq = fix16_to_int(abs(fxVel*5));
-                    if(tonefreq>50) tonefreq = 50;
-                    snd.playTone(1,tonefreq,amplitude,wavetype,arpmode);
-                }
-
-                // Move the  texture plane
-
-                fxCos = fix16_cos(-fxAngle);
-                fxSin = fix16_sin(-fxAngle);
-
-                fxCamY = fxCamY + fix16_mul(fxVel, fxCos);
-                fxCamX = fxCamX + fix16_mul(fxVel, fxSin);
-                fxVelOld = fxVel;
-            }
-        }
-    }
 }
 
 // Handle keys
@@ -501,6 +601,62 @@ void HandleGameKeys()
 
 #endif
 }
+//
+bool HandleStartGameMenu( int32_t lastLap_ms )
+{
+    //
+    int32_t winX = 0;
+    int32_t winY = 16;
+    int32_t winW = 110;
+    int32_t winH = 31;
+    if( lastLap_ms > 0 )
+		winH += 20;
+    int32_t currY = winY;
+
+    // Draw menu window background
+    mygame.display.setColor(1,1);
+    mygame.display.fillRect(winX, winY, winW, winH);
+
+    // Best time
+    mygame.display.setColor(2,1);
+    mygame.display.setInvisibleColor(1);
+	currY += 4;
+    mygame.display.print(winX+5,currY,"BEST: ");
+    currY -= 1;
+    DrawLapTime(highscore.bestLap_ms, winX+55, currY, fix16_from_float(1.5) );
+    currY += 15;
+
+    // Last time
+    if( lastLap_ms > 0 )
+    {
+        DrawLapTime(lastLap_ms, winX+30, currY, fix16_one<<1 );
+        currY += 20;
+    }
+
+//
+    mygame.display.setColor(2,1);
+    mygame.display.setInvisibleColor(1);
+    mygame.display.print(winX+5,currY,"C TO START");
+
+    // Read keys
+    if(mygame.buttons.pressed(BTN_C))
+    {
+        // Reset game
+        fxCamX = fix16_from_int(42);
+        fxCamY = fix16_from_int(490);
+        fxVel = 0;
+        fxAngle = 0;
+        fxRotVel = fxInitialRotVel;
+
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
 
 // Draw the setup menu and handle keys.
 void HandleSetupMenu(int32_t& lastListPos)
@@ -641,8 +797,8 @@ uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int3
     const fix16_t fxSin = fix16_sin(fxAngle);
 
     // Move caused by rotation.
-    const int32_t reqRotateCenterX = tile2PosX + 0;
-    const int32_t reqRotateCenterY = tile2PosY + 44;
+    const int32_t reqRotateCenterX = tile2PosX + g_rotatingCenterX;
+    const int32_t reqRotateCenterY = tile2PosY + g_rotatingCenterY;
     const fix16_t fxRotatedRotateCenterX = (reqRotateCenterX * fxCos) - (reqRotateCenterY * fxSin);
     const fix16_t fxRotatedRotateCenterY = (reqRotateCenterX * fxSin) + (reqRotateCenterY * fxCos);
     const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fix16_from_int(reqRotateCenterX);
@@ -700,13 +856,14 @@ void SetObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap,
     objects3d[index].fxScaledHeight = fxScaledHeight;
 }
 
-void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
+bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
     const fix16_t fxCos = fix16_cos(-fxAngle);
     const fix16_t fxSin = fix16_sin(-fxAngle);
-    const fix16_t fxRotCenterX = fix16_from_int(0);
-    const fix16_t fxRotCenterY = fix16_from_int(35);
+    const fix16_t fxRotCenterX = fix16_from_int(g_rotatingCenterX);
+    const fix16_t fxRotCenterY = fix16_from_int(g_rotatingCenterY-6);
     const int32_t horizonY = 0 + sceneryH;
+    bool isCollidedToPlayerShip = false;
 
     for( int32_t i = 0; i < drawListMaxCount; i++)
     {
@@ -753,9 +910,31 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                 const fix16_t fxViewFrustumDistancePotLimit =
                     fix16_from_int((viewFrustumLimit>>3)*(viewFrustumLimit>>4));
                 if( fxDistancePot > fxViewFrustumDistancePotLimit )
-                    obj->fxDistancePot = fix16_max;
+                {
+                    obj->fxDistancePot = fix16_max;  // Too far, do not draw
+                }
                 else
+                {
                     obj->fxDistancePot = fxDistancePot;
+
+                    // *** Check collision
+                    if( ! isCollidedToPlayerShip )
+                    {
+
+                        // Position relative to player ship.
+                        fix16_t fxX3 = fxX - fxRotCenterX;
+                        fix16_t fxY3 = fxY - fxRotCenterY;
+                        // Calculate distance.
+                        // Scale down so that it will not overflow
+                        fxX3 >>= 4;
+                        fxY3 >>= 4;
+                        fix16_t fxDistanceFromShipPot = fix16_mul(fxX3, fxX3) + fix16_mul(fxY3,fxY3);
+                        const int32_t ShipCollisionLimit = 10;
+                        const fix16_t fxShipCollisionDistancePotLimit = fix16_from_int(ShipCollisionLimit*ShipCollisionLimit);
+                        if( fxDistanceFromShipPot < fxShipCollisionDistancePotLimit>>8 )
+                            isCollidedToPlayerShip = true;
+                    }
+                }
 
             }  // end if
 
@@ -810,4 +989,6 @@ void Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
          if( obj == NULL ) break;
 
     }  // end for
+
+    return isCollidedToPlayerShip;
 }

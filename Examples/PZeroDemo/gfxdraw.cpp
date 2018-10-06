@@ -1,6 +1,7 @@
 #include "Pokitto.h"
 #include "fix16.h"
 #include "main.h"
+#include "gfx_hdr/image_numbers.h"
 
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
 
@@ -13,8 +14,8 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
     const fix16_t fxSin = fix16_sin(fxAngle);
 
     // Move caused by rotation.
-    const int32_t reqRotateCenterX = tile2PosX + 0;
-    const int32_t reqRotateCenterY = tile2PosY + 44;
+    const int32_t reqRotateCenterX = tile2PosX + g_rotatingCenterX;
+    const int32_t reqRotateCenterY = tile2PosY + g_rotatingCenterY;
     const fix16_t fxRotatedRotateCenterX = (reqRotateCenterX * fxCos) - (reqRotateCenterY * fxSin);
     const fix16_t fxRotatedRotateCenterY = (reqRotateCenterX * fxSin) + (reqRotateCenterY * fxCos);
     const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fix16_from_int(reqRotateCenterX);
@@ -256,5 +257,31 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 
        }  // end for
     }
+}
+
+//
+void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor)
+{
+    fix16_t fxStartX = fix16_from_int(x);
+    int32_t tens = milliseconds / 10000;
+    milliseconds -= tens * 10000;
+    DrawScaledBitmap8bit(fix16_to_int(fxStartX),y, &(image_numbers[2]) + (6*7)*tens, 6, 7,
+                         fix16_to_int(6*fxScaleFactor), fix16_to_int(7*fxScaleFactor) );
+    int32_t ones = milliseconds / 1000;
+    milliseconds -= ones * 1000;
+    fxStartX += 6*fxScaleFactor;
+    DrawScaledBitmap8bit(fix16_to_int(fxStartX),y, &(image_numbers[2]) + (6*7)*ones, 6, 7,
+                         fix16_to_int(6*fxScaleFactor), fix16_to_int(7*fxScaleFactor) );
+
+    // ''
+    fxStartX += 6*fxScaleFactor;
+    DrawScaledBitmap8bit(fix16_to_int(fxStartX),y, &(image_numbers[2]) + (6*7)*10, 6, 7,
+                         fix16_to_int(6*fxScaleFactor), fix16_to_int(7*fxScaleFactor) );
+
+    int32_t hundreds_ms = milliseconds / 100;
+    milliseconds -= hundreds_ms * 100;
+    fxStartX += 6*fxScaleFactor;
+    DrawScaledBitmap8bit(fix16_to_int(fxStartX),y, &(image_numbers[2]) + (6*7)*hundreds_ms, 6, 7,
+                         fix16_to_int(6*fxScaleFactor), fix16_to_int(7*fxScaleFactor) );
 }
 

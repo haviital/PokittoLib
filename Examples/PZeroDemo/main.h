@@ -16,6 +16,9 @@ const uint8_t tileH = 8;
 const uint16_t sceneryH = 16;
 const uint16_t screenShiftY = 5;
 
+const int32_t g_rotatingCenterX = -6;
+const int32_t g_rotatingCenterY = 72;
+
 // extern
 extern Pokitto::Core mygame;
 extern Pokitto::Sound snd;
@@ -26,4 +29,8 @@ extern const uint8_t blockData[][8*8];
 extern const uint8_t* current_texture_bitmaps[];
 extern const uint8_t* current_texture_bitmaps_mm1[];
 extern const uint8_t* current_texture_bitmaps_mm2[];
+
+//
+void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor);
+
 
