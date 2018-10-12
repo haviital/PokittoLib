@@ -99,6 +99,7 @@
 #include "image_road1.h"
 #include "image_road2.h"
 #include "image_sky.h"
+#include "image_sky_long.h"
 #include "image_light.h"
 
  // Defines blocks of 64 (8x8) tiles

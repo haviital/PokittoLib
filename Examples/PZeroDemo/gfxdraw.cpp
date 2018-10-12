@@ -3,8 +3,6 @@
 #include "main.h"
 #include "gfx_hdr/image_numbers.h"
 
-void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
-
 //
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 {
@@ -109,7 +107,237 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
     }  // end for
 }
 
-// Draw and scale the bitmap.
+// Draw the bitmap.
+// TODO: top-y-clipping
+void DrawBitmapOpaque8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH )
+{
+    // Sanity check
+
+    if(posX >= screenW ||
+       posY >= screenH || posY < 0    // y-clipping  from top not implemented yet. Preventing overflow.
+    )
+        return;
+
+    uint8_t* scrptr = mygame.display.getBuffer(); // 8-bit screen buffer
+
+    // Screen coordinates, x,y. Bitmap coordinates: u, v
+
+    uint32_t finalV = 0;
+
+    // clip
+
+    uint8_t clippedStartU = 0;
+    uint8_t clippedStartV = 0;
+    uint8_t clippedWidth = bitmapW;
+    uint8_t clippedHeight = bitmapH;
+    if(posX < 0) {
+        clippedStartU = -posX;
+        clippedWidth = bitmapW + posX;
+    }
+    else
+        scrptr += posX;  // Bitmap starting position on screen
+
+    if(posX+bitmapW > screenW) {
+        clippedWidth -=  posX + bitmapW - screenW;
+    }
+
+     if(posY+bitmapH > screenH) {
+        clippedHeight -=  posY + bitmapH - screenH;
+    }
+
+    if(clippedWidth < 8)
+    {
+       // Draw
+        for( uint32_t y=posY; y<clippedHeight+posY ; y++ ) {
+
+            uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+            const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
+             uint32_t finalU = clippedStartU;
+
+            // *** Draw one pixel row.
+            for( uint32_t x=0; x<clippedWidth; x++) {
+
+                // Draw pixel.
+                uint8_t color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+
+            }  // end for
+
+            finalV++;
+
+       }  // end for
+    }
+    else // bitmapW >= 8 pixels
+    {
+       // Draw
+        for( uint32_t y=posY; y<clippedHeight+posY ; y++ ) {
+
+            uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+            const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
+            uint32_t finalU = clippedStartU;
+
+            // *** Draw one pixel row.
+            //uint32_t x = 0;
+            uint8_t color = 0;
+
+            while(clippedStartU + clippedWidth - finalU >= 8)
+            {
+                // Draw 8 pixels, unrolled.
+                color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+                color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+                color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+                color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+                color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+                color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+                color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+                color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+            }
+
+            // Draw the rest of the pixels.
+            while( int8_t(clippedStartU + clippedWidth - finalU) >= 0) {
+
+                // Draw pixel.
+                uint8_t color = *(bitmapScanlinePtr + finalU++);
+                *screenScanlinePtr++ = color;
+
+            }  // end for
+
+            finalV++;
+
+       }  // end for
+    }
+}
+
+// Draw the bitmap.
+// TODO: top-y-clipping
+void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH )
+{
+    // Sanity check
+
+    if(posX >= screenW ||
+       posY >= screenH || posY < 0    // y-clipping  from top not implemented yet. Preventing overflow.
+    )
+        return;
+
+    uint8_t* scrptr = mygame.display.getBuffer(); // 8-bit screen buffer
+
+    // Screen coordinates, x,y. Bitmap coordinates: u, v
+
+    uint32_t finalV = 0;
+
+    // clip
+
+    uint8_t clippedStartU = 0;
+    uint8_t clippedStartV = 0;
+    uint8_t clippedWidth = bitmapW;
+    uint8_t clippedHeight = bitmapH;
+    if(posX < 0) {
+        clippedStartU = -posX;
+        clippedWidth = bitmapW + posX;
+    }
+    else
+        scrptr += posX;  // Bitmap starting position on screen
+
+    if(posX+bitmapW > screenW) {
+        clippedWidth -=  posX + bitmapW - screenW;
+    }
+
+     if(posY+bitmapH > screenH) {
+        clippedHeight -=  posY + bitmapH - screenH;
+    }
+
+    if(clippedWidth < 8)
+    {
+       // Draw
+        for( uint32_t y=posY; y<clippedHeight+posY ; y++ ) {
+
+            uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+            const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
+             uint32_t finalU = clippedStartU;
+
+            // *** Draw one pixel row.
+            for( uint32_t x=0; x<clippedWidth; x++) {
+
+                // Draw pixel.
+                uint8_t color = *(bitmapScanlinePtr + finalU++);
+                if(color)
+                    *screenScanlinePtr = color;
+                screenScanlinePtr++;
+
+            }  // end for
+
+            finalV++;
+
+       }  // end for
+    }
+    else // bitmapW >= 8 pixels
+    {
+       // Draw
+        for( uint32_t y=posY; y<clippedHeight+posY ; y++ ) {
+
+            uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+            const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW);
+            uint32_t finalU = clippedStartU;
+
+            // *** Draw one pixel row.
+            //uint32_t x = 0;
+            uint8_t color = 0;
+
+            while(clippedStartU + clippedWidth - finalU >= 8)
+            {
+                // Draw 8 pixels, unrolled.
+                color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+                color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+            }
+
+            // Draw the rest of the pixels.
+            while( int8_t(clippedStartU + clippedWidth - finalU) >= 0) {
+
+                // Draw pixel.
+                uint8_t color = *(bitmapScanlinePtr + finalU++);
+                if(color) *screenScanlinePtr = color;
+                screenScanlinePtr++;
+
+            }  // end for
+
+            finalV++;
+
+       }  // end for
+    }
+}
+
+//
+// Draw and scale the bitmap.clippedHeight
 // TODO: top-y-clipping
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH )
 {

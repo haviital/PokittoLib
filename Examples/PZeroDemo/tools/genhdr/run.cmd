@@ -50,6 +50,7 @@ call ./genhdr.cmd image_road2
 call ./genhdr.cmd image_light
 
 call ./genhdr.cmd image_sky
+call ./genhdr.cmd image_sky_long
 
 
 

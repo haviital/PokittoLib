@@ -14,7 +14,6 @@ void HandleGameKeys();
 void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
-void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
 bool Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 bool HandleStartGameMenu( int32_t lastLap_ms );
 
@@ -22,7 +21,7 @@ const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
 const fix16_t fxMaxSpeedCollided = fix16_one>>1;
 const fix16_t fxInitialRotVel = fix16_pi / 1000;
-const fix16_t fxRotAccFactor = fix16_from_float(1.1);
+const fix16_t fxRotAccFactor = fix16_from_float(1.2);
 
 // 3d lookup tables
 // z = (zs * h) / y
@@ -193,14 +192,6 @@ int main () {
         current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
     }
 
-     // *** Draw scenery
-
-    uint16_t skyW = image_sky[0];
-    uint16_t skyH = image_sky[1];
-    const uint8_t* skyBitmapPtr = &(image_sky[2]);
-    for( int32_t x = 0; x<110; x+=skyW)
-        DrawScaledBitmap8bit( x, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
-
     //
     start_ms = mygame.getTime();
 
@@ -208,6 +199,14 @@ int main () {
     while (mygame.isRunning()) {
 
         if (mygame.update()) {
+
+            // Draw sky
+            fix16_t fxAnglePositive =  ((-fxAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
+            int16_t skyX = ((fxAnglePositive>>9) % 22);
+            uint16_t skyW = image_sky_long[0];
+            uint16_t skyH = image_sky_long[1];
+            const uint8_t* skyBitmapPtr = &(image_sky_long[2]);
+            DrawBitmapOpaque8bit( 0 - skyX, 0, skyBitmapPtr, skyW, skyH );
 
             // ** Draw the road and edges and terrain.
 
@@ -242,13 +241,6 @@ int main () {
                                   shipBitmapW, shipBitmapH, shipBitmapW, shipBitmapH);
 
             // *** Draw the lap counter
-
-            // Draw background
-            int32_t startX = 110-5;  // 5 pixel margin
-            startX -= 5*6; // 5 chars
-            int32_t bgX = (startX/skyW) * skyW;
-            DrawScaledBitmap8bit( bgX, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
-            DrawScaledBitmap8bit( bgX+skyW, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
 
             // get curren lap time
             uint32_t current_lap_time_ms = 0;
