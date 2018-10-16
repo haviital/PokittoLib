@@ -3,13 +3,16 @@
 #include "fix16.h"
 #include "main.h"
 #include "gfx_hdr/GameData.h"
+#include "ship.h"
+
 
 Pokitto::Core mygame;
 Pokitto::Sound snd;
 
 // Prototypes
 void InitGameObjects();
-void SetObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight);
+void CreateObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight);
+void CreateShip( uint16_t objIndex, uint16_t shipIndex, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight, fix16_t fxVel);
 void HandleGameKeys();
 void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
@@ -51,20 +54,6 @@ uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 //
 int32_t textureMode = 1;
 
-struct Object3d
-{
-    fix16_t fxX;
-    fix16_t fxY;
-    fix16_t fxScaledWidth;
-    fix16_t fxScaledHeight;
-    const uint8_t* bitmap;
-    int16_t bitmapW;
-    int16_t bitmapH;
-
-    fix16_t fxXInView;
-    fix16_t fxYInView;
-    fix16_t fxDistancePot;
-};
 
 /*
 struct DrawListItem
@@ -75,30 +64,18 @@ struct DrawListItem
 */
 
 // Drawing order list
-const uint32_t drawListMaxCount = 100;
-Object3d* drawList[drawListMaxCount] = {0};
+const uint32_t g_drawListMaxCount = 100;
+CObject3d* g_drawList[g_drawListMaxCount] = {0};
 
-// Other cars in uv-plane
-const uint32_t objects3dMaxCount = 32;
-uint32_t objects3dCount = 0;
-Object3d objects3d[ objects3dMaxCount ] = {0};
+// Objects
+const uint32_t g_objects3dMaxCount = 32;
+uint32_t g_objects3dCount = 0;
+CObject3d* g_objects3d[ g_objects3dMaxCount ] = {0};
 
-// 4x4 bitmap
-const uint8_t otherCarBitmap[] =
-{
-    0x02,0x02,0x02,0x02,
-    0x02,0x02,0x02,0x02,
-    0x02,0x02,0x02,0x02,
-    0x02,0x02,0x02,0x02,
-};
-// 4x4 bitmap
-const uint8_t otherCarBitmap2[] =
-{
-    0x03,0x03,0x03,0x03,
-    0x03,0x03,0x03,0x03,
-    0x03,0x03,0x03,0x03,
-    0x03,0x03,0x03,0x03,
-};
+// Ships
+const uint32_t g_shipsMaxCount = 10;
+uint32_t g_shipCount = 0;
+CShip* g_ships[ g_objects3dMaxCount ] = {0};
 
 enum LapTimingState {
     enumReadyToStart = 0,
@@ -123,7 +100,6 @@ mycookie highscore;
 int main () {
 
     // Initialize variables.
-    const fix16_t fxMaxSpeed = fix16_one*6;
     fix16_t fxVelOld = -1;
     fix16_t fxCos = fix16_one;
     fix16_t fxSin = 0;
@@ -321,16 +297,6 @@ int main () {
                 break;
             }
 
-            // Draw scenery behind the menu
-            if( isSetupMenuActive )
-            {
-                uint16_t skyW = image_sky[0];
-                uint16_t skyH = image_sky[1];
-                const uint8_t* skyBitmapPtr = &(image_sky[2]);
-                for( int32_t x = 0; x<110; x+=skyW)
-                    DrawScaledBitmap8bit( x, 0, skyBitmapPtr, skyW, skyH, skyW, skyH );
-            }
-
             // Print coordinates on screen
             #if 0
             char text[128];
@@ -340,9 +306,6 @@ int main () {
             mygame.display.print("     ");
             #endif
 
-
-
-
             #if 0
             // Open/close the setup menu
             if(mygame.buttons.pressed(BTN_C))
@@ -351,6 +314,7 @@ int main () {
                isSetupMenuActive = ! isSetupMenuActive;
             }
             #endif
+
             if( isSetupMenuActive )
             {
                 // Draw and handle the setup menu keys.
@@ -415,6 +379,12 @@ int main () {
                 fxCamY = fxCamY + fix16_mul(fxVel, fxCos);
                 fxCamX = fxCamX + fix16_mul(fxVel, fxSin);
                 fxVelOld = fxVel;
+
+                // Move other ships
+                for(int32_t i=0; i < g_shipCount; i++)
+                {
+                    g_ships[i]->Update();
+                }
             }
         }
     }
@@ -428,88 +398,78 @@ void InitGameObjects()
     fix16_t fxCarOffsetY = fix16_from_int(650);
     fix16_t fxCarStepY = fix16_from_int(80);
     fix16_t fxRoadWidth = fix16_from_int(97+30);
-    fix16_t fxScaledSizeFactor = fix16_from_float(0.6);
+    fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
     fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
+    uint8_t i = 0;
 
     // Set cactuses
     const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-    uint8_t i = 0;
-    SetObject(i++, fix16_from_int(3), fix16_from_int(632), cactus_bm,
+    CreateObject(i++, fix16_from_int(3), fix16_from_int(632), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    SetObject(i++, fix16_from_int(243), fix16_from_int(1465), cactus_bm,
+    CreateObject(i++, fix16_from_int(243), fix16_from_int(1465), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    SetObject(i++, fix16_from_int(706), fix16_from_int(1425), cactus_bm,
+    CreateObject(i++, fix16_from_int(706), fix16_from_int(1425), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    SetObject(i++, fix16_from_int(667), fix16_from_int(2024), cactus_bm,
+    CreateObject(i++, fix16_from_int(667), fix16_from_int(2024), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    SetObject(i++, fix16_from_int(1174), fix16_from_int(1844), cactus_bm,
+    CreateObject(i++, fix16_from_int(1174), fix16_from_int(1844), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    SetObject(i++, fix16_from_int(2050), fix16_from_int(1851), cactus_bm,
+    CreateObject(i++, fix16_from_int(2050), fix16_from_int(1851), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    SetObject(i++, fix16_from_int(1922), fix16_from_int(1130), cactus_bm,
+    CreateObject(i++, fix16_from_int(1922), fix16_from_int(1130), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    SetObject(i++, fix16_from_int(1986), fix16_from_int(35), cactus_bm,
+    CreateObject(i++, fix16_from_int(1986), fix16_from_int(35), cactus_bm,
               *(cactus_bm - 2) * fxCactusScaledSizeFactor,
               *(cactus_bm - 1) * fxCactusScaledSizeFactor );
 
     // Set stones
     const uint8_t* stone_bm = billboard_object_bitmaps[26];
-    SetObject(i++, fix16_from_int(131), fix16_from_int(1056), stone_bm,
+    CreateObject(i++, fix16_from_int(131), fix16_from_int(1056), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    SetObject(i++, fix16_from_int(582), fix16_from_int(1469), stone_bm,
+    CreateObject(i++, fix16_from_int(582), fix16_from_int(1469), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    SetObject(i++, fix16_from_int(953), fix16_from_int(2042), stone_bm,
+    CreateObject(i++, fix16_from_int(953), fix16_from_int(2042), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    SetObject(i++, fix16_from_int(1839), fix16_from_int(1920), stone_bm,
+    CreateObject(i++, fix16_from_int(1839), fix16_from_int(1920), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    SetObject(i++, fix16_from_int(521), fix16_from_int(127), stone_bm,
+    CreateObject(i++, fix16_from_int(521), fix16_from_int(127), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    SetObject(i++, fix16_from_int(581), fix16_from_int(505), stone_bm,
+    CreateObject(i++, fix16_from_int(581), fix16_from_int(505), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    SetObject(i++, fix16_from_int(333), fix16_from_int(634), stone_bm,
+    CreateObject(i++, fix16_from_int(333), fix16_from_int(634), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    SetObject(i++, fix16_from_int(6), fix16_from_int(1220), stone_bm,
+    CreateObject(i++, fix16_from_int(6), fix16_from_int(1220), stone_bm,
               fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
 
-    // Set cars
-    SetObject(i++, fix16_from_int(42), fix16_from_int(1290), billboard_object_bitmaps[1],
-              *(billboard_object_bitmaps[1] - 2) * fxScaledSizeFactor,
-              *(billboard_object_bitmaps[1] - 1) * fxScaledSizeFactor );
-    SetObject(i++, fix16_from_int(1320), fix16_from_int(1975), billboard_object_bitmaps[2],
-              *(billboard_object_bitmaps[2] - 2) * fxScaledSizeFactor,
-              *(billboard_object_bitmaps[2] - 1) * fxScaledSizeFactor );
-    SetObject(i++, fix16_from_int(1960), fix16_from_int(1479), billboard_object_bitmaps[3],
-              *(billboard_object_bitmaps[3] - 2) * fxScaledSizeFactor,
-              *(billboard_object_bitmaps[3] - 1) * fxScaledSizeFactor );
-    SetObject(i++, fix16_from_int(1922), fix16_from_int(430), billboard_object_bitmaps[18],
-              *(billboard_object_bitmaps[18] - 2) * fxScaledSizeFactor,
-              *(billboard_object_bitmaps[18] - 1) * fxScaledSizeFactor );
-    SetObject(i++, fix16_from_int(1624), fix16_from_int(80), billboard_object_bitmaps[5],
-              *(billboard_object_bitmaps[5] - 2) * fxScaledSizeFactor,
-              *(billboard_object_bitmaps[5] - 1) * fxScaledSizeFactor );
-    SetObject(i++, fix16_from_int(1012),fix16_from_int(-190), billboard_object_bitmaps[6],
-              *(billboard_object_bitmaps[6] - 2) * fxScaledSizeFactor,
-              *(billboard_object_bitmaps[6] - 1) * fxScaledSizeFactor );
-    SetObject(i++, fix16_from_int(554),fix16_from_int(412), billboard_object_bitmaps[10],
-              *(billboard_object_bitmaps[10] - 2) * fxScaledSizeFactor,
-              *(billboard_object_bitmaps[10] - 1) * fxScaledSizeFactor );
-    SetObject(i++, fix16_from_int(236),fix16_from_int(598), billboard_object_bitmaps[14],
-              *(billboard_object_bitmaps[14] - 2) * fxScaledSizeFactor,
-              *(billboard_object_bitmaps[14] - 1) * fxScaledSizeFactor );
-
-    objects3dCount = i;
-
-    static_assert( objects3dMaxCount <= drawListMaxCount, "error");
-    for( int32_t i = 0; i < objects3dCount; i++)
+    // Create ships
+    uint32_t shipIndex = 0;
+    fix16_t shipStepX = 50;
+    fix16_t shipStepY = 50;
+    g_shipCount = 10;
+    for(int32_t ii=0; ii<g_shipCount; ii++)
     {
-        drawList[i] = &(objects3d[i]);
+        int32_t shipBitmapIndex = (rand()%25) + 1;
+        const uint8_t* bmData = billboard_object_bitmaps[shipBitmapIndex];
+        fix16_t fxBmWidth = *(bmData - 2) * fxScaledSizeFactor;
+        fix16_t fxBmHeight = *(bmData - 1) * fxScaledSizeFactor;
+        CreateShip(i++, ii, fix16_from_int(30 + ((ii&1) ? shipStepX : 0)), fix16_from_int(600 + (shipStepY*ii)),
+                   bmData, fxBmWidth, fxBmHeight, fix16_one );
+    }
+
+    // Set the object count.
+    g_objects3dCount = i;
+
+    static_assert( g_objects3dMaxCount <= g_drawListMaxCount, "error");
+    for( int32_t i = 0; i < g_objects3dCount; i++)
+    {
+        g_drawList[i] = g_objects3d[i];
     }
 
 }
@@ -837,16 +797,39 @@ uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int3
     return tileIndex;
 }
 
-void SetObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight)
+void CreateObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight)
 {
-    objects3d[index].fxX = fxX;
-    objects3d[index].fxY = fxY;
-    objects3d[index].bitmap = bitmap;
-    objects3d[index].bitmapW =*(bitmap - 2);
-    objects3d[index].bitmapH =*(bitmap - 1);
-    objects3d[index].fxScaledWidth = fxScaledWidth;
-    objects3d[index].fxScaledHeight = fxScaledHeight;
+    g_objects3d[index] = new CObject3d();
+
+    g_objects3d[index]->m_fxX = fxX;
+    g_objects3d[index]->m_fxY = fxY;
+    g_objects3d[index]->m_bitmap = bitmap;
+    g_objects3d[index]->m_bitmapW =*(bitmap - 2);
+    g_objects3d[index]->m_bitmapH =*(bitmap - 1);
+    g_objects3d[index]->m_fxScaledWidth = fxScaledWidth;
+    g_objects3d[index]->m_fxScaledHeight = fxScaledHeight;
 }
+
+void CreateShip( uint16_t objIndex, uint16_t shipIndex, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight, fix16_t fxVel)
+{
+    // Create and initialize ship
+    CShip* oppShip = new CShip();
+    g_objects3d[objIndex] = oppShip;
+    g_ships[shipIndex] = oppShip;
+    oppShip->m_fxX = fxX;
+    oppShip->m_fxY = fxY;
+    oppShip->m_bitmap = bitmap;
+    oppShip->m_bitmapW =*(bitmap - 2);
+    oppShip->m_bitmapH =*(bitmap - 1);
+    oppShip->m_fxScaledWidth = fxScaledWidth;
+    oppShip->m_fxScaledHeight = fxScaledHeight;
+    oppShip->m_fxVel = fxVel;
+    oppShip->m_fxAngle = 0;
+    oppShip->m_fxMaxSpeed = fxMaxSpeed;
+    oppShip->m_activeWaypointIndex = 0;
+}
+
+
 
 bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
@@ -857,13 +840,13 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
     const int32_t horizonY = 0 + sceneryH;
     bool isCollidedToPlayerShip = false;
 
-    for( int32_t i = 0; i < drawListMaxCount; i++)
+    for( int32_t i = 0; i < g_drawListMaxCount; i++)
     {
-        Object3d* obj = drawList[i];
+        CObject3d* obj = g_drawList[i];
         if( obj != NULL )
         {
-            fix16_t fxX = obj->fxX;
-            fix16_t fxY = obj->fxY;
+            fix16_t fxX = obj->m_fxX;
+            fix16_t fxY = obj->m_fxY;
 
             // Translate the object to view (camera) domain.
             fxX -= fxCamPosX;
@@ -876,7 +859,7 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                 fxY > fxViewFrustumLimit || fxY < -fxViewFrustumLimit )
             {
                 // Object is too far. Do not draw.
-                obj->fxDistancePot = fix16_max;
+                obj->m_fxDistancePot = fix16_max;
             }
             else
             {
@@ -888,8 +871,8 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                 fxX = fxRotatedX + fxRotCenterX;
                 fxY = fxRotatedY + fxRotCenterY;
 
-                obj->fxXInView = fxX;
-                obj->fxYInView = fxY;
+                obj->m_fxXInView = fxX;
+                obj->m_fxYInView = fxY;
 
                 // Calculate distance.
                 // Scale down so that it will not overflow
@@ -903,11 +886,11 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                     fix16_from_int((viewFrustumLimit>>3)*(viewFrustumLimit>>4));
                 if( fxDistancePot > fxViewFrustumDistancePotLimit )
                 {
-                    obj->fxDistancePot = fix16_max;  // Too far, do not draw
+                    obj->m_fxDistancePot = fix16_max;  // Too far, do not draw
                 }
                 else
                 {
-                    obj->fxDistancePot = fxDistancePot;
+                    obj->m_fxDistancePot = fxDistancePot;
 
                     // *** Check collision
                     if( ! isCollidedToPlayerShip )
@@ -933,29 +916,29 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
         }  // end if
 
         // Project and draw previous object, if not the first item in the list and the previous object is not too far (invisible).
-        if( i > 0 && drawList[i-1]->fxDistancePot != fix16_max )
+        if( i > 0 && g_drawList[i-1]->m_fxDistancePot != fix16_max )
         {
             // If this object is farther than the previous one. Swap (bubble sort) before drawing.
-            Object3d* drawablePrevObj = drawList[i-1];
-            if( obj != NULL && obj->fxDistancePot > drawablePrevObj->fxDistancePot )
+            CObject3d* drawablePrevObj = g_drawList[i-1];
+            if( obj != NULL && obj->m_fxDistancePot > drawablePrevObj->m_fxDistancePot )
             {
                 // Swap
-                drawList[i-1] = obj;
-                drawList[i] = drawablePrevObj;
+                g_drawList[i-1] = obj;
+                g_drawList[i] = drawablePrevObj;
             }
 
             // * Project 3D to 2D
 
             // Get the object bitmap size
-            const uint8_t* bitmapData = drawablePrevObj->bitmap;
-            uint32_t bitmapW = drawablePrevObj->bitmapW;
-            uint32_t bitmapH = drawablePrevObj->bitmapH;
-            fix16_t fxScaledWidth = drawablePrevObj->fxScaledWidth;
-            fix16_t fxScaledHeight = drawablePrevObj->fxScaledHeight;
+            const uint8_t* bitmapData = drawablePrevObj->m_bitmap;
+            uint32_t bitmapW = drawablePrevObj->m_bitmapW;
+            uint32_t bitmapH = drawablePrevObj->m_bitmapH;
+            fix16_t fxScaledWidth = drawablePrevObj->m_fxScaledWidth;
+            fix16_t fxScaledHeight = drawablePrevObj->m_fxScaledHeight;
 
             // Bottom left corner
-            fix16_t fx3dX = drawablePrevObj->fxXInView;
-            fix16_t fx3dZ = drawablePrevObj->fxYInView;
+            fix16_t fx3dX = drawablePrevObj->m_fxXInView;
+            fix16_t fx3dZ = drawablePrevObj->m_fxYInView;
             fix16_t fx3dY = fix16_from_int(-34.0);
             const int32_t perspectiveScaleFactor = 115.0;
             fix16_t  fxZFactor = fix16_div( fix16_from_int(perspectiveScaleFactor), fx3dZ );
@@ -984,3 +967,5 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 
     return isCollidedToPlayerShip;
 }
+
+

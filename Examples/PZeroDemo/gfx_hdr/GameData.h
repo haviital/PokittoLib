@@ -527,4 +527,12 @@ const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
 const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
 const uint8_t* current_texture_bitmaps_mm2[current_texture_bitmaps_count] = {0};
 
+//
+const uint32_t waypointCount = 11;
+const int32_t waypoints[waypointCount][2] =
+{
+    {72,990}, {94,1361}, {241,1394}, {589,1379}, {642,1479}, {667,1897}, {706,1956}, {1919,1962}, {1991,1891}, {1991,1829},
+    {1991,1099},
+};
+
 

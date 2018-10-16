@@ -1,4 +1,5 @@
 
+ #pragma once
 
 // Constants
 
@@ -19,6 +20,9 @@ const uint16_t screenShiftY = 5;
 const int32_t g_rotatingCenterX = -6;
 const int32_t g_rotatingCenterY = 72;
 
+const fix16_t fxMaxSpeed = fix16_one*6;  // player max speed
+
+
 // extern
 extern Pokitto::Core mygame;
 extern Pokitto::Sound snd;
@@ -29,6 +33,8 @@ extern const uint8_t blockData[][8*8];
 extern const uint8_t* current_texture_bitmaps[];
 extern const uint8_t* current_texture_bitmaps_mm1[];
 extern const uint8_t* current_texture_bitmaps_mm2[];
+extern const int32_t waypoints[][2];
+extern const uint32_t waypointCount;
 
 //
 void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor);
@@ -36,4 +42,20 @@ void DrawBitmapOpaque8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
 
+//
+class CObject3d
+{
+public:
+    fix16_t m_fxX;
+    fix16_t m_fxY;
+    fix16_t m_fxScaledWidth;
+    fix16_t m_fxScaledHeight;
+    const uint8_t* m_bitmap;
+    int16_t m_bitmapW;
+    int16_t m_bitmapH;
+
+    fix16_t m_fxXInView;
+    fix16_t m_fxYInView;
+    fix16_t m_fxDistancePot;
+};
 
