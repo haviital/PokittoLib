@@ -4166,12 +4166,13 @@
 	"SimEEPROM.h"
 	<stdio.h>
 
-1539380411 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+1539530186 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
 	"main.h"
 	"gfx_hdr/GameData.h"
+	"ship.h"
 
 1537483242 c:\git\pokittolib2\examples\pzerodemo\my_settings.h
 
@@ -4556,9 +4557,9 @@
 	"main.h"
 	"gfx_hdr/image_numbers.h"
 
-1539380411 c:\git\pokittolib2\examples\pzerodemo\main.h
+1539520938 c:\git\pokittolib2\examples\pzerodemo\main.h
 
-1539236931 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
+1539530683 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
 	"Pokitto.h"
 	"fix16.h"
 	"palette.h"
@@ -4910,4 +4911,13 @@
 
 1539236680 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_sky_long.h
 	<stdint.h>
+
+1539521375 c:\git\pokittolib2\examples\pzerodemo\ship.h
+	"main.h"
+
+1539530683 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
+	"Pokitto.h"
+	"PokittoCookie.h"
+	"fix16.h"
+	"ship.h"
 
