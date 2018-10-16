@@ -1,4 +1,5 @@
 /obj
+/.objs
 *.zip
 *.usbeecomp
 *.o
