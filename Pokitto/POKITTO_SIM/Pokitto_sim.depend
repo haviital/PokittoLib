@@ -4166,7 +4166,7 @@
 	"SimEEPROM.h"
 	<stdio.h>
 
-1539530186 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+1539812274 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
@@ -4559,7 +4559,7 @@
 
 1539520938 c:\git\pokittolib2\examples\pzerodemo\main.h
 
-1539530683 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
+1539530887 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
 	"Pokitto.h"
 	"fix16.h"
 	"palette.h"
