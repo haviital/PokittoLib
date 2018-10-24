@@ -10,6 +10,7 @@ public:
 public:
     fix16_t m_fxVel;
     fix16_t m_fxAngle;
+    fix16_t m_fxRotVel;
     fix16_t m_fxMaxSpeed;
     int32_t m_activeWaypointIndex;
     //fix16_t m_fxLastDistanceToWaypoint;

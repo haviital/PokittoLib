@@ -10,9 +10,7 @@ Pokitto::Core mygame;
 Pokitto::Sound snd;
 
 // Prototypes
-void InitGameObjects();
-void CreateObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight);
-void CreateShip( uint16_t objIndex, uint16_t shipIndex, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight, fix16_t fxVel);
+void InitGameObjectsForTrack1(bool isRace);
 void HandleGameKeys();
 void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
@@ -23,7 +21,6 @@ bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char*
 
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
-const fix16_t fxMaxSpeedCollided = fix16_one>>1;
 const fix16_t fxInitialRotVel = fix16_pi / 1000;
 const fix16_t fxRotAccFactor = fix16_from_float(1.2);
 
@@ -73,6 +70,10 @@ const uint32_t g_objects3dMaxCount = 32;
 uint32_t g_objects3dCount = 0;
 CObject3d* g_objects3d[ g_objects3dMaxCount ] = {0};
 
+// Reserve space for objects in RAM.
+CObject3d g_BillboardObjectArray[2*8];
+CShip g_ShipObjectArray[1*8];
+
 // Ships
 const uint32_t g_shipsMaxCount = 10;
 uint32_t g_shipCount = 0;
@@ -120,6 +121,7 @@ int main () {
     bool isMenuOpen = true;
     MenuMode menuMode = enumMainMenu;
     int32_t menuCursorPos = 0;
+    bool isRace = true;
 
     // Load cookie
     // NOTE: This must be before Pokitto::core::begin(). Otherwise the audio interrupt do not work!
@@ -137,7 +139,7 @@ int main () {
     #endif // PROJ_SIM
 
     // Init game object.
-    InitGameObjects();
+    InitGameObjectsForTrack1(isRace);
 
     // *** Setup sound
 
@@ -220,7 +222,7 @@ int main () {
                 shipY -= abs(fix16_to_int(fxBumpHeight));
             }
 
-            // Draw the bitmpa (currently not scaled)
+            // Draw the bitmap (currently not scaled)
             DrawScaledBitmap8bit( 55-(shipBitmapW>>1), shipY,
                                   activeShipBitmapData,
                                   shipBitmapW, shipBitmapH, shipBitmapW, shipBitmapH);
@@ -241,7 +243,7 @@ int main () {
             lapStartX -= 5*6; // 5 chars
             DrawLapTime(current_lap_time_ms, lapStartX, 1, fix16_one );
 
-            // *** Check collision
+            // *** Check collision to road edges
             prevCollided = collided;
             uint8_t tileIndex = GetTileIndex(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle, 55, 56);
             if( isCollidedToPlayerShip ||
@@ -331,19 +333,51 @@ int main () {
                         isMenuOpen =  HandleGenericMenu( true, menuCursorPos, "Time trial", "Race", NULL, NULL);
                         if( ! isMenuOpen )
                         {
-                            // if time trial
                             if(menuCursorPos == 0)
+                            {
+                                // time trial
                                 menuMode = enumContinueMenu;
+                                isRace = false;
+
+                                 // Reset game
+                                lapTimingState = enumReadyToStart;
+                                fxCamX = fix16_from_int(42);
+                                fxCamY = fix16_from_int(490);
+                                fxVel = 0;
+                                fxAngle = 0;
+                                fxRotVel = fxInitialRotVel;
+                            }
+                            else if(menuCursorPos == 1)
+                            {
+                                // race
+                                menuMode = enumContinueMenu;
+                                isRace = true;
+
+                                 // Reset game
+                                lapTimingState = enumReadyToStart;
+                                fxCamX = fix16_from_int(42);
+                                fxCamY = fix16_from_int(490);
+                                fxVel = 0;
+                                fxAngle = 0;
+                                fxRotVel = fxInitialRotVel;
+                            }
 
                              // Menu closed
                             menuCursorPos = 0;
+
+                            // Init game object.
+                            InitGameObjectsForTrack1(isRace);
                        }
                    }
                    break;
 
                 case enumContinueMenu:
                     {
-                       isMenuOpen =  HandleGenericMenu( true, menuCursorPos, "Restart", "Continue", "Exit race", NULL);
+                        if(isRace)
+                            isMenuOpen =  HandleGenericMenu( true, menuCursorPos, "Restart", "Continue", "Exit race", NULL);
+                        else
+                            isMenuOpen =  HandleGenericMenu( true, menuCursorPos, "Restart", "Continue", "Exit time trial", NULL);
+
                         if( ! isMenuOpen )
                         {
                              // if "Restart" selected, go to main menu
@@ -357,6 +391,9 @@ int main () {
                                 fxVel = 0;
                                 fxAngle = 0;
                                 fxRotVel = fxInitialRotVel;
+
+                                // Init game object.
+                                InitGameObjectsForTrack1(isRace);
                            }
 
                            // if "Continue", go to main menu
@@ -395,6 +432,9 @@ int main () {
                                 fxVel = 0;
                                 fxAngle = 0;
                                 fxRotVel = fxInitialRotVel;
+
+                                // Init game object.
+                                InitGameObjectsForTrack1(isRace);
                             }
 
                             // if "Exit race" selected, go to main menu
@@ -473,95 +513,105 @@ int main () {
                 fxVelOld = fxVel;
 
                 // Move other ships
-                for(int32_t i=0; i < g_shipCount; i++)
-                {
-                    g_ships[i]->Update();
-                }
+                if( isRace )
+                    for(int32_t i=0; i < g_shipCount; i++)
+                    {
+                        g_ships[i]->Update();
+                    }
             }
         }
     }
 }
 
 // Init game objects
-void InitGameObjects()
+void InitGameObjectsForTrack1(bool isRace)
 {
-    // Setup game objects
-    fix16_t fxCarOffsetX = fix16_from_int(0);
-    fix16_t fxCarOffsetY = fix16_from_int(650);
-    fix16_t fxCarStepY = fix16_from_int(80);
-    fix16_t fxRoadWidth = fix16_from_int(97+30);
-    fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
-    fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
-    uint8_t i = 0;
-
-    // Set cactuses
-    const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-    CreateObject(i++, fix16_from_int(3), fix16_from_int(632), cactus_bm,
-              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
-              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    CreateObject(i++, fix16_from_int(243), fix16_from_int(1465), cactus_bm,
-              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
-              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    CreateObject(i++, fix16_from_int(706), fix16_from_int(1425), cactus_bm,
-              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
-              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    CreateObject(i++, fix16_from_int(667), fix16_from_int(2024), cactus_bm,
-              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
-              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    CreateObject(i++, fix16_from_int(1174), fix16_from_int(1844), cactus_bm,
-              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
-              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    CreateObject(i++, fix16_from_int(2050), fix16_from_int(1851), cactus_bm,
-              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
-              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    CreateObject(i++, fix16_from_int(1922), fix16_from_int(1130), cactus_bm,
-              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
-              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-    CreateObject(i++, fix16_from_int(1986), fix16_from_int(35), cactus_bm,
-              *(cactus_bm - 2) * fxCactusScaledSizeFactor,
-              *(cactus_bm - 1) * fxCactusScaledSizeFactor );
-
-    // Set stones
-    const uint8_t* stone_bm = billboard_object_bitmaps[26];
-    CreateObject(i++, fix16_from_int(131), fix16_from_int(1056), stone_bm,
-              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    CreateObject(i++, fix16_from_int(582), fix16_from_int(1469), stone_bm,
-              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    CreateObject(i++, fix16_from_int(953), fix16_from_int(2042), stone_bm,
-              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    CreateObject(i++, fix16_from_int(1839), fix16_from_int(1920), stone_bm,
-              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    CreateObject(i++, fix16_from_int(521), fix16_from_int(127), stone_bm,
-              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    CreateObject(i++, fix16_from_int(581), fix16_from_int(505), stone_bm,
-              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    CreateObject(i++, fix16_from_int(333), fix16_from_int(634), stone_bm,
-              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-    CreateObject(i++, fix16_from_int(6), fix16_from_int(1220), stone_bm,
-              fix16_from_int(*(stone_bm - 2)), fix16_from_int(*(stone_bm - 1)) );
-
-    // Create ships
-    uint32_t shipIndex = 0;
-    fix16_t shipStepX = 50;
-    fix16_t shipStepY = 50;
-    g_shipCount = 10;
-    for(int32_t ii=0; ii<g_shipCount; ii++)
+    // Copy cactus and rock array pointers to the object list.
+    for(int32_t i = 0; i < 2*8; i++ )
     {
-        int32_t shipBitmapIndex = (rand()%25) + 1;
-        const uint8_t* bmData = billboard_object_bitmaps[shipBitmapIndex];
-        fix16_t fxBmWidth = *(bmData - 2) * fxScaledSizeFactor;
-        fix16_t fxBmHeight = *(bmData - 1) * fxScaledSizeFactor;
-        CreateShip(i++, ii, fix16_from_int(30 + ((ii&1) ? shipStepX : 0)), fix16_from_int(600 + (shipStepY*ii)),
-                   bmData, fxBmWidth, fxBmHeight, fix16_one );
+        g_objects3d[i] = &g_BillboardObjectArray[i];
+        g_objects3d[i]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[i].m_fxX;
+        g_objects3d[i]->m_fxY = g_timeTrialBilboardObjectsInRom_track1[i].m_fxY;
+        g_objects3d[i]->m_bitmap = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmap;
+        g_objects3d[i]->m_bitmapW = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapW;
+        g_objects3d[i]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapH;
+        g_objects3d[i]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledWidth;
+        g_objects3d[i]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledHeight;
     }
 
-    // Set the object count.
-    g_objects3dCount = i;
-
-    static_assert( g_objects3dMaxCount <= g_drawListMaxCount, "error");
-    for( int32_t i = 0; i < g_objects3dCount; i++)
+    int32_t ii = 0;
+    if( ! isRace )
     {
-        g_drawList[i] = g_objects3d[i];
+        // Time trial
+
+        // Copy ship array pointers to the object list.
+        for(int32_t i = 0; i < 1*8; i++ )
+        {
+            ii = i + (2*8);
+            g_objects3d[ii] = &g_ShipObjectArray[i];
+            g_objects3d[ii]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxX;
+            g_objects3d[ii]->m_fxY = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxY;
+            g_objects3d[ii]->m_bitmap = g_timeTrialBilboardObjectsInRom_track1[ii].m_bitmap;
+            g_objects3d[ii]->m_bitmapW = g_timeTrialBilboardObjectsInRom_track1[ii].m_bitmapW;
+            g_objects3d[ii]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[ii].m_bitmapH;
+            g_objects3d[ii]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxScaledWidth;
+            g_objects3d[ii]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxScaledHeight;
+        }
+    }
+    else
+    {
+        // Race
+
+       // Copy ship array pointers to the object list.
+        //g_shipCount = 8;
+        g_shipCount = 8;
+        for(int32_t i = 0; i < g_shipCount; i++ )
+        {
+            ii = i + (2*8);
+            g_objects3d[ii] = &g_ShipObjectArray[i];
+            g_ships[i] = &g_ShipObjectArray[i];
+
+            fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
+            int32_t shipBitmapIndex = (rand()%25) + 1;
+            const uint8_t* bmData = billboard_object_bitmaps[shipBitmapIndex];
+            int32_t bmWidth = *(bmData - 2);
+            int32_t bmHeight = *(bmData - 1);
+            fix16_t fxScaledWidth = bmWidth * fxScaledSizeFactor;
+            fix16_t fxScaledBmHeight = bmHeight * fxScaledSizeFactor;
+            uint32_t shipIndex = 0;
+            fix16_t shipStepX = 50;
+            fix16_t shipStepY = 50;
+
+            // Place ships to the starting grid.
+
+            g_objects3d[ii]->m_fxX = fix16_from_int(30 + ((i&1) ? shipStepX : 0));
+            g_objects3d[ii]->m_fxY = fix16_from_int(600 + (shipStepY*i));
+            g_objects3d[ii]->m_bitmap = bmData;
+            g_objects3d[ii]->m_bitmapW = bmWidth;
+            g_objects3d[ii]->m_bitmapH = bmHeight;
+            g_objects3d[ii]->m_fxScaledWidth = fxScaledWidth;
+            g_objects3d[ii]->m_fxScaledHeight = fxScaledBmHeight;
+
+            g_ships[i]->m_fxVel = 0;
+            g_ships[i]->m_fxAngle = 0;
+            g_ships[i]->m_fxRotVel = fix16_pi / (290 - i*10);
+            g_ships[i]->m_fxMaxSpeed = fxMaxSpeed;
+            g_ships[i]->m_activeWaypointIndex = 0;
+        }
+
+    }
+
+   // Set the object count.
+    g_objects3dCount = ii + 1;
+
+    // Setup draw list
+    static_assert( g_objects3dMaxCount <= g_drawListMaxCount, "error");
+    for( int32_t i = 0; i < g_drawListMaxCount; i++)
+    {
+        if(i < g_objects3dCount)
+            g_drawList[i] = g_objects3d[i];
+        else
+            g_drawList[i] = NULL;
     }
 
 }
@@ -689,9 +739,12 @@ bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char*
     if(item1)
     {
         if(cursorPos == 0)
+        {
+            // Draw selection bar
             mygame.display.setColor(3,1);
-        else
-            mygame.display.setColor(2,1);
+            mygame.display.fillRect(winX+4, currY, winW, 8);
+        }
+        mygame.display.setColor(2,1);
         mygame.display.print(winX+4, currY, item1);
         currY += 10;
         numItems++;
@@ -699,9 +752,12 @@ bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char*
     if(item2)
     {
         if(cursorPos == 1)
+        {
+            // Draw selection bar
             mygame.display.setColor(3,1);
-        else
-            mygame.display.setColor(2,1);
+            mygame.display.fillRect(winX+4, currY, winW, 8);
+        }
+        mygame.display.setColor(2,1);
         mygame.display.print(winX+4, currY, item2);
         currY += 10;
         numItems++;
@@ -709,9 +765,12 @@ bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char*
     if(item3)
     {
         if(cursorPos == 2)
+        {
+            // Draw selection bar
             mygame.display.setColor(3,1);
-        else
-            mygame.display.setColor(2,1);
+            mygame.display.fillRect(winX+4, currY, winW, 8);
+        }
+        mygame.display.setColor(2,1);
         mygame.display.print(winX+4, currY, item3);
         currY += 10;
         numItems++;
@@ -719,9 +778,12 @@ bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char*
     if(item4)
     {
         if(cursorPos == 3)
+        {
+            // Draw selection bar
             mygame.display.setColor(3,1);
-        else
-            mygame.display.setColor(2,1);
+            mygame.display.fillRect(winX+4, currY, winW, 8);
+        }
+        mygame.display.setColor(2,1);
         mygame.display.print(winX+4, currY, item4);
         currY += 10;
         numItems++;
@@ -739,7 +801,7 @@ bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char*
        if(++cursorPos >= numItems )
             cursorPos = numItems-1;
 
-    if(mygame.buttons.pressed(BTN_B))
+    if(mygame.buttons.released(BTN_B))
     {
         return false;
     }
@@ -993,39 +1055,27 @@ uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int3
     return tileIndex;
 }
 
-void CreateObject( uint16_t index, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight)
+uint8_t GetTileIndexCommon(int32_t posX, int32_t posY)
 {
-    g_objects3d[index] = new CObject3d();
+    // *** Get the tile number from the "map"
 
-    g_objects3d[index]->m_fxX = fxX;
-    g_objects3d[index]->m_fxY = fxY;
-    g_objects3d[index]->m_bitmap = bitmap;
-    g_objects3d[index]->m_bitmapW =*(bitmap - 2);
-    g_objects3d[index]->m_bitmapH =*(bitmap - 1);
-    g_objects3d[index]->m_fxScaledWidth = fxScaledWidth;
-    g_objects3d[index]->m_fxScaledHeight = fxScaledHeight;
+    // Raad the game map.
+    uint32_t blockDataX = (posX >> 3);
+    uint32_t blockDataY = (posY >> 3);
+    const uint8_t blockMapX = (blockDataX >> 3);
+    const uint8_t blockMapY = (blockDataY >> 3);
+    uint8_t tileIndex = 0;
+    if(blockMapX < mapWidth && blockMapY < mapHeight) {
+        const uint8_t blockDataIndex = blockMap[blockMapX+ (blockMapY*mapWidth)];
+        // Get the tile.
+        tileIndex = blockData[blockDataIndex][(blockDataX & 0x7) + ((blockDataY & 0x7)*8)];
+    }
+    else
+        tileIndex = 0; // Background tile
+
+    //
+    return tileIndex;
 }
-
-void CreateShip( uint16_t objIndex, uint16_t shipIndex, fix16_t fxX, fix16_t fxY, const uint8_t* bitmap, fix16_t fxScaledWidth, fix16_t fxScaledHeight, fix16_t fxVel)
-{
-    // Create and initialize ship
-    CShip* oppShip = new CShip();
-    g_objects3d[objIndex] = oppShip;
-    g_ships[shipIndex] = oppShip;
-    oppShip->m_fxX = fxX;
-    oppShip->m_fxY = fxY;
-    oppShip->m_bitmap = bitmap;
-    oppShip->m_bitmapW =*(bitmap - 2);
-    oppShip->m_bitmapH =*(bitmap - 1);
-    oppShip->m_fxScaledWidth = fxScaledWidth;
-    oppShip->m_fxScaledHeight = fxScaledHeight;
-    oppShip->m_fxVel = fxVel;
-    oppShip->m_fxAngle = 0;
-    oppShip->m_fxMaxSpeed = fxMaxSpeed;
-    oppShip->m_activeWaypointIndex = 0;
-}
-
-
 
 bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
@@ -1038,9 +1088,15 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 
     for( int32_t i = 0; i < g_drawListMaxCount; i++)
     {
-        CObject3d* obj = g_drawList[i];
+         CObject3d* obj = g_drawList[i];
+
+
         if( obj != NULL )
         {
+            //!!HV
+            if(i>15)
+                obj = g_drawList[i];
+
             fix16_t fxX = obj->m_fxX;
             fix16_t fxY = obj->m_fxY;
 

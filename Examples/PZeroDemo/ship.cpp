@@ -5,6 +5,19 @@
 
 void CShip::Update()
 {
+    // *** Check collision to road edges
+    bool collided = false;
+    uint8_t tileIndex = GetTileIndexCommon(fix16_to_int(m_fxX), fix16_to_int(m_fxY));
+    if(
+        tileIndex != 5 && tileIndex != 6 &&
+        (tileIndex < 11 || tileIndex > 15)
+    )
+    {
+        collided = true;
+    }
+
+    // *** Follow the waypoint
+
     // Direction vector to the current waypoint.
     fix16_t fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex][0]) - m_fxX;
     fix16_t fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex][1]) - m_fxY;
@@ -23,7 +36,7 @@ void CShip::Update()
 
         // Next waypoint.
         int32_t i = m_activeWaypointIndex;
-        if(i++ >= waypointCount)
+        if(++i >= waypointCount)
             i = 0;
         m_activeWaypointIndex = i;
         //fxLastDistanceToWaypoint = fxDistanceToWaypoint;
@@ -34,13 +47,57 @@ void CShip::Update()
     }
 
     // Calculate angle to the current waypoint
-    m_fxAngle = fix16_atan2(-fxDirX, fxDirY);
+
+    fix16_t fxAngleToWayPoint = fix16_atan2(-fxDirX, fxDirY);
+    fix16_t fxAngleDiff = fxAngleToWayPoint - m_fxAngle;
+    if(fxAngleDiff > fix16_pi || fxAngleDiff < -fix16_pi)
+        fxAngleDiff -= (2*fix16_pi);
+    if( fxAngleDiff < 0 )
+    {
+        // Rotate certain amount
+        if(fxAngleDiff < -m_fxRotVel )
+            m_fxAngle -= m_fxRotVel;
+        else
+            m_fxAngle += fxAngleDiff;
+    }
+    else
+    {
+        // Rotate certain amount
+        if(fxAngleDiff > m_fxRotVel )
+            m_fxAngle += m_fxRotVel;
+        else
+            m_fxAngle += fxAngleDiff;
+    }
+
+    // *** Move
 
     // Limit speed
-    if(m_fxVel > m_fxMaxSpeed)
-        m_fxVel = m_fxMaxSpeed;
-    else if(m_fxVel < -m_fxMaxSpeed)
-        m_fxVel = -m_fxMaxSpeed;
+    //if(m_fxVel > m_fxMaxSpeed)
+    //    m_fxVel = m_fxMaxSpeed;
+    //else if(m_fxVel < -m_fxMaxSpeed)
+    //    m_fxVel = -m_fxMaxSpeed;
+
+    // If colliding, slow down
+    if( collided ) {
+
+        // Break or stop
+        if(m_fxVel > fxMaxSpeedCollided)
+        {
+            m_fxVel -= (fix16_one>>4);
+            if(m_fxVel < 0)
+                m_fxVel = 0;
+        }
+        else if(m_fxVel < -fxMaxSpeedCollided)
+        {
+            m_fxVel += (fix16_one>>4);
+            if(m_fxVel > 0)
+                m_fxVel = 0;
+        }
+    }
+    else
+    {
+        m_fxVel = fxDefaultOtherShipSpeed;
+    }
 
     fix16_t fxCos = fix16_cos(-m_fxAngle);
     fix16_t fxSin = fix16_sin(-m_fxAngle);
