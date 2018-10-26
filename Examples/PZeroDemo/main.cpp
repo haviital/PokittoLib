@@ -4,6 +4,7 @@
 #include "main.h"
 #include "gfx_hdr/GameData.h"
 #include "ship.h"
+#include "menu.h"
 
 
 Pokitto::Core mygame;
@@ -18,6 +19,15 @@ uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int3
 bool Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 bool HandleStartGameMenu( int32_t lastLap_ms );
 bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4);
+
+enum LapTimingState {
+    enumReadyToStart = 0,
+    enumStarted = 1,
+    enumOnTimedTrack = 2,
+    enumOverHalfWayPoint = 3,
+    enumFinished = 4,
+
+};
 
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
@@ -49,6 +59,9 @@ const uint8_t* activeShipBitmapData = billboard_object_bitmaps[0];
 uint32_t shipBitmapW = *(activeShipBitmapData - 2);
 uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 
+LapTimingState lapTimingState = enumReadyToStart;
+bool isRace = true;
+
 //
 int32_t textureMode = 1;
 
@@ -79,21 +92,6 @@ const uint32_t g_shipsMaxCount = 10;
 uint32_t g_shipCount = 0;
 CShip* g_ships[ g_objects3dMaxCount ] = {0};
 
-enum LapTimingState {
-    enumReadyToStart = 0,
-    enumStarted = 1,
-    enumOnTimedTrack = 2,
-    enumOverHalfWayPoint = 3,
-    enumFinished = 4,
-
-};
-
-enum MenuMode {
-    enumMainMenu = 0,
-    enumContinueMenu = 1,
-    enumTimeTrialFinishedMenu = 2,
-};
-
 class mycookie : public Pokitto::Cookie
 {
 public:
@@ -117,11 +115,7 @@ int main () {
     int32_t lastSetupListPos = 1;
     uint32_t start_ms = 0;
     uint32_t final_lap_time_ms = 0;
-    LapTimingState lapTimingState = enumReadyToStart;
-    bool isMenuOpen = true;
-    MenuMode menuMode = enumMainMenu;
-    int32_t menuCursorPos = 0;
-    bool isRace = true;
+    CMenu menu;
 
     // Load cookie
     // NOTE: This must be before Pokitto::core::begin(). Otherwise the audio interrupt do not work!
@@ -294,8 +288,8 @@ int main () {
                     // Finished!
                     final_lap_time_ms = mygame.getTime() - start_ms;
                     lapTimingState = enumFinished;
-                    menuMode = enumTimeTrialFinishedMenu;
-                    isMenuOpen = true;
+                    menu.m_mode = CMenu::enumTimeTrialFinishedMenu;
+                    menu.m_isOpen = true;
 
                     // Save cookie if this is the best time
                     if(highscore.bestLap_ms == 0 || final_lap_time_ms < highscore.bestLap_ms)
@@ -310,7 +304,7 @@ int main () {
             }
 
             // Print coordinates on screen
-            #if 0
+            #if 1
             char text[128];
             mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10));
             mygame.display.print(", ");
@@ -318,146 +312,10 @@ int main () {
             mygame.display.print("     ");
             #endif
 
-            // Open/close the setup menu
-            if(isMenuOpen || mygame.buttons.pressed(BTN_C))
-            {
-                isMenuOpen = true;
-            }
+            // Handle menus
+            menu.HandleMenus(isRace, highscore.bestLap_ms);
 
-            if(isMenuOpen)
-            {
-                switch( menuMode )
-                {
-                case enumMainMenu:
-                    {
-                        isMenuOpen =  HandleGenericMenu( true, menuCursorPos, "Time trial", "Race", NULL, NULL);
-                        if( ! isMenuOpen )
-                        {
-                            if(menuCursorPos == 0)
-                            {
-                                // time trial
-                                menuMode = enumContinueMenu;
-                                isRace = false;
-
-                                 // Reset game
-                                lapTimingState = enumReadyToStart;
-                                fxCamX = fix16_from_int(42);
-                                fxCamY = fix16_from_int(490);
-                                fxVel = 0;
-                                fxAngle = 0;
-                                fxRotVel = fxInitialRotVel;
-                            }
-                            else if(menuCursorPos == 1)
-                            {
-                                // race
-                                menuMode = enumContinueMenu;
-                                isRace = true;
-
-                                 // Reset game
-                                lapTimingState = enumReadyToStart;
-                                fxCamX = fix16_from_int(42);
-                                fxCamY = fix16_from_int(490);
-                                fxVel = 0;
-                                fxAngle = 0;
-                                fxRotVel = fxInitialRotVel;
-                            }
-
-                             // Menu closed
-                            menuCursorPos = 0;
-
-                            // Init game object.
-                            InitGameObjectsForTrack1(isRace);
-                       }
-                   }
-                   break;
-
-                case enumContinueMenu:
-                    {
-                        if(isRace)
-                            isMenuOpen =  HandleGenericMenu( true, menuCursorPos, "Restart", "Continue", "Exit race", NULL);
-                        else
-                            isMenuOpen =  HandleGenericMenu( true, menuCursorPos, "Restart", "Continue", "Exit time trial", NULL);
-
-                        if( ! isMenuOpen )
-                        {
-                             // if "Restart" selected, go to main menu
-                            if(menuCursorPos == 0)
-                            {
-                                lapTimingState = enumReadyToStart;
-
-                                 // Reset game
-                                fxCamX = fix16_from_int(42);
-                                fxCamY = fix16_from_int(490);
-                                fxVel = 0;
-                                fxAngle = 0;
-                                fxRotVel = fxInitialRotVel;
-
-                                // Init game object.
-                                InitGameObjectsForTrack1(isRace);
-                           }
-
-                           // if "Continue", go to main menu
-                            else if(menuCursorPos == 1)
-                            {
-                                // Continue
-                            }
-
-                           // if "Exit race" selected, go to main menu
-                            else if(menuCursorPos == 2)
-                            {
-                                menuMode = enumMainMenu;
-                                isMenuOpen = true;
-                            }
-
-                             // Menu closed
-                            menuCursorPos = 0;
-
-                       }
-                    }
-                    break;
-
-                case enumTimeTrialFinishedMenu:
-                    {
-                       isMenuOpen =  HandleGenericMenu( true, menuCursorPos, "Restart", "Exit race", NULL, NULL);
-                        if( ! isMenuOpen )
-                        {
-                            // if "Restart" selected, go to main menu
-                            if(menuCursorPos == 0)
-                            {
-                                lapTimingState = enumReadyToStart;
-
-                                 // Reset game
-                                fxCamX = fix16_from_int(42);
-                                fxCamY = fix16_from_int(490);
-                                fxVel = 0;
-                                fxAngle = 0;
-                                fxRotVel = fxInitialRotVel;
-
-                                // Init game object.
-                                InitGameObjectsForTrack1(isRace);
-                            }
-
-                            // if "Exit race" selected, go to main menu
-                            else if(menuCursorPos == 1)
-                            {
-                                menuMode = enumMainMenu;
-                                isMenuOpen = true;
-                            }
-
-                            // Menu closed
-                            menuCursorPos = 0;
-
-                        }
-                    }
-                    break;
-
-                default:
-                    break;
-                }
-
-            }
-
-            if(!isMenuOpen)
+            if(!menu.m_isOpen)
             {
                 // No menu opean
 
@@ -523,9 +381,28 @@ int main () {
     }
 }
 
+
+void ResetGame(bool isRace_)
+{
+     // Reset game
+    lapTimingState = enumReadyToStart;
+    fxCamX = fix16_from_int(42);
+    fxCamY = fix16_from_int(490);
+    fxVel = 0;
+    fxAngle = 0;
+    fxRotVel = fxInitialRotVel;
+
+    isRace = isRace_;
+
+    // Init game object.
+    InitGameObjectsForTrack1(isRace);
+}
+
+
 // Init game objects
 void InitGameObjectsForTrack1(bool isRace)
 {
+    #if 0
     // Copy cactus and rock array pointers to the object list.
     for(int32_t i = 0; i < 2*8; i++ )
     {
@@ -538,6 +415,29 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[i]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledWidth;
         g_objects3d[i]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledHeight;
     }
+    #else
+    // Copy waypoints
+    const uint8_t* spot_bm = billboard_object_bitmaps[27];
+    const int16_t spotBmW  = *(spot_bm - 2);
+    const int16_t spotBmH  = *(spot_bm - 1);
+    const fix16_t fxSpotScaledW  = fix16_from_int(spotBmW);
+    const fix16_t fxSpotScaledH  = fix16_from_int(spotBmH);
+
+    for(int32_t i = 0; i < 2*8; i++ )
+    {
+        int16_t w = i + 10;
+        if(w>=waypointCount)
+            w = waypointCount - 1;
+        g_objects3d[i] = &g_BillboardObjectArray[i];
+        g_objects3d[i]->m_fxX = fix16_from_int(waypoints[w].x);
+        g_objects3d[i]->m_fxY = fix16_from_int(waypoints[w].y);
+        g_objects3d[i]->m_bitmap = spot_bm;
+        g_objects3d[i]->m_bitmapW = spotBmW;
+        g_objects3d[i]->m_bitmapH = spotBmH;
+        g_objects3d[i]->m_fxScaledWidth = fxSpotScaledW;
+        g_objects3d[i]->m_fxScaledHeight = ( waypoints[w].fxTargetSpeed == fxDefaultOtherShipSpeedInCorner ) ? fxSpotScaledH>>1 : fxSpotScaledH;
+    }
+    #endif
 
     int32_t ii = 0;
     if( ! isRace )
@@ -562,9 +462,9 @@ void InitGameObjectsForTrack1(bool isRace)
     {
         // Race
 
-       // Copy ship array pointers to the object list.
-        //g_shipCount = 8;
+        // Copy ship array pointers to the object list.
         g_shipCount = 8;
+        //g_shipCount = 1;
         for(int32_t i = 0; i < g_shipCount; i++ )
         {
             ii = i + (2*8);
@@ -593,8 +493,9 @@ void InitGameObjectsForTrack1(bool isRace)
             g_objects3d[ii]->m_fxScaledHeight = fxScaledBmHeight;
 
             g_ships[i]->m_fxVel = 0;
+            g_ships[i]->m_fxAcc = (fix16_one>>6);
             g_ships[i]->m_fxAngle = 0;
-            g_ships[i]->m_fxRotVel = fix16_pi / (290 - i*10);
+            g_ships[i]->m_fxRotVel = fix16_pi / (270 - i*10);
             g_ships[i]->m_fxMaxSpeed = fxMaxSpeed;
             g_ships[i]->m_activeWaypointIndex = 0;
         }
@@ -696,122 +597,6 @@ void HandleGameKeys()
 #endif
 }
 
-//
-bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4)
-{
-    // Set window
-    int32_t winX = 0;
-    int32_t winY = 16;
-    int32_t winW = 110;
-    int32_t winH = 0;
-
-    // Set window height
-    if(showBestTime) winH += 15;
-    int32_t H = 0;
-    if(item1) winH += 10;
-    if(item2) winH += 10;
-    if(item3) winH += 10;
-    if(item4) winH += 10;
-    winH += 4;  // margin
-
-    int32_t currY = winY;
-
-    // Draw menu window background
-    mygame.display.setColor(1,1);
-    mygame.display.fillRect(winX, winY, winW, winH);
-
-	currY += 4;  // margin
-    mygame.display.setInvisibleColor(1);
-
-    // Print Best time
-    if( showBestTime )
-    {
-        mygame.display.setColor(2,1);
-        //currY += 4;
-        mygame.display.print(winX+4,currY,"Best: ");
-        //currY -= 1;
-        DrawLapTime(highscore.bestLap_ms, winX+55, currY, fix16_from_float(1.5) );
-        currY += 15;
-    }
-
-	// Print menu
-	int32_t numItems = 0;
-    if(item1)
-    {
-        if(cursorPos == 0)
-        {
-            // Draw selection bar
-            mygame.display.setColor(3,1);
-            mygame.display.fillRect(winX+4, currY, winW, 8);
-        }
-        mygame.display.setColor(2,1);
-        mygame.display.print(winX+4, currY, item1);
-        currY += 10;
-        numItems++;
-    }
-    if(item2)
-    {
-        if(cursorPos == 1)
-        {
-            // Draw selection bar
-            mygame.display.setColor(3,1);
-            mygame.display.fillRect(winX+4, currY, winW, 8);
-        }
-        mygame.display.setColor(2,1);
-        mygame.display.print(winX+4, currY, item2);
-        currY += 10;
-        numItems++;
-    }
-    if(item3)
-    {
-        if(cursorPos == 2)
-        {
-            // Draw selection bar
-            mygame.display.setColor(3,1);
-            mygame.display.fillRect(winX+4, currY, winW, 8);
-        }
-        mygame.display.setColor(2,1);
-        mygame.display.print(winX+4, currY, item3);
-        currY += 10;
-        numItems++;
-    }
-    if(item4)
-    {
-        if(cursorPos == 3)
-        {
-            // Draw selection bar
-            mygame.display.setColor(3,1);
-            mygame.display.fillRect(winX+4, currY, winW, 8);
-        }
-        mygame.display.setColor(2,1);
-        mygame.display.print(winX+4, currY, item4);
-        currY += 10;
-        numItems++;
-    }
-
-    // Print cursor
-    //mygame.display.print(winX, winY + 4 + (cursorPos*10), ">");
-
-    // Read keys
-    if(mygame.buttons.pressed(BTN_UP))
-       if(--cursorPos < 0 )
-            cursorPos = 0;
-
-    if(mygame.buttons.pressed(BTN_DOWN))
-       if(++cursorPos >= numItems )
-            cursorPos = numItems-1;
-
-    if(mygame.buttons.released(BTN_B))
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-//
 bool HandleStartGameMenu( int32_t lastLap_ms )
 {
     //

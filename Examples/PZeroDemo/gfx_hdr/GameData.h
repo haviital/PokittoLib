@@ -102,6 +102,7 @@
 #include "image_sky.h"
 #include "image_sky_long.h"
 #include "image_light.h"
+#include "image_spot.h"
 
  // Defines blocks of 64 (8x8) tiles
  const uint8_t blockData[][8*8] = {
@@ -375,7 +376,7 @@ const uint8_t blockMap[mapWidth*mapHeight] = {
    14,14,14,14,14,14,14,14,14, 8, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,12,
 };
 
-const uint8_t billboard_object_bitmaps_count = 25 + 2;
+const uint8_t billboard_object_bitmaps_count = 25 + 3;
 
 const uint8_t* billboard_object_bitmaps [billboard_object_bitmaps_count] = {
     image_ship_1_a+2,
@@ -407,6 +408,7 @@ const uint8_t* billboard_object_bitmaps [billboard_object_bitmaps_count] = {
     //image_pokitto+2,
     image_cactus+2,
     image_rock1+2,
+    image_spot+2,
 };
 
 const uint8_t terrain_bitmaps_count = 2*4;
@@ -529,11 +531,16 @@ const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
 const uint8_t* current_texture_bitmaps_mm2[current_texture_bitmaps_count] = {0};
 
 //
-const uint32_t waypointCount = 11;
-const int32_t waypoints[waypointCount][2] =
+const uint32_t waypointCount = 21;
+const CWaypoint waypoints[waypointCount] =
 {
-    {72,990}, {94,1361}, {241,1394}, {589,1379}, {642,1479}, {667,1897}, {706,1956}, {1919,1962}, {1991,1891}, {1991,1829},
-    {1991,1099},
+    {72,990,fxDefaultOtherShipSpeed}, {59,1297,fxDefaultOtherShipSpeed}, {166,1394,fxDefaultOtherShipSpeedInCorner},
+    {589,1379,fxDefaultOtherShipSpeed}, {642,1479,fxDefaultOtherShipSpeedInCorner}, {667,1897,fxDefaultOtherShipSpeed},
+    {706,1956,fxDefaultOtherShipSpeedInCorner}, {1843,1989,fxDefaultOtherShipSpeed}, {1991,1891,fxDefaultOtherShipSpeedInCorner},
+    {1991,1829,fxDefaultOtherShipSpeed},{2005,1266,fxDefaultOtherShipSpeed},{1952,1070,fxDefaultOtherShipSpeedInCorner},
+    {1936,281,fxDefaultOtherShipSpeed},{1854,63,fxDefaultOtherShipSpeedInCorner}, {571,52,fxDefaultOtherShipSpeed},
+    {464,125,fxDefaultOtherShipSpeedInCorner}, {472,404,fxDefaultOtherShipSpeed}, {603,435,fxDefaultOtherShipSpeedInCorner},
+    {699,535,fxDefaultOtherShipSpeedInCorner},{108,603,fxDefaultOtherShipSpeed}, {85,634,fxDefaultOtherShipSpeedInCorner},
 };
 
 // Billboard objects on track

@@ -1,6 +1,8 @@
 
  #pragma once
 
+#include "fix16.h"
+
 // Constants
 
 // Constants
@@ -20,10 +22,13 @@ const uint16_t screenShiftY = 5;
 const int32_t g_rotatingCenterX = -6;
 const int32_t g_rotatingCenterY = 72;
 
+const fix16_t fxMaxSpeedCollided = fix16_one>>1;
 const fix16_t fxMaxSpeed = fix16_one*6;  // player max speed
-const fix16_t fxDefaultOtherShipSpeed = fix16_one;
-//const fix16_t fxMaxSpeedCollided = fix16_one>>1;
-const fix16_t fxMaxSpeedCollided = fix16_one>>4;
+const fix16_t fxDefaultOtherShipSpeed = fix16_one*8;
+const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided*2;
+//const fix16_t fxDefaultOtherShipSpeed = fix16_one;
+
+//const fix16_t fxMaxSpeedCollided = fix16_one>>4;
 
 //
 class CObject3d
@@ -42,6 +47,14 @@ public:
     fix16_t m_fxDistancePot;
 };
 
+class CWaypoint
+{
+ public:
+    int32_t x;
+    int32_t y;
+    fix16_t fxTargetSpeed;
+};
+
 // extern
 extern Pokitto::Core mygame;
 extern Pokitto::Sound snd;
@@ -52,12 +65,13 @@ extern const uint8_t blockData[][8*8];
 extern const uint8_t* current_texture_bitmaps[];
 extern const uint8_t* current_texture_bitmaps_mm1[];
 extern const uint8_t* current_texture_bitmaps_mm2[];
-extern const int32_t waypoints[][2];
+extern const CWaypoint waypoints[];
 extern const uint32_t waypointCount;
 extern const CObject3d g_timeTrialBilboardObjects[];
 
 //
 uint8_t GetTileIndexCommon(int32_t posX, int32_t posY);
+void ResetGame(bool isRace_);
 
 //
 void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor);

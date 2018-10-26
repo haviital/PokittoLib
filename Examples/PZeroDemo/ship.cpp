@@ -19,8 +19,8 @@ void CShip::Update()
     // *** Follow the waypoint
 
     // Direction vector to the current waypoint.
-    fix16_t fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex][0]) - m_fxX;
-    fix16_t fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex][1]) - m_fxY;
+    fix16_t fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex].x) - m_fxX;
+    fix16_t fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex].y) - m_fxY;
 
     // Calculate distance.
     // Scale down so that it will not overflow
@@ -30,7 +30,7 @@ void CShip::Update()
     fxY3 >>= 4;
     fix16_t fxDistanceToWaypoint = fix16_mul(fxX3, fxX3) + fix16_mul(fxY3,fxY3);
     const fix16_t fxLimit = fix16_from_int(20*20);
-    if( fxDistanceToWaypoint < fxLimit>>8 )
+    if( fxDistanceToWaypoint < fxLimit>>5 )
     {
         // Ship is inside the waypoint radious. Stop following it and go towards the next waypoint.
 
@@ -42,8 +42,8 @@ void CShip::Update()
         //fxLastDistanceToWaypoint = fxDistanceToWaypoint;
 
         // Direction vector to the current waypoint.
-        fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex][0]) - m_fxX;
-        fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex][1]) - m_fxY;
+        fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex].x) - m_fxX;
+        fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex].y) - m_fxY;
     }
 
     // Calculate angle to the current waypoint
@@ -69,13 +69,8 @@ void CShip::Update()
             m_fxAngle += fxAngleDiff;
     }
 
-    // *** Move
 
-    // Limit speed
-    //if(m_fxVel > m_fxMaxSpeed)
-    //    m_fxVel = m_fxMaxSpeed;
-    //else if(m_fxVel < -m_fxMaxSpeed)
-    //    m_fxVel = -m_fxMaxSpeed;
+    // *** Move
 
     // If colliding, slow down
     if( collided ) {
@@ -96,8 +91,26 @@ void CShip::Update()
     }
     else
     {
-        m_fxVel = fxDefaultOtherShipSpeed;
+        // Get target speed
+        fix16_t fxTargetSpeed = waypoints[m_activeWaypointIndex].fxTargetSpeed;
+        if( (fxAngleDiff > (fix16_pi>>2) ) || (fxAngleDiff < -(fix16_pi>>2) ) )
+            fxTargetSpeed = fxDefaultOtherShipSpeedInCorner;
+
+        // Calculate speed to the current waypoint
+        if( m_fxVel > fxTargetSpeed )
+            m_fxVel -= m_fxAcc<<4;  // Break faster than accelerate
+        else
+            m_fxVel += m_fxAcc;
     }
+
+
+
+
+    // Limit speed
+    if(m_fxVel > m_fxMaxSpeed)
+        m_fxVel = m_fxMaxSpeed;
+    else if(m_fxVel < fxDefaultOtherShipSpeedInCorner)
+        m_fxVel = fxDefaultOtherShipSpeedInCorner;
 
     fix16_t fxCos = fix16_cos(-m_fxAngle);
     fix16_t fxSin = fix16_sin(-m_fxAngle);
