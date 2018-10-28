@@ -49,7 +49,9 @@ void CShip::Update()
     // Calculate angle to the current waypoint
 
     fix16_t fxAngleToWayPoint = fix16_atan2(-fxDirX, fxDirY);
-    fix16_t fxAngleDiff = fxAngleToWayPoint - m_fxAngle;
+   	fix16_t shipAngle = m_fxAngle % (fix16_pi << 1);
+
+    fix16_t fxAngleDiff = fxAngleToWayPoint - shipAngle;
     if(fxAngleDiff > fix16_pi || fxAngleDiff < -fix16_pi)
         fxAngleDiff -= (2*fix16_pi);
     if( fxAngleDiff < 0 )

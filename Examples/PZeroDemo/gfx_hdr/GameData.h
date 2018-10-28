@@ -531,16 +531,17 @@ const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
 const uint8_t* current_texture_bitmaps_mm2[current_texture_bitmaps_count] = {0};
 
 //
-const uint32_t waypointCount = 21;
+const uint32_t waypointCount = 22;
 const CWaypoint waypoints[waypointCount] =
 {
     {72,990,fxDefaultOtherShipSpeed}, {59,1297,fxDefaultOtherShipSpeed}, {166,1394,fxDefaultOtherShipSpeedInCorner},
     {589,1379,fxDefaultOtherShipSpeed}, {642,1479,fxDefaultOtherShipSpeedInCorner}, {667,1897,fxDefaultOtherShipSpeed},
-    {706,1956,fxDefaultOtherShipSpeedInCorner}, {1843,1989,fxDefaultOtherShipSpeed}, {1991,1891,fxDefaultOtherShipSpeedInCorner},
-    {1991,1829,fxDefaultOtherShipSpeed},{2005,1266,fxDefaultOtherShipSpeed},{1952,1070,fxDefaultOtherShipSpeedInCorner},
+    {706,1956,fxDefaultOtherShipSpeedInCorner}, {1789,1998,fxDefaultOtherShipSpeed}, {1966,1964,fxDefaultOtherShipSpeedInCorner},
+    {1979,1725,fxDefaultOtherShipSpeedInCorner},{2005,1266,fxDefaultOtherShipSpeed},{1952,1070,fxDefaultOtherShipSpeedInCorner},
     {1936,281,fxDefaultOtherShipSpeed},{1854,63,fxDefaultOtherShipSpeedInCorner}, {571,52,fxDefaultOtherShipSpeed},
-    {464,125,fxDefaultOtherShipSpeedInCorner}, {423,327,fxDefaultOtherShipSpeed}, {603,435,fxDefaultOtherShipSpeedInCorner},
-    {699,535,fxDefaultOtherShipSpeedInCorner},{108,603,fxDefaultOtherShipSpeed}, {85,634,fxDefaultOtherShipSpeedInCorner},
+    {464,125,fxDefaultOtherShipSpeedInCorner}, {431,352,fxDefaultOtherShipSpeed}, {603,435,fxDefaultOtherShipSpeedInCorner},
+    {702,479,fxDefaultOtherShipSpeedInCorner},
+    {631,573,fxDefaultOtherShipSpeedInCorner},{108,603,fxDefaultOtherShipSpeed}, {85,634,fxDefaultOtherShipSpeedInCorner},
 };
 
 // Billboard objects on track

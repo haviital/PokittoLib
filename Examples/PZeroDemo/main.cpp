@@ -425,7 +425,7 @@ void InitGameObjectsForTrack1(bool isRace)
 
     for(int32_t i = 0; i < 2*8; i++ )
     {
-        int16_t w = i + 10;
+        int16_t w = i + 6;
         if(w>=waypointCount)
             w = waypointCount - 1;
         g_objects3d[i] = &g_BillboardObjectArray[i];
@@ -500,8 +500,8 @@ void InitGameObjectsForTrack1(bool isRace)
             //g_ships[i]->m_fxDeacc = (fix16_one/4) + (i*(fix16_one/6));
             //g_ships[i]->m_fxRotVel = fix16_pi / (270 - i*10);
 
-            g_ships[i]->m_fxAcc = fix16_from_float(0.050);
-            g_ships[i]->m_fxDeacc = fix16_from_float(0.3);
+            g_ships[i]->m_fxAcc = fix16_from_float(0.200);
+            g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
             g_ships[i]->m_fxRotVel = fix16_pi / 100;
 
             g_ships[i]->m_fxAngle = 0;
