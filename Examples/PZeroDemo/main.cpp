@@ -272,8 +272,8 @@ int main () {
             case enumStarted:
                 if( ! isOnStartingGrid )
                 {
-                    //lapTimingState = enumOnTimedTrack;
-                    lapTimingState = enumOverHalfWayPoint;
+                    lapTimingState = enumOnTimedTrack;
+                    //lapTimingState = enumOverHalfWayPoint;
                 }
                 break;
             case enumOnTimedTrack:
@@ -306,11 +306,11 @@ int main () {
             // Print coordinates on screen
             #if 1
             char text[128];
-            mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10));
-            mygame.display.print(", ");
-            mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10));
-            mygame.display.print("     ");
-            #endif
+            mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10)); mygame.display.print(", ");
+            mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10)); mygame.display.print("     ");
+            mygame.display.print(0,10, itoa(fix16_to_int(fxVel),text,10)); mygame.display.print(", ");
+            mygame.display.print( itoa(fix16_to_int(g_ships[0]->m_fxVel),text,10) ); mygame.display.print("     ");
+          #endif
 
             // Handle menus
             menu.HandleMenus(isRace, highscore.bestLap_ms);
@@ -499,9 +499,11 @@ void InitGameObjectsForTrack1(bool isRace)
             //g_ships[i]->m_fxAcc = (fix16_one/32) - (i*(fix16_one/256));
             //g_ships[i]->m_fxDeacc = (fix16_one/4) + (i*(fix16_one/6));
             //g_ships[i]->m_fxRotVel = fix16_pi / (270 - i*10);
-            g_ships[i]->m_fxAcc = (fix16_one/32) - (7*(fix16_one/256));
-            g_ships[i]->m_fxDeacc = (fix16_one/4) + (7*(fix16_one/6));
-            g_ships[i]->m_fxRotVel = fix16_pi / (270 - 7*10);
+
+            g_ships[i]->m_fxAcc = fix16_from_float(0.050);
+            g_ships[i]->m_fxDeacc = fix16_from_float(0.3);
+            g_ships[i]->m_fxRotVel = fix16_pi / 100;
+
             g_ships[i]->m_fxAngle = 0;
             g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
             g_ships[i]->m_activeWaypointIndex = 0;
