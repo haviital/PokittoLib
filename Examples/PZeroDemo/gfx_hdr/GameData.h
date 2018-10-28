@@ -539,7 +539,7 @@ const CWaypoint waypoints[waypointCount] =
     {706,1956,fxDefaultOtherShipSpeedInCorner}, {1843,1989,fxDefaultOtherShipSpeed}, {1991,1891,fxDefaultOtherShipSpeedInCorner},
     {1991,1829,fxDefaultOtherShipSpeed},{2005,1266,fxDefaultOtherShipSpeed},{1952,1070,fxDefaultOtherShipSpeedInCorner},
     {1936,281,fxDefaultOtherShipSpeed},{1854,63,fxDefaultOtherShipSpeedInCorner}, {571,52,fxDefaultOtherShipSpeed},
-    {464,125,fxDefaultOtherShipSpeedInCorner}, {472,404,fxDefaultOtherShipSpeed}, {603,435,fxDefaultOtherShipSpeedInCorner},
+    {464,125,fxDefaultOtherShipSpeedInCorner}, {423,327,fxDefaultOtherShipSpeed}, {603,435,fxDefaultOtherShipSpeedInCorner},
     {699,535,fxDefaultOtherShipSpeedInCorner},{108,603,fxDefaultOtherShipSpeed}, {85,634,fxDefaultOtherShipSpeedInCorner},
 };
 

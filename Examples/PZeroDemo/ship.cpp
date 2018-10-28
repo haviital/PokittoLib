@@ -98,13 +98,10 @@ void CShip::Update()
 
         // Calculate speed to the current waypoint
         if( m_fxVel > fxTargetSpeed )
-            m_fxVel -= m_fxAcc<<4;  // Break faster than accelerate
+            m_fxVel -= m_fxDeacc;  // Break
         else
             m_fxVel += m_fxAcc;
     }
-
-
-
 
     // Limit speed
     if(m_fxVel > m_fxMaxSpeed)

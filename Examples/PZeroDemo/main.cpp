@@ -463,7 +463,7 @@ void InitGameObjectsForTrack1(bool isRace)
         // Race
 
         // Copy ship array pointers to the object list.
-        g_shipCount = 8;
+        g_shipCount = 1;
         //g_shipCount = 1;
         for(int32_t i = 0; i < g_shipCount; i++ )
         {
@@ -472,7 +472,8 @@ void InitGameObjectsForTrack1(bool isRace)
             g_ships[i] = &g_ShipObjectArray[i];
 
             fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
-            int32_t shipBitmapIndex = (rand()%25) + 1;
+            //int32_t shipBitmapIndex = (rand()%25) + 1;
+            int32_t shipBitmapIndex = i + 1;
             const uint8_t* bmData = billboard_object_bitmaps[shipBitmapIndex];
             int32_t bmWidth = *(bmData - 2);
             int32_t bmHeight = *(bmData - 1);
@@ -493,10 +494,16 @@ void InitGameObjectsForTrack1(bool isRace)
             g_objects3d[ii]->m_fxScaledHeight = fxScaledBmHeight;
 
             g_ships[i]->m_fxVel = 0;
-            g_ships[i]->m_fxAcc = (fix16_one>>6);
+            //g_ships[i]->m_fxAcc = (fix16_one/(i+1*8));
+            //g_ships[i]->m_fxDeacc = (i*fix16_one/(4*8));
+            //g_ships[i]->m_fxAcc = (fix16_one/32) - (i*(fix16_one/256));
+            //g_ships[i]->m_fxDeacc = (fix16_one/4) + (i*(fix16_one/6));
+            //g_ships[i]->m_fxRotVel = fix16_pi / (270 - i*10);
+            g_ships[i]->m_fxAcc = (fix16_one/32) - (7*(fix16_one/256));
+            g_ships[i]->m_fxDeacc = (fix16_one/4) + (7*(fix16_one/6));
+            g_ships[i]->m_fxRotVel = fix16_pi / (270 - 7*10);
             g_ships[i]->m_fxAngle = 0;
-            g_ships[i]->m_fxRotVel = fix16_pi / (270 - i*10);
-            g_ships[i]->m_fxMaxSpeed = fxMaxSpeed;
+            g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
             g_ships[i]->m_activeWaypointIndex = 0;
         }
 
