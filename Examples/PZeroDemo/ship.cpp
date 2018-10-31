@@ -44,6 +44,21 @@ void CShip::Update()
         // Direction vector to the current waypoint.
         fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex].x) - m_fxX;
         fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex].y) - m_fxY;
+
+        fix16_t m_fxWaypointTargetSpeed = 0;
+        switch(waypoints[m_activeWaypointIndex].fxTargetSpeed)
+        {
+        case fxDefaultOtherShipSpeed:
+            m_fxWaypointTargetSpeed = m_fxMaxSpeed;
+            break;
+        case fxDefaultOtherShipSpeedInCorner:
+            m_fxWaypointTargetSpeed = m_fxCornerSpeed1;
+            break;
+        case fxDefaultOtherShipSpeedInSlowCorner:
+            m_fxWaypointTargetSpeed = m_fxCornerSpeed2;
+            break;
+        }
+
     }
 
     // Calculate angle to the current waypoint
@@ -96,11 +111,10 @@ void CShip::Update()
         // Not colided
 
         // Get target speed
-        fix16_t fxTargetSpeed = waypoints[m_activeWaypointIndex].fxTargetSpeed;
-
-        // If my direction is over 90 degrees wrrong, slow down
+         // If my direction is over 90 degrees wrrong, slow down
+         fix16_t fxTargetSpeed = m_fxWaypointTargetSpeed;
         if( (fxAngleDiff > (fix16_pi>>2) ) || (fxAngleDiff < -(fix16_pi>>2) ) )
-            fxTargetSpeed = fxDefaultOtherShipSpeedInCorner;
+            fxTargetSpeed = m_fxCornerSpeed2;
 
         // Calculate speed to the current waypoint
         if( m_fxVel > fxTargetSpeed )
@@ -110,8 +124,8 @@ void CShip::Update()
     }
 
     // Limit speed
-    if(m_fxVel > fxDefaultOtherShipSpeed)
-        m_fxVel = fxDefaultOtherShipSpeed;
+    if(m_fxVel > m_fxMaxSpeed)
+        m_fxVel = m_fxMaxSpeed;
     else if(m_fxVel < fxMaxSpeedCollided)
         m_fxVel = fxMaxSpeedCollided;
 

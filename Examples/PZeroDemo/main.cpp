@@ -309,7 +309,8 @@ int main () {
             mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10)); mygame.display.print(", ");
             mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10)); mygame.display.print("     ");
             mygame.display.print(0,10, itoa(fix16_to_int(fxVel),text,10)); mygame.display.print(", ");
-            mygame.display.print( itoa(fix16_to_int(g_ships[0]->m_fxVel),text,10) ); mygame.display.print("     ");
+            mygame.display.print( itoa(fix16_to_int(g_ships[0]->m_fxVel),text,10) ); mygame.display.print("; ");
+            mygame.display.print( itoa(g_ships[0]->m_activeWaypointIndex,text,10) ); mygame.display.print("     ");
           #endif
 
             // Handle menus
@@ -503,11 +504,32 @@ void InitGameObjectsForTrack1(bool isRace)
             g_ships[i]->m_fxAcc = fix16_from_float(0.200);
             g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
             g_ships[i]->m_fxRotVel = fix16_pi / 100;
+            g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
+            g_ships[0]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
+            g_ships[0]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
 
             g_ships[i]->m_fxAngle = 0;
-            g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
             g_ships[i]->m_activeWaypointIndex = 0;
         }
+
+        // Ship 0: fast in streight road, slow in corners
+        g_ships[0]->m_fxAcc = fix16_from_float(0.200);
+        g_ships[0]->m_fxDeacc = fix16_from_float(3.0);
+        g_ships[0]->m_fxRotVel = fix16_pi / 100;
+        g_ships[0]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
+        g_ships[0]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
+        g_ships[0]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
+        g_ships[0]->m_fxWaypointTargetSpeed = g_ships[0]->m_fxMaxSpeed;
+
+        // Ship 1: slow in streight road, fast in corners
+        g_ships[0]->m_fxAcc = fix16_from_float(0.200);
+        g_ships[0]->m_fxDeacc = fix16_from_float(3.0);
+        g_ships[0]->m_fxRotVel = fix16_pi / 50;
+        g_ships[0]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.8) );
+        g_ships[0]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
+        g_ships[0]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
+        g_ships[0]->m_fxWaypointTargetSpeed = g_ships[0]->m_fxMaxSpeed;
+
 
     }
 

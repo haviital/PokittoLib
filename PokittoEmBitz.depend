@@ -519,10 +519,10 @@
 
 1535654860 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\fix16.hpp
 
-1540758999 c:\git\pokittolib2\examples\pzerodemo\main.h
+1541022602 c:\git\pokittolib2\examples\pzerodemo\main.h
 	"fix16.h"
 
-1540759471 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+1541022478 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
@@ -531,7 +531,7 @@
 	"ship.h"
 	"menu.h"
 
-1540763809 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
+1540963760 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -1484,10 +1484,10 @@
 1540443051 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_sky_long.h
 	<stdint.h>
 
-1540584545 c:\git\pokittolib2\examples\pzerodemo\ship.h
+1541022055 c:\git\pokittolib2\examples\pzerodemo\ship.h
 	"main.h"
 
-1540763197 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
+1541022409 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
