@@ -304,7 +304,7 @@ int main () {
             }
 
             // Print coordinates on screen
-            #if 1
+            #if 0
             char text[128];
             mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10)); mygame.display.print(", ");
             mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10)); mygame.display.print("     ");
@@ -403,7 +403,7 @@ void ResetGame(bool isRace_)
 // Init game objects
 void InitGameObjectsForTrack1(bool isRace)
 {
-    #if 0
+    #if 1
     // Copy cactus and rock array pointers to the object list.
     for(int32_t i = 0; i < 2*8; i++ )
     {
@@ -464,72 +464,194 @@ void InitGameObjectsForTrack1(bool isRace)
         // Race
 
         // Copy ship array pointers to the object list.
-        g_shipCount = 1;
+        g_shipCount = 6;
         //g_shipCount = 1;
-        for(int32_t i = 0; i < g_shipCount; i++ )
+        fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
+        //for(int32_t i = 0; i < g_shipCount; i++ )
         {
-            ii = i + (2*8);
-            g_objects3d[ii] = &g_ShipObjectArray[i];
-            g_ships[i] = &g_ShipObjectArray[i];
+            //ii = i + (2*8);
+            //g_objects3d[ii] = &g_ShipObjectArray[i];
+            //g_ships[i] = &g_ShipObjectArray[i];
 
-            fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
+
             //int32_t shipBitmapIndex = (rand()%25) + 1;
-            int32_t shipBitmapIndex = i + 1;
-            const uint8_t* bmData = billboard_object_bitmaps[shipBitmapIndex];
-            int32_t bmWidth = *(bmData - 2);
-            int32_t bmHeight = *(bmData - 1);
-            fix16_t fxScaledWidth = bmWidth * fxScaledSizeFactor;
-            fix16_t fxScaledBmHeight = bmHeight * fxScaledSizeFactor;
-            uint32_t shipIndex = 0;
-            fix16_t shipStepX = 50;
-            fix16_t shipStepY = 50;
+            //int32_t shipBitmapIndex = i + 1;
+            //const uint8_t* bmData = billboard_object_bitmaps[shipBitmapIndex];
+            //int32_t bmWidth = *(bmData - 2);
+            //int32_t bmHeight = *(bmData - 1);
+            //fix16_t fxScaledWidth = bmWidth * fxScaledSizeFactor;
+            //fix16_t fxScaledBmHeight = bmHeight * fxScaledSizeFactor;
+            //uint32_t shipIndex = 0;
+            //fix16_t shipStepX = 50;
+            //fix16_t shipStepY = 50;
 
             // Place ships to the starting grid.
 
-            g_objects3d[ii]->m_fxX = fix16_from_int(30 + ((i&1) ? shipStepX : 0));
-            g_objects3d[ii]->m_fxY = fix16_from_int(600 + (shipStepY*i));
-            g_objects3d[ii]->m_bitmap = bmData;
-            g_objects3d[ii]->m_bitmapW = bmWidth;
-            g_objects3d[ii]->m_bitmapH = bmHeight;
-            g_objects3d[ii]->m_fxScaledWidth = fxScaledWidth;
-            g_objects3d[ii]->m_fxScaledHeight = fxScaledBmHeight;
+            //g_objects3d[ii]->m_fxX = fix16_from_int(30 + ((i&1) ? shipStepX : 0));
+            //g_objects3d[ii]->m_fxY = fix16_from_int(600 + (shipStepY*i));
+            //g_objects3d[ii]->m_bitmap = bmData;
+            //g_objects3d[ii]->m_bitmapW = bmWidth;
+            //g_objects3d[ii]->m_bitmapH = bmHeight;
+            //g_objects3d[ii]->m_fxScaledWidth = fxScaledWidth;
+            //g_objects3d[ii]->m_fxScaledHeight = fxScaledBmHeight;
 
-            g_ships[i]->m_fxVel = 0;
+            // g_ships[i]->m_fxVel = 0;
             //g_ships[i]->m_fxAcc = (fix16_one/(i+1*8));
             //g_ships[i]->m_fxDeacc = (i*fix16_one/(4*8));
             //g_ships[i]->m_fxAcc = (fix16_one/32) - (i*(fix16_one/256));
             //g_ships[i]->m_fxDeacc = (fix16_one/4) + (i*(fix16_one/6));
             //g_ships[i]->m_fxRotVel = fix16_pi / (270 - i*10);
 
-            g_ships[i]->m_fxAcc = fix16_from_float(0.200);
-            g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
-            g_ships[i]->m_fxRotVel = fix16_pi / 100;
-            g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
-            g_ships[0]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
-            g_ships[0]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
+            //g_ships[i]->m_fxAcc = fix16_from_float(0.200);
+            //g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
+            //g_ships[i]->m_fxRotVel = fix16_pi / 100;
+            //g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
+            //g_ships[0]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
+            //g_ships[0]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
 
-            g_ships[i]->m_fxAngle = 0;
-            g_ships[i]->m_activeWaypointIndex = 0;
+            //g_ships[i]->m_fxAngle = 0;
+            //g_ships[i]->m_activeWaypointIndex = 0;
         }
 
         // Ship 0: fast in streight road, slow in corners
-        g_ships[0]->m_fxAcc = fix16_from_float(0.200);
-        g_ships[0]->m_fxDeacc = fix16_from_float(3.0);
-        g_ships[0]->m_fxRotVel = fix16_pi / 100;
-        g_ships[0]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
-        g_ships[0]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
-        g_ships[0]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
-        g_ships[0]->m_fxWaypointTargetSpeed = g_ships[0]->m_fxMaxSpeed;
+        int32_t i=0;
+        ii = i + (2*8);
+        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_objects3d[ii]->m_fxX = fix16_from_int(30);
+        g_objects3d[ii]->m_fxY = fix16_from_int(600+(2*50));
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[1];
+        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
+        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
+        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_ships[i] = &g_ShipObjectArray[i];
+        g_ships[i]->m_fxVel = 0;
+        g_ships[i]->m_fxAcc = fix16_from_float(0.200);
+        g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
+        g_ships[i]->m_fxRotVel = fix16_pi / 100;
+        g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
+        g_ships[i]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
+        g_ships[i]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
+        g_ships[i]->m_fxWaypointTargetSpeed = g_ships[0]->m_fxMaxSpeed;
+        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_activeWaypointIndex = 0;
 
         // Ship 1: slow in streight road, fast in corners
-        g_ships[0]->m_fxAcc = fix16_from_float(0.200);
-        g_ships[0]->m_fxDeacc = fix16_from_float(3.0);
-        g_ships[0]->m_fxRotVel = fix16_pi / 50;
-        g_ships[0]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.8) );
-        g_ships[0]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
-        g_ships[0]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
-        g_ships[0]->m_fxWaypointTargetSpeed = g_ships[0]->m_fxMaxSpeed;
+        i=1;
+        ii = i + (2*8);
+        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_objects3d[ii]->m_fxX = fix16_from_int(30+50);
+        g_objects3d[ii]->m_fxY = fix16_from_int(600+(2*50));
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[8];
+        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
+        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
+        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_ships[i] = &g_ShipObjectArray[i];
+        g_ships[i]->m_fxVel = 0;
+        g_ships[i]->m_fxAcc = fix16_from_float(0.200);
+        g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
+        g_ships[i]->m_fxRotVel = fix16_pi / 50;
+        g_ships[i]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.8) );
+        g_ships[i]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
+        g_ships[i]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
+        g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
+        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_activeWaypointIndex = 0;
 
+        // Ship 3: slow in streight road, fast in corners
+        i=2;
+        ii = i + (2*8);
+        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_objects3d[ii]->m_fxX = fix16_from_int(30 + 50);
+        g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[14];
+        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
+        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
+        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_ships[i] = &g_ShipObjectArray[i];
+        g_ships[i]->m_fxVel = 0;
+        g_ships[i]->m_fxAcc = fix16_from_float(0.200);
+        g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
+        g_ships[i]->m_fxRotVel = fix16_pi / 50;
+        g_ships[i]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.6) );
+        g_ships[i]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
+        g_ships[i]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
+        g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
+        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_activeWaypointIndex = 0;
+
+
+        // Ship 4: fast in streight road, slow in corners
+        i=3;
+        ii = i + (2*8);
+        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_objects3d[ii]->m_fxX = fix16_from_int(30);
+        g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[20];
+        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
+        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
+        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_ships[i] = &g_ShipObjectArray[i];
+        g_ships[i]->m_fxVel = 0;
+        g_ships[i]->m_fxAcc = fix16_from_float(0.200);
+        g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
+        g_ships[i]->m_fxRotVel = fix16_pi / 100;
+        g_ships[i]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.9) );
+        g_ships[i]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
+        g_ships[i]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
+        g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
+        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_activeWaypointIndex = 0;
+
+        // Ship 5: slow in streight road, fast in corners
+        i=4;
+        ii = i + (2*8);
+        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_objects3d[ii]->m_fxX = fix16_from_int(30 + 50);
+        g_objects3d[ii]->m_fxY = fix16_from_int(600);
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[21];
+        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
+        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
+        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_ships[i] = &g_ShipObjectArray[i];
+        g_ships[i]->m_fxVel = 0;
+        g_ships[i]->m_fxAcc = fix16_from_float(0.200);
+        g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
+        g_ships[i]->m_fxRotVel = fix16_pi / 50;
+        g_ships[i]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.4) );
+        g_ships[i]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
+        g_ships[i]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
+        g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
+        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_activeWaypointIndex = 0;
+
+
+        // Ship 5: fast in streight road, slow in corners
+        i=5;
+        ii = i + (2*8);
+        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_objects3d[ii]->m_fxX = fix16_from_int(30);
+        g_objects3d[ii]->m_fxY = fix16_from_int(600);
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[22];
+        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
+        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
+        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_ships[i] = &g_ShipObjectArray[i];
+        g_ships[i]->m_fxVel = 0;
+        g_ships[i]->m_fxAcc = fix16_from_float(0.200);
+        g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
+        g_ships[i]->m_fxRotVel = fix16_pi / 100;
+        g_ships[i]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.6) );
+        g_ships[i]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
+        g_ships[i]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
+        g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
+        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_activeWaypointIndex = 0;
 
     }
 

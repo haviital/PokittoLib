@@ -3,6 +3,11 @@
 #include "fix16.h"
 #include "ship.h"
 
+CShip::CShip() :
+    isPlayer(false)
+{
+}
+
 void CShip::Update()
 {
     // *** Check collision to road edges
