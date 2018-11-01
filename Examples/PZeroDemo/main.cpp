@@ -193,116 +193,116 @@ int main () {
 
             DrawMode7(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle);
 
-            // Draw 3d objects
+            // Draw 3d objects and check collisions.
             bool isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxAngle);
 
 
             // ** Draw the ship shadow
 
-            uint16_t shadowW = image_shadow[0];
-            uint16_t shadowH = image_shadow[1];
-            const uint8_t* shadowBitmapPtr = &(image_shadow[2]);
-            DrawScaledBitmap8bit( 55-(shadowW>>1), 56+7,
-                                  shadowBitmapPtr,
-                                  shadowW, shadowH, shadowW, shadowH);
+//            uint16_t shadowW = image_shadow[0];
+//            uint16_t shadowH = image_shadow[1];
+//            const uint8_t* shadowBitmapPtr = &(image_shadow[2]);
+//            DrawScaledBitmap8bit( 55-(shadowW>>1), 56+7,
+//                                  shadowBitmapPtr,
+//                                  shadowW, shadowH, shadowW, shadowH);
 
             // *** Draw ship bitmap
 
             // Move ship up and down when collided
-            int32_t shipY = 56;
-            if(collided) {
-                fix16_t fxBumbAngle = fxCamX + fxCamY;
-                fix16_t fxBumpHeight = fix16_sin(fxBumbAngle) * 4;
-                shipY -= abs(fix16_to_int(fxBumpHeight));
-            }
+//            int32_t shipY = 56;
+//            if(collided) {
+//                fix16_t fxBumbAngle = fxCamX + fxCamY;
+//                fix16_t fxBumpHeight = fix16_sin(fxBumbAngle) * 4;
+//                shipY -= abs(fix16_to_int(fxBumpHeight));
+//            }
 
-            // Draw the bitmap (currently not scaled)
-            DrawScaledBitmap8bit( 55-(shipBitmapW>>1), shipY,
-                                  activeShipBitmapData,
-                                  shipBitmapW, shipBitmapH, shipBitmapW, shipBitmapH);
+//            // Draw the bitmap (currently not scaled)
+//            DrawScaledBitmap8bit( 55-(shipBitmapW>>1), shipY,
+//                                  activeShipBitmapData,
+//                                  shipBitmapW, shipBitmapH, shipBitmapW, shipBitmapH);
 
             // *** Draw the lap counter
 
-            // get curren lap time
-            uint32_t current_lap_time_ms = 0;
-            if( lapTimingState == enumReadyToStart )
-                current_lap_time_ms = 0;
-            else if( lapTimingState == enumFinished )
-                current_lap_time_ms = final_lap_time_ms;
-            else
-                current_lap_time_ms = mygame.getTime() - start_ms;
-
+//            // get current lap time
+//            uint32_t current_lap_time_ms = 0;
+//            if( lapTimingState == enumReadyToStart )
+//                current_lap_time_ms = 0;
+//            else if( lapTimingState == enumFinished )
+//                current_lap_time_ms = final_lap_time_ms;
+//            else
+//                current_lap_time_ms = mygame.getTime() - start_ms;
+//
             // Draw lap time
             int32_t lapStartX = 110-5;  // 5 pixel margin
             lapStartX -= 5*6; // 5 chars
             DrawLapTime(current_lap_time_ms, lapStartX, 1, fix16_one );
 
             // *** Check collision to road edges
-            prevCollided = collided;
-            uint8_t tileIndex = GetTileIndex(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle, 55, 56);
-            if( isCollidedToPlayerShip ||
-                (
-                    tileIndex != 5 && tileIndex != 6 &&
-                    (tileIndex < 11 || tileIndex > 15)
-                )
-            )
-            {
-                collided = true;
-                wavetype = 5;
-            }
-            else {
-                collided = false;
-                wavetype = 1;
-            }
+//            prevCollided = collided;
+//            uint8_t tileIndex = GetTileIndex(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle, 55, 56);
+//            if( isCollidedToPlayerShip ||
+//                (
+//                    tileIndex != 5 && tileIndex != 6 &&
+//                    (tileIndex < 11 || tileIndex > 15)
+//                )
+//            )
+//            {
+//                collided = true;
+//                wavetype = 5;
+//            }
+//            else {
+//                collided = false;
+//                wavetype = 1;
+//            }
 
-            // *** starting line
-            bool isOnStartingGrid = ( tileIndex >= 11 && tileIndex <= 14);
-            bool isOnHalfWayPoint = (tileIndex == 15);
-
-            // Hit the starting line
-            switch(lapTimingState)
-            {
-            case enumReadyToStart:
-                if( isOnStartingGrid )
-                {
-                    lapTimingState = enumStarted;
-                    start_ms = mygame.getTime();  // started
-                }
-                break;
-            case enumStarted:
-                if( ! isOnStartingGrid )
-                {
-                    lapTimingState = enumOnTimedTrack;
-                    //lapTimingState = enumOverHalfWayPoint;
-                }
-                break;
-            case enumOnTimedTrack:
-                if( isOnHalfWayPoint )
-                {
-                    lapTimingState = enumOverHalfWayPoint;
-                 }
-                break;
-            case enumOverHalfWayPoint:
-                if( isOnStartingGrid )
-                {
-                    // Finished!
-                    final_lap_time_ms = mygame.getTime() - start_ms;
-                    lapTimingState = enumFinished;
-                    menu.m_mode = CMenu::enumTimeTrialFinishedMenu;
-                    menu.m_isOpen = true;
-
-                    // Save cookie if this is the best time
-                    if(highscore.bestLap_ms == 0 || final_lap_time_ms < highscore.bestLap_ms)
-                    {
-                        highscore.bestLap_ms = final_lap_time_ms;
-                        highscore.saveCookie();
-                    }
-                }
-                break;
-            case enumFinished:
-                break;
-            }
-
+//            // *** starting line
+//            bool isOnStartingGrid = ( tileIndex >= 11 && tileIndex <= 14);
+//            bool isOnHalfWayPoint = (tileIndex == 15);
+//
+//            // Hit the starting line
+//            switch(lapTimingState)
+//            {
+//            case enumReadyToStart:
+//                if( isOnStartingGrid )
+//                {
+//                    lapTimingState = enumStarted;
+//                    start_ms = mygame.getTime();  // started
+//                }
+//                break;
+//            case enumStarted:
+//                if( ! isOnStartingGrid )
+//                {
+//                    lapTimingState = enumOnTimedTrack;
+//                    //lapTimingState = enumOverHalfWayPoint;
+//                }
+//                break;
+//            case enumOnTimedTrack:
+//                if( isOnHalfWayPoint )
+//                {
+//                    lapTimingState = enumOverHalfWayPoint;
+//                 }
+//                break;
+//            case enumOverHalfWayPoint:
+//                if( isOnStartingGrid )
+//                {
+//                    // Finished!
+//                    final_lap_time_ms = mygame.getTime() - start_ms;
+//                    lapTimingState = enumFinished;
+//                    menu.m_mode = CMenu::enumTimeTrialFinishedMenu;
+//                    menu.m_isOpen = true;
+//
+//                    // Save cookie if this is the best time
+//                    if(highscore.bestLap_ms == 0 || final_lap_time_ms < highscore.bestLap_ms)
+//                    {
+//                        highscore.bestLap_ms = final_lap_time_ms;
+//                        highscore.saveCookie();
+//                    }
+//                }
+//                break;
+//            case enumFinished:
+//                break;
+//            }
+//
             // Print coordinates on screen
             #if 0
             char text[128];
@@ -321,55 +321,55 @@ int main () {
                 // No menu opean
 
                 // Check buttons
-                HandleGameKeys();
+                // HandleGameKeys();
 
                 // Limit turning speed
-                if(fxRotVel>fxInitialRotVel*10)
-                    fxRotVel = fxInitialRotVel*10;
+//                if(fxRotVel>fxInitialRotVel*10)
+//                    fxRotVel = fxInitialRotVel*10;
+//
+//                // Limit speed
+//                if(fxVel>fxMaxSpeed)
+//                    fxVel = fxMaxSpeed;
+//                else if(fxVel<-fxMaxSpeed)
+//                    fxVel = -fxMaxSpeed;
 
-                // Limit speed
-                if(fxVel>fxMaxSpeed)
-                    fxVel = fxMaxSpeed;
-                else if(fxVel<-fxMaxSpeed)
-                    fxVel = -fxMaxSpeed;
-
-                // If colliding, slow down
-                if( collided ) {
-
-                    // Break or stop
-                    if( isCollidedToPlayerShip )
-                    {
-                        fxVel = fix16_one;
-                    }
-                    else if(fxVel>fxMaxSpeedCollided)
-                    {
-                        fxVel = fxVel - (fix16_one>>4);
-                        if(fxVel<0)
-                            fxVel = 0;
-                    }
-                    else if(fxVel<-fxMaxSpeedCollided)
-                    {
-                        fxVel = fxVel + (fix16_one>>4);
-                        if(fxVel>0)
-                            fxVel = 0;
-                    }
-                }
-
-                // Change sound effect if needed.
-                if(fxVelOld != fxVel || prevCollided != collided ) {
-                    tonefreq = fix16_to_int(abs(fxVel*5));
-                    if(tonefreq>50) tonefreq = 50;
-                    snd.playTone(1,tonefreq,amplitude,wavetype,arpmode);
-                }
-
+//                // If colliding, slow down
+//                if( collided ) {
+//
+//                    // Break or stop
+//                    if( isCollidedToPlayerShip )
+//                    {
+//                        fxVel = fix16_one;
+//                    }
+//                    else if(fxVel>fxMaxSpeedCollided)
+//                    {
+//                        fxVel = fxVel - (fix16_one>>4);
+//                        if(fxVel<0)
+//                            fxVel = 0;
+//                    }
+//                    else if(fxVel<-fxMaxSpeedCollided)
+//                    {
+//                        fxVel = fxVel + (fix16_one>>4);
+//                        if(fxVel>0)
+//                            fxVel = 0;
+//                    }
+//                }
+//
+//                // Change sound effect if needed.
+//                if(fxVelOld != fxVel || prevCollided != collided ) {
+//                    tonefreq = fix16_to_int(abs(fxVel*5));
+//                    if(tonefreq>50) tonefreq = 50;
+//                    snd.playTone(1,tonefreq,amplitude,wavetype,arpmode);
+//                }
+//
                 // Move the  texture plane
 
-                fxCos = fix16_cos(-fxAngle);
-                fxSin = fix16_sin(-fxAngle);
-
-                fxCamY = fxCamY + fix16_mul(fxVel, fxCos);
-                fxCamX = fxCamX + fix16_mul(fxVel, fxSin);
-                fxVelOld = fxVel;
+//                fxCos = fix16_cos(-fxAngle);
+//                fxSin = fix16_sin(-fxAngle);
+//
+//                fxCamY = fxCamY + fix16_mul(fxVel, fxCos);
+//                fxCamX = fxCamX + fix16_mul(fxVel, fxSin);
+//                fxVelOld = fxVel;
 
                 // Move other ships
                 if( isRace )
