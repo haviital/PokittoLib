@@ -1,9 +1,9 @@
 #include "Pokitto.h"
-#include "PokittoCookie.h"
 #include "fix16.h"
 #include "main.h"
 #include "gfx_hdr/GameData.h"
 #include "ship.h"
+#include "playerShip.h"
 #include "menu.h"
 
 
@@ -12,7 +12,6 @@ Pokitto::Sound snd;
 
 // Prototypes
 void InitGameObjectsForTrack1(bool isRace);
-void HandleGameKeys();
 void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
@@ -20,46 +19,24 @@ bool Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 bool HandleStartGameMenu( int32_t lastLap_ms );
 bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4);
 
-enum LapTimingState {
-    enumReadyToStart = 0,
-    enumStarted = 1,
-    enumOnTimedTrack = 2,
-    enumOverHalfWayPoint = 3,
-    enumFinished = 4,
-
-};
-
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
-const fix16_t fxInitialRotVel = fix16_pi / 1000;
-const fix16_t fxRotAccFactor = fix16_from_float(1.2);
 
 // 3d lookup tables
 // z = (zs * h) / y
 fix16_t PerspectiveScaleY[screenH];
 fix16_t PerspectiveScaleX[screenH];
 
-// Ship state
-bool isTurningLeft = false;
-bool isTurningRight = false;
-bool collided = false;
-
 // Camera pos
 //fix16_t fxX = fix16_from_int(55);
 fix16_t fxCamX = fix16_from_int(42);
 fix16_t fxCamY = fix16_from_int(490);
-
-// Ship velocity
-fix16_t fxRotVel = fxInitialRotVel;
-fix16_t fxVel = 0;
-fix16_t fxAngle = 0;
 
 // Ship bitmap
 const uint8_t* activeShipBitmapData = billboard_object_bitmaps[0];
 uint32_t shipBitmapW = *(activeShipBitmapData - 2);
 uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 
-LapTimingState lapTimingState = enumReadyToStart;
 bool isRace = true;
 
 //
@@ -86,18 +63,14 @@ CObject3d* g_objects3d[ g_objects3dMaxCount ] = {0};
 // Reserve space for objects in RAM.
 CObject3d g_BillboardObjectArray[2*8];
 CShip g_ShipObjectArray[1*8];
+CPlayerShip g_playerShip;
 
 // Ships
 const uint32_t g_shipsMaxCount = 10;
 uint32_t g_shipCount = 0;
 CShip* g_ships[ g_objects3dMaxCount ] = {0};
 
-class mycookie : public Pokitto::Cookie
-{
-public:
-    uint32_t bestLap_ms = 0;
-    uint32_t version = 1;
-};
+
 
 // Create an instance of cookie.
 mycookie highscore;
@@ -106,15 +79,12 @@ mycookie highscore;
 int main () {
 
     // Initialize variables.
-    fix16_t fxVelOld = -1;
     fix16_t fxCos = fix16_one;
     fix16_t fxSin = 0;
     bool prevCollided = false;
     bool isManualRotation = true;
     //bool isSetupMenuActive = false;
     int32_t lastSetupListPos = 1;
-    uint32_t start_ms = 0;
-    uint32_t final_lap_time_ms = 0;
     CMenu menu;
 
     // Load cookie
@@ -134,20 +104,6 @@ int main () {
 
     // Init game object.
     InitGameObjectsForTrack1(isRace);
-
-    // *** Setup sound
-
-    int tonefreq=0;
-    uint8_t amplitude = 255;//127;
-    uint8_t wavetype = 1, wavetypeCrash = 4, arpmode=1;
-    snd.ampEnable(1);
-    snd.playTone(1,tonefreq,amplitude,wavetype,arpmode);
-    //snd.playTone(1,100,255,0);
-
-    //uint8_t const discrete_vol_levels[8]      {0,32,64,96,128,160,192,224};
-    //Pokitto::Sound::globalVolume = discrete_vol_levels[7];
-    //snd.setVolume(Pokitto::Sound::globalVolume);
-
 
     // *** Calculate lookup tables.
 
@@ -173,16 +129,13 @@ int main () {
         current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
     }
 
-    //
-    start_ms = mygame.getTime();
-
     // *** The game loop
     while (mygame.isRunning()) {
 
         if (mygame.update()) {
 
             // Draw sky
-            fix16_t fxAnglePositive =  ((-fxAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
+            fix16_t fxAnglePositive =  ((-g_playerShip.m_fxAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
             int16_t skyX = ((fxAnglePositive>>9) % 22);
             uint16_t skyW = image_sky_long[0];
             uint16_t skyH = image_sky_long[1];
@@ -190,119 +143,13 @@ int main () {
             DrawBitmapOpaque8bit( 0 - skyX, 0, skyBitmapPtr, skyW, skyH );
 
             // ** Draw the road and edges and terrain.
-
-            DrawMode7(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle);
+            fix16_t fxCamX = g_playerShip.m_fxX; // - fix16_from_int( g_rotatingCenterX );
+            fix16_t fxCamY = g_playerShip.m_fxY; // - fix16_from_int( g_rotatingCenterY );
+            DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), g_playerShip.m_fxAngle);
 
             // Draw 3d objects and check collisions.
-            bool isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxAngle);
+            bool isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, g_playerShip.m_fxAngle);
 
-
-            // ** Draw the ship shadow
-
-//            uint16_t shadowW = image_shadow[0];
-//            uint16_t shadowH = image_shadow[1];
-//            const uint8_t* shadowBitmapPtr = &(image_shadow[2]);
-//            DrawScaledBitmap8bit( 55-(shadowW>>1), 56+7,
-//                                  shadowBitmapPtr,
-//                                  shadowW, shadowH, shadowW, shadowH);
-
-            // *** Draw ship bitmap
-
-            // Move ship up and down when collided
-//            int32_t shipY = 56;
-//            if(collided) {
-//                fix16_t fxBumbAngle = fxCamX + fxCamY;
-//                fix16_t fxBumpHeight = fix16_sin(fxBumbAngle) * 4;
-//                shipY -= abs(fix16_to_int(fxBumpHeight));
-//            }
-
-//            // Draw the bitmap (currently not scaled)
-//            DrawScaledBitmap8bit( 55-(shipBitmapW>>1), shipY,
-//                                  activeShipBitmapData,
-//                                  shipBitmapW, shipBitmapH, shipBitmapW, shipBitmapH);
-
-            // *** Draw the lap counter
-
-//            // get current lap time
-//            uint32_t current_lap_time_ms = 0;
-//            if( lapTimingState == enumReadyToStart )
-//                current_lap_time_ms = 0;
-//            else if( lapTimingState == enumFinished )
-//                current_lap_time_ms = final_lap_time_ms;
-//            else
-//                current_lap_time_ms = mygame.getTime() - start_ms;
-//
-            // Draw lap time
-            int32_t lapStartX = 110-5;  // 5 pixel margin
-            lapStartX -= 5*6; // 5 chars
-            DrawLapTime(current_lap_time_ms, lapStartX, 1, fix16_one );
-
-            // *** Check collision to road edges
-//            prevCollided = collided;
-//            uint8_t tileIndex = GetTileIndex(fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxAngle, 55, 56);
-//            if( isCollidedToPlayerShip ||
-//                (
-//                    tileIndex != 5 && tileIndex != 6 &&
-//                    (tileIndex < 11 || tileIndex > 15)
-//                )
-//            )
-//            {
-//                collided = true;
-//                wavetype = 5;
-//            }
-//            else {
-//                collided = false;
-//                wavetype = 1;
-//            }
-
-//            // *** starting line
-//            bool isOnStartingGrid = ( tileIndex >= 11 && tileIndex <= 14);
-//            bool isOnHalfWayPoint = (tileIndex == 15);
-//
-//            // Hit the starting line
-//            switch(lapTimingState)
-//            {
-//            case enumReadyToStart:
-//                if( isOnStartingGrid )
-//                {
-//                    lapTimingState = enumStarted;
-//                    start_ms = mygame.getTime();  // started
-//                }
-//                break;
-//            case enumStarted:
-//                if( ! isOnStartingGrid )
-//                {
-//                    lapTimingState = enumOnTimedTrack;
-//                    //lapTimingState = enumOverHalfWayPoint;
-//                }
-//                break;
-//            case enumOnTimedTrack:
-//                if( isOnHalfWayPoint )
-//                {
-//                    lapTimingState = enumOverHalfWayPoint;
-//                 }
-//                break;
-//            case enumOverHalfWayPoint:
-//                if( isOnStartingGrid )
-//                {
-//                    // Finished!
-//                    final_lap_time_ms = mygame.getTime() - start_ms;
-//                    lapTimingState = enumFinished;
-//                    menu.m_mode = CMenu::enumTimeTrialFinishedMenu;
-//                    menu.m_isOpen = true;
-//
-//                    // Save cookie if this is the best time
-//                    if(highscore.bestLap_ms == 0 || final_lap_time_ms < highscore.bestLap_ms)
-//                    {
-//                        highscore.bestLap_ms = final_lap_time_ms;
-//                        highscore.saveCookie();
-//                    }
-//                }
-//                break;
-//            case enumFinished:
-//                break;
-//            }
-//
             // Print coordinates on screen
             #if 0
             char text[128];
@@ -320,58 +167,7 @@ int main () {
             {
                 // No menu opean
 
-                // Check buttons
-                // HandleGameKeys();
-
-                // Limit turning speed
-//                if(fxRotVel>fxInitialRotVel*10)
-//                    fxRotVel = fxInitialRotVel*10;
-//
-//                // Limit speed
-//                if(fxVel>fxMaxSpeed)
-//                    fxVel = fxMaxSpeed;
-//                else if(fxVel<-fxMaxSpeed)
-//                    fxVel = -fxMaxSpeed;
-
-//                // If colliding, slow down
-//                if( collided ) {
-//
-//                    // Break or stop
-//                    if( isCollidedToPlayerShip )
-//                    {
-//                        fxVel = fix16_one;
-//                    }
-//                    else if(fxVel>fxMaxSpeedCollided)
-//                    {
-//                        fxVel = fxVel - (fix16_one>>4);
-//                        if(fxVel<0)
-//                            fxVel = 0;
-//                    }
-//                    else if(fxVel<-fxMaxSpeedCollided)
-//                    {
-//                        fxVel = fxVel + (fix16_one>>4);
-//                        if(fxVel>0)
-//                            fxVel = 0;
-//                    }
-//                }
-//
-//                // Change sound effect if needed.
-//                if(fxVelOld != fxVel || prevCollided != collided ) {
-//                    tonefreq = fix16_to_int(abs(fxVel*5));
-//                    if(tonefreq>50) tonefreq = 50;
-//                    snd.playTone(1,tonefreq,amplitude,wavetype,arpmode);
-//                }
-//
-                // Move the  texture plane
-
-//                fxCos = fix16_cos(-fxAngle);
-//                fxSin = fix16_sin(-fxAngle);
-//
-//                fxCamY = fxCamY + fix16_mul(fxVel, fxCos);
-//                fxCamX = fxCamX + fix16_mul(fxVel, fxSin);
-//                fxVelOld = fxVel;
-
-                // Move other ships
+                // Move all ships
                 if( isRace )
                     for(int32_t i=0; i < g_shipCount; i++)
                     {
@@ -386,12 +182,8 @@ int main () {
 void ResetGame(bool isRace_)
 {
      // Reset game
-    lapTimingState = enumReadyToStart;
-    fxCamX = fix16_from_int(42);
-    fxCamY = fix16_from_int(490);
-    fxVel = 0;
-    fxAngle = 0;
-    fxRotVel = fxInitialRotVel;
+
+    g_playerShip.Reset();
 
     isRace = isRace_;
 
@@ -513,8 +305,30 @@ void InitGameObjectsForTrack1(bool isRace)
             //g_ships[i]->m_activeWaypointIndex = 0;
         }
 
-        // Ship 0: fast in streight road, slow in corners
+        // Player Ship
         int32_t i=0;
+        ii = i + (2*8);
+        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[0];
+        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
+        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
+        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_ships[i] = &g_playerShip;
+        g_ships[i]->m_fxVel = 0;
+        g_ships[i]->m_fxAcc = 0;
+        g_ships[i]->m_fxDeacc = 0;
+        g_ships[i]->m_fxRotVel = 0;
+        g_ships[i]->m_fxMaxSpeed = 0;
+        g_ships[i]->m_fxCornerSpeed1 = 0;
+        g_ships[i]->m_fxCornerSpeed2 = 0;
+        g_ships[i]->m_fxWaypointTargetSpeed = 0;
+        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_activeWaypointIndex = 0;
+        g_playerShip.Reset();
+
+        // Ship 1: fast in streight road, slow in corners
+        i=1;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(30);
@@ -536,8 +350,8 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxAngle = 0;
         g_ships[i]->m_activeWaypointIndex = 0;
 
-        // Ship 1: slow in streight road, fast in corners
-        i=1;
+        // Ship 2: slow in streight road, fast in corners
+        i=2;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(30+50);
@@ -560,7 +374,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_activeWaypointIndex = 0;
 
         // Ship 3: slow in streight road, fast in corners
-        i=2;
+        i=3;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(30 + 50);
@@ -584,7 +398,7 @@ void InitGameObjectsForTrack1(bool isRace)
 
 
         // Ship 4: fast in streight road, slow in corners
-        i=3;
+        i=4;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(30);
@@ -607,7 +421,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_activeWaypointIndex = 0;
 
         // Ship 5: slow in streight road, fast in corners
-        i=4;
+        i=5;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(30 + 50);
@@ -630,8 +444,8 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_activeWaypointIndex = 0;
 
 
-        // Ship 5: fast in streight road, slow in corners
-        i=5;
+        // Ship 6: fast in streight road, slow in corners
+        i=6;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(30);
@@ -668,86 +482,6 @@ void InitGameObjectsForTrack1(bool isRace)
             g_drawList[i] = NULL;
     }
 
-}
-
-// Handle keys
-void HandleGameKeys()
-{
-
-#if 1
-        // Playing
-
-        // Turn left
-    if(mygame.buttons.leftBtn()) {
-        if( ! isTurningLeft )
-            fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning
-        fxAngle += fxRotVel;
-        isTurningLeft = true;
-        fxRotVel = fix16_mul(fxRotVel, fxRotAccFactor);
-    }
-    else {
-        if( isTurningLeft )
-            fxRotVel = fxInitialRotVel;
-        isTurningLeft = false;
-    }
-
-    // Turn right
-    if(mygame.buttons.rightBtn()) {
-        if( ! isTurningRight )
-            fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning
-        fxAngle -= fxRotVel;
-        isTurningRight = true;
-        fxRotVel = fix16_mul(fxRotVel, fxRotAccFactor);
-    }
-    else {
-        if( isTurningRight )
-            fxRotVel = fxInitialRotVel;
-        isTurningRight = false;
-    }
-
-
-    // Thrust
-    if(mygame.buttons.aBtn()) {
-
-        if(!collided || fxVel<=fxMaxSpeedCollided)
-            fxVel = fxVel + (fix16_one>>4);
-    }
-
-    // Reverse
-    else if(mygame.buttons.bBtn()) {
-
-        if(!collided || fxVel>=fxMaxSpeedCollided)
-            fxVel = fxVel - (fix16_one>>4);
-    }
-    // Break a little if no A button is pressed
-    else  {
-
-        if(!collided || fxVel>=fxMaxSpeedCollided)
-            fxVel = fxVel - (fix16_one>>5);
-        if(fxVel < 0)
-            fxVel = 0;
-    }
-#else
-    if(mygame.buttons.leftBtn()) {
-        fxCamX += fix16_one;
-    }
-    else if(mygame.buttons.rightBtn()) {
-        fxCamX -= fix16_one;
-    }
-    else if(mygame.buttons.upBtn()) {
-        fxCamY += fix16_one;
-    }
-    else if(mygame.buttons.downBtn()) {
-        fxCamY -= fix16_one;
-    }
-    else if(mygame.buttons.aBtn()) {
-        fxAngle += fxRotVel;
-    }
-    else if(mygame.buttons.bBtn()) {
-        fxAngle -= fxRotVel;
-    }
-
-#endif
 }
 
 bool HandleStartGameMenu( int32_t lastLap_ms )
@@ -790,11 +524,7 @@ bool HandleStartGameMenu( int32_t lastLap_ms )
     if(mygame.buttons.pressed(BTN_C))
     {
         // Reset game
-        fxCamX = fix16_from_int(42);
-        fxCamY = fix16_from_int(490);
-        fxVel = 0;
-        fxAngle = 0;
-        fxRotVel = fxInitialRotVel;
+        g_playerShip.Reset();
 
         return false;
     }

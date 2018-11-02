@@ -1,7 +1,8 @@
 
- #pragma once
+#pragma once
 
 #include "fix16.h"
+#include "PokittoCookie.h"
 
 // Constants
 
@@ -31,6 +32,15 @@ const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;
 
 //const fix16_t fxMaxSpeedCollided = fix16_one>>4;
 
+enum LapTimingState {
+    enumReadyToStart = 0,
+    enumStarted = 1,
+    enumOnTimedTrack = 2,
+    enumOverHalfWayPoint = 3,
+    enumFinished = 4,
+
+};
+
 //
 class CObject3d
 {
@@ -56,6 +66,13 @@ class CWaypoint
     fix16_t fxTargetSpeed;
 };
 
+class mycookie : public Pokitto::Cookie
+{
+public:
+    uint32_t bestLap_ms = 0;
+    uint32_t version = 1;
+};
+
 // extern
 extern Pokitto::Core mygame;
 extern Pokitto::Sound snd;
@@ -69,6 +86,8 @@ extern const uint8_t* current_texture_bitmaps_mm2[];
 extern const CWaypoint waypoints[];
 extern const uint32_t waypointCount;
 extern const CObject3d g_timeTrialBilboardObjects[];
+
+extern mycookie highscore;
 
 //
 uint8_t GetTileIndexCommon(int32_t posX, int32_t posY);

@@ -4166,13 +4166,13 @@
 	"SimEEPROM.h"
 	<stdio.h>
 
-1541022478 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+1541167499 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
 	"Pokitto.h"
-	"PokittoCookie.h"
 	"fix16.h"
 	"main.h"
 	"gfx_hdr/GameData.h"
 	"ship.h"
+	"playerShip.h"
 	"menu.h"
 
 1537479642 c:\git\pokittolib2\examples\pzerodemo\my_settings.h
@@ -4558,8 +4558,9 @@
 	"main.h"
 	"gfx_hdr/image_numbers.h"
 
-1541022602 c:\git\pokittolib2\examples\pzerodemo\main.h
+1541109610 c:\git\pokittolib2\examples\pzerodemo\main.h
 	"fix16.h"
+	"PokittoCookie.h"
 
 1540963760 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
 	"Pokitto.h"
@@ -4916,10 +4917,10 @@
 1540443051 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_sky_long.h
 	<stdint.h>
 
-1541022055 c:\git\pokittolib2\examples\pzerodemo\ship.h
+1541051169 c:\git\pokittolib2\examples\pzerodemo\ship.h
 	"main.h"
 
-1541022409 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
+1541051086 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
@@ -4934,4 +4935,14 @@
 	"Pokitto.h"
 	"main.h"
 	"menu.h"
+
+1541137942 source:c:\git\pokittolib2\examples\pzerodemo\playership.cpp
+	"Pokitto.h"
+	"PokittoCookie.h"
+	"fix16.h"
+	"playerShip.h"
+
+1541108520 c:\git\pokittolib2\examples\pzerodemo\playership.h
+	"main.h"
+	"ship.h"
 
