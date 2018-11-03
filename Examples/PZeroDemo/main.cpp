@@ -79,8 +79,6 @@ mycookie highscore;
 int main () {
 
     // Initialize variables.
-    fix16_t fxCos = fix16_one;
-    fix16_t fxSin = 0;
     bool prevCollided = false;
     bool isManualRotation = true;
     //bool isSetupMenuActive = false;
@@ -134,7 +132,10 @@ int main () {
 
         if (mygame.update()) {
 
-            // Draw sky
+            fix16_t fxCos = fix16_cos(-g_playerShip.m_fxAngle);
+            fix16_t fxSin = fix16_sin(-g_playerShip.m_fxAngle);
+
+           // Draw sky
             fix16_t fxAnglePositive =  ((-g_playerShip.m_fxAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
             int16_t skyX = ((fxAnglePositive>>9) % 22);
             uint16_t skyW = image_sky_long[0];
@@ -145,6 +146,8 @@ int main () {
             // ** Draw the road and edges and terrain.
             fix16_t fxCamX = g_playerShip.m_fxX; // - fix16_from_int( g_rotatingCenterX );
             fix16_t fxCamY = g_playerShip.m_fxY; // - fix16_from_int( g_rotatingCenterY );
+            //fxCamX += -(g_rotatingCenterX * fxCos);
+            //fxCamY += -(g_rotatingCenterY * fxSin);
             DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), g_playerShip.m_fxAngle);
 
             // Draw 3d objects and check collisions.
@@ -308,7 +311,7 @@ void InitGameObjectsForTrack1(bool isRace)
         // Player Ship
         int32_t i=0;
         ii = i + (2*8);
-        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_objects3d[ii] = &g_playerShip;
         g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[0];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);

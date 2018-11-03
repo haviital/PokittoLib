@@ -34,7 +34,8 @@ void CPlayerShip::Update()
     // *** Check collision to road edges
     m_isCollidedToSurface = false;
     uint8_t wavetype = 1;
-    uint8_t tileIndex = GetTileIndexCommon(fix16_to_int(m_fxX), fix16_to_int(m_fxY));
+    uint8_t tileIndex = 5;
+    //uint8_t tileIndex = GetTileIndexCommon(fix16_to_int(m_fxX), fix16_to_int(m_fxY));
     if(
         tileIndex != 5 && tileIndex != 6 &&
         (tileIndex < 11 || tileIndex > 15)
@@ -178,8 +179,8 @@ void CPlayerShip::Update()
         fix16_t fxCos = fix16_cos(-m_fxAngle);
         fix16_t fxSin = fix16_sin(-m_fxAngle);
 
-        m_fxY += fix16_mul(m_fxVel, fxCos);
-        m_fxX += fix16_mul(m_fxVel, fxSin);
+        m_fxY += fix16_mul(m_fxVel, fxSin);
+        m_fxX += fix16_mul(m_fxVel, fxCos);
 
         // Change sound effect if needed.
         if(fxVelOld != m_fxVel || prevCollided != m_isCollidedToSurface )
@@ -215,7 +216,7 @@ void CPlayerShip::HandleGameKeys()
             m_fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning
         m_fxAngle += m_fxRotVel;
         m_isTurningLeft = true;
-        //m_fxRotVel = fix16_mul(m_fxRotVel, fxRotAccFactor);
+        m_fxRotVel = fix16_mul(m_fxRotVel, fxRotAccFactor);
     }
     else {
         if( m_isTurningLeft )
@@ -229,7 +230,7 @@ void CPlayerShip::HandleGameKeys()
             m_fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning
         m_fxAngle -= m_fxRotVel;
         m_isTurningRight = true;
-        //m_fxRotVel = fix16_mul(m_fxRotVel, fxRotAccFactor);
+        m_fxRotVel = fix16_mul(m_fxRotVel, fxRotAccFactor);
     }
     else {
         if( m_isTurningRight )
