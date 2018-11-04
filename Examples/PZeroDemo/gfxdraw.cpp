@@ -2,23 +2,25 @@
 #include "fix16.h"
 #include "main.h"
 #include "gfx_hdr/image_numbers.h"
+#include "playerShip.h"
 
 //
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 {
-    fxAngle += fix16_pi + fix16_pi>>1;
     uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH*mygame.display.width); // 8-bit screen buffer
     fix16_t fxStepX = fix16_one;
     const fix16_t fxCos = fix16_cos(fxAngle);
     const fix16_t fxSin = fix16_sin(fxAngle);
 
     // Move caused by rotation.
-    const int32_t reqRotateCenterX = tile2PosX + g_rotatingCenterX;
-    const int32_t reqRotateCenterY = tile2PosY + g_rotatingCenterY;
-    const fix16_t fxRotatedRotateCenterX = (reqRotateCenterX * fxCos) - (reqRotateCenterY * fxSin);
-    const fix16_t fxRotatedRotateCenterY = (reqRotateCenterX * fxSin) + (reqRotateCenterY * fxCos);
-    const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fix16_from_int(reqRotateCenterX);
-    const fix16_t fxRotatedCenterDiffY = fxRotatedRotateCenterY - fix16_from_int(reqRotateCenterY);
+    const fix16_t fxRotCenterX = g_playerShip.m_fxX;
+    const fix16_t fxRotCenterY = g_playerShip.m_fxY; // -6 ==> is this needed?
+    const fix16_t fxReqRotateCenterX = tile2PosX + fxRotCenterX;
+    const fix16_t fxReqRotateCenterY = tile2PosY + fxRotCenterY;
+    const fix16_t fxRotatedRotateCenterX = fix16_mul(fxReqRotateCenterX, fxCos) - fix16_mul(fxReqRotateCenterY, fxSin);
+    const fix16_t fxRotatedRotateCenterY = fix16_mul(fxReqRotateCenterX, fxSin) + fix16_mul(fxReqRotateCenterY, fxCos);
+    const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fxReqRotateCenterX;
+    const fix16_t fxRotatedCenterDiffY = fxRotatedRotateCenterY - fxReqRotateCenterY;
 
     for( uint8_t y=0; y<screenH-sceneryH ; y++ ) {
 

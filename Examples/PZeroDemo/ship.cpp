@@ -68,7 +68,7 @@ void CShip::Update()
 
     // Calculate angle to the current waypoint
 
-    fix16_t fxAngleToWayPoint = fix16_atan2(-fxDirX, fxDirY);
+    fix16_t fxAngleToWayPoint = fix16_atan2(fxDirY, fxDirX);
    	fix16_t shipAngle = m_fxAngle % (fix16_pi << 1);
 
     fix16_t fxAngleDiff = fxAngleToWayPoint - shipAngle;
@@ -134,9 +134,9 @@ void CShip::Update()
     else if(m_fxVel < fxMaxSpeedCollided)
         m_fxVel = fxMaxSpeedCollided;
 
-    fix16_t fxSin = fix16_sin(m_fxAngle);
     fix16_t fxCos = fix16_cos(m_fxAngle);
+    fix16_t fxSin = fix16_sin(m_fxAngle);
 
-    m_fxY += fix16_mul(m_fxVel, fxSin);
-    m_fxX += fix16_mul(m_fxVel, fxCos);
+    //m_fxX += fix16_mul(m_fxVel, fxCos);
+    //m_fxY += fix16_mul(m_fxVel, fxSin);
 }

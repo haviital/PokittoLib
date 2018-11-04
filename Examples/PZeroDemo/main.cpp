@@ -70,8 +70,6 @@ const uint32_t g_shipsMaxCount = 10;
 uint32_t g_shipCount = 0;
 CShip* g_ships[ g_objects3dMaxCount ] = {0};
 
-
-
 // Create an instance of cookie.
 mycookie highscore;
 
@@ -146,11 +144,13 @@ int main () {
             DrawBitmapOpaque8bit( 0 - skyX, 0, skyBitmapPtr, skyW, skyH );
 
             // ** Draw the road and edges and terrain.
-            fix16_t fxCamX = g_playerShip.m_fxX; // - fix16_from_int( g_rotatingCenterX );
-            fix16_t fxCamY = g_playerShip.m_fxY; // - fix16_from_int( g_rotatingCenterY );
-            //fxCamX += -(g_rotatingCenterX * fxCos);
-            //fxCamY += -(g_rotatingCenterY * fxSin);
-            DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle+fix16_pi);
+            fix16_t fxCamX = g_playerShip.m_fxX;
+            fix16_t fxCamY = g_playerShip.m_fxY;
+            //fxCamX += (g_rotatingCenterX * fix16_cos(-g_playerShip.m_fxAngle));
+            //fxCamY += (g_rotatingCenterY * fix16_sin(-g_playerShip.m_fxAngle));
+            fxCamY += -fxCameraBehindPlayerY;
+
+            DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle);
 
             // Draw 3d objects and check collisions.
             bool isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxCamAngle);
@@ -200,7 +200,7 @@ void ResetGame(bool isRace_)
 // Init game objects
 void InitGameObjectsForTrack1(bool isRace)
 {
-    #if 1
+    #if 0
     // Copy cactus and rock array pointers to the object list.
     for(int32_t i = 0; i < 2*8; i++ )
     {
@@ -264,51 +264,6 @@ void InitGameObjectsForTrack1(bool isRace)
         g_shipCount = 6;
         //g_shipCount = 1;
         fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
-        //for(int32_t i = 0; i < g_shipCount; i++ )
-        {
-            //ii = i + (2*8);
-            //g_objects3d[ii] = &g_ShipObjectArray[i];
-            //g_ships[i] = &g_ShipObjectArray[i];
-
-
-            //int32_t shipBitmapIndex = (rand()%25) + 1;
-            //int32_t shipBitmapIndex = i + 1;
-            //const uint8_t* bmData = billboard_object_bitmaps[shipBitmapIndex];
-            //int32_t bmWidth = *(bmData - 2);
-            //int32_t bmHeight = *(bmData - 1);
-            //fix16_t fxScaledWidth = bmWidth * fxScaledSizeFactor;
-            //fix16_t fxScaledBmHeight = bmHeight * fxScaledSizeFactor;
-            //uint32_t shipIndex = 0;
-            //fix16_t shipStepX = 50;
-            //fix16_t shipStepY = 50;
-
-            // Place ships to the starting grid.
-
-            //g_objects3d[ii]->m_fxX = fix16_from_int(30 + ((i&1) ? shipStepX : 0));
-            //g_objects3d[ii]->m_fxY = fix16_from_int(600 + (shipStepY*i));
-            //g_objects3d[ii]->m_bitmap = bmData;
-            //g_objects3d[ii]->m_bitmapW = bmWidth;
-            //g_objects3d[ii]->m_bitmapH = bmHeight;
-            //g_objects3d[ii]->m_fxScaledWidth = fxScaledWidth;
-            //g_objects3d[ii]->m_fxScaledHeight = fxScaledBmHeight;
-
-            // g_ships[i]->m_fxVel = 0;
-            //g_ships[i]->m_fxAcc = (fix16_one/(i+1*8));
-            //g_ships[i]->m_fxDeacc = (i*fix16_one/(4*8));
-            //g_ships[i]->m_fxAcc = (fix16_one/32) - (i*(fix16_one/256));
-            //g_ships[i]->m_fxDeacc = (fix16_one/4) + (i*(fix16_one/6));
-            //g_ships[i]->m_fxRotVel = fix16_pi / (270 - i*10);
-
-            //g_ships[i]->m_fxAcc = fix16_from_float(0.200);
-            //g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
-            //g_ships[i]->m_fxRotVel = fix16_pi / 100;
-            //g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
-            //g_ships[0]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
-            //g_ships[0]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
-
-            //g_ships[i]->m_fxAngle = 0;
-            //g_ships[i]->m_activeWaypointIndex = 0;
-        }
 
         // Player Ship
         int32_t i=0;
@@ -328,7 +283,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxCornerSpeed1 = 0;
         g_ships[i]->m_fxCornerSpeed2 = 0;
         g_ships[i]->m_fxWaypointTargetSpeed = 0;
-        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_fxAngle = fix16_pi>>1;
         g_ships[i]->m_activeWaypointIndex = 0;
         g_playerShip.Reset();
 
@@ -352,7 +307,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
         g_ships[i]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
         g_ships[i]->m_fxWaypointTargetSpeed = g_ships[0]->m_fxMaxSpeed;
-        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_fxAngle = fix16_pi>>1;
         g_ships[i]->m_activeWaypointIndex = 0;
 
         // Ship 2: slow in streight road, fast in corners
@@ -375,7 +330,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
         g_ships[i]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
         g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
-        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_fxAngle = fix16_pi>>1;
         g_ships[i]->m_activeWaypointIndex = 0;
 
         // Ship 3: slow in streight road, fast in corners
@@ -398,7 +353,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
         g_ships[i]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
         g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
-        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_fxAngle = fix16_pi>>1;
         g_ships[i]->m_activeWaypointIndex = 0;
 
 
@@ -422,7 +377,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
         g_ships[i]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
         g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
-        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_fxAngle = fix16_pi>>1;
         g_ships[i]->m_activeWaypointIndex = 0;
 
         // Ship 5: slow in streight road, fast in corners
@@ -445,7 +400,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
         g_ships[i]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
         g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
-        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_fxAngle = fix16_pi>>1;
         g_ships[i]->m_activeWaypointIndex = 0;
 
 
@@ -469,7 +424,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
         g_ships[i]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
         g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
-        g_ships[i]->m_fxAngle = 0;
+        g_ships[i]->m_fxAngle = fix16_pi>>1;
         g_ships[i]->m_activeWaypointIndex = 0;
 
     }
@@ -671,63 +626,6 @@ void HandleSetupMenu(int32_t& lastListPos)
     }
 }
 
-uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY)
-{
-    const uint16_t sceneryH = 16;
-    uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH*mygame.display.width); // 8-bit screen buffer
-    fix16_t fxStepX = fix16_one;
-    const fix16_t fxCos = fix16_cos(fxAngle);
-    const fix16_t fxSin = fix16_sin(fxAngle);
-
-    // Move caused by rotation.
-    const int32_t reqRotateCenterX = tile2PosX + g_rotatingCenterX;
-    const int32_t reqRotateCenterY = tile2PosY + g_rotatingCenterY;
-    const fix16_t fxRotatedRotateCenterX = (reqRotateCenterX * fxCos) - (reqRotateCenterY * fxSin);
-    const fix16_t fxRotatedRotateCenterY = (reqRotateCenterX * fxSin) + (reqRotateCenterY * fxCos);
-    const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fix16_from_int(reqRotateCenterX);
-    const fix16_t fxRotatedCenterDiffY = fxRotatedRotateCenterY - fix16_from_int(reqRotateCenterY);
-
-    fix16_t fxZ = PerspectiveScaleY[getY];
-    fix16_t fxstepXFromY = PerspectiveScaleX[getY];
-    fix16_t fxFinalY =  fxZ + fix16_from_int(tile2PosY);
-
-    // *** Step for scaling
-    fxStepX = fxstepXFromY >> 7;
-    fix16_t fxStepXInU = fix16_mul(fxStepX, fxCos);
-    fix16_t fxStepXInV = fix16_mul(fxStepX, fxSin);
-
-     // *** Shear the scanline to move horizontal origo to the middle
-    fix16_t fxFinalX = -(fxstepXFromY>>1) + fix16_from_int(tile2PosX);
-    fix16_t fxU2 = fix16_mul(fxFinalX, fxCos) - fix16_mul(fxFinalY, fxSin) - fxRotatedCenterDiffX;
-    fix16_t fxV2 = fix16_mul(fxFinalX, fxSin) + fix16_mul(fxFinalY, fxCos) - fxRotatedCenterDiffY;
-
-    fxU2 += fxStepXInU * getX;
-    fxV2 += fxStepXInV * getX;
-
-    uint32_t finalU = fix16_to_int( fxU2 );
-    uint32_t finalV = fix16_to_int( fxV2 );
-
-    // *** Get the tile number from the "map"
-
-    // Raad the game map.
-    uint32_t blockDataX = (finalU >> 3);
-    uint32_t blockDataY = (finalV >> 3);
-    const uint8_t blockMapX = (blockDataX >> 3);
-    const uint8_t blockMapY = (blockDataY >> 3);
-    uint8_t* tileBitmapPtr;
-    uint8_t tileIndex = 0;
-    if(blockMapX < mapWidth && blockMapY < mapHeight) {
-        const uint8_t blockDataIndex = blockMap[blockMapX+ (blockMapY*mapWidth)];
-        // Get the tile.
-        tileIndex = blockData[blockDataIndex][(blockDataX & 0x7) + ((blockDataY & 0x7)*8)];
-    }
-    else
-        tileIndex = 0; // Background tile
-
-    //
-    return tileIndex;
-}
-
 uint8_t GetTileIndexCommon(int32_t posX, int32_t posY)
 {
     // *** Get the tile number from the "map"
@@ -754,8 +652,8 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
     const fix16_t fxCos = fix16_cos(-fxAngle);
     const fix16_t fxSin = fix16_sin(-fxAngle);
-    const fix16_t fxRotCenterX = fix16_from_int(g_rotatingCenterX);
-    const fix16_t fxRotCenterY = fix16_from_int(g_rotatingCenterY-6);
+    const fix16_t fxRotCenterX = g_playerShip.m_fxX;
+    const fix16_t fxRotCenterY = g_playerShip.m_fxY; // -6 ==> is this needed?
     const int32_t horizonY = 0 + sceneryH;
     bool isCollidedToPlayerShip = false;
 

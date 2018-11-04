@@ -199,7 +199,7 @@ void CPlayerShip::Reset()
     m_fxX = fix16_from_int(42+50);
     m_fxY = fix16_from_int(490);
     m_fxVel = 0;
-    m_fxAngle = 0;
+    m_fxAngle = fix16_pi>>1;
     m_fxRotVel = fxInitialRotVel;
 }
 

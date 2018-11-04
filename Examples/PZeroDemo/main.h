@@ -4,7 +4,7 @@
 #include "fix16.h"
 #include "PokittoCookie.h"
 
-// Constants
+class CPlayerShip;
 
 // Constants
 const int32_t screenW = 110;
@@ -20,14 +20,12 @@ const uint8_t tileH = 8;
 const uint16_t sceneryH = 16;
 const uint16_t screenShiftY = 5;
 
-const int32_t g_rotatingCenterX = -6;
-const int32_t g_rotatingCenterY = 72;
-
 const fix16_t fxMaxSpeedCollided = fix16_one>>1;
 const fix16_t fxMaxSpeed = fix16_one*6;  // player max speed
 const fix16_t fxDefaultOtherShipSpeed = fix16_one*10;
 const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
 const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;
+const fix16_t fxCameraBehindPlayerY = fix16_from_int(50);
 //const fix16_t fxDefaultOtherShipSpeed = fix16_one;
 
 //const fix16_t fxMaxSpeedCollided = fix16_one>>4;
@@ -86,6 +84,7 @@ extern const uint8_t* current_texture_bitmaps_mm2[];
 extern const CWaypoint waypoints[];
 extern const uint32_t waypointCount;
 extern const CObject3d g_timeTrialBilboardObjects[];
+extern CPlayerShip g_playerShip;
 
 extern mycookie highscore;
 
