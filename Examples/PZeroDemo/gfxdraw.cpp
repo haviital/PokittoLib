@@ -6,10 +6,7 @@
 //
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
 {
-    // The Mode7 camera position is along the positive y-axis. Rotate it towards the positive x-axis to make it
-    // equivalent to the 3d object model.
-    fxAngle += fix16_pi + (fix16_pi>>1);
-
+    fxAngle += fix16_pi + fix16_pi>>1;
     uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH*mygame.display.width); // 8-bit screen buffer
     fix16_t fxStepX = fix16_one;
     const fix16_t fxCos = fix16_cos(fxAngle);
