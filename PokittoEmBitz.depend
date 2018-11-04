@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1539376811 source:c:\git\pokittolib2\examples\pzerodemo\gfxdraw.cpp
+1541359417 source:c:\git\pokittolib2\examples\pzerodemo\gfxdraw.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
 	"gfx_hdr/image_numbers.h"
+	"playerShip.h"
 
 1518995454 c:\git\pokittolib2\pokitto\pokitto.h
 	"Pokitto_settings.h"
@@ -519,16 +520,17 @@
 
 1535654860 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\fix16.hpp
 
-1541022602 c:\git\pokittolib2\examples\pzerodemo\main.h
+1541360020 c:\git\pokittolib2\examples\pzerodemo\main.h
 	"fix16.h"
-
-1541028037 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
-	"Pokitto.h"
 	"PokittoCookie.h"
+
+1541361346 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+	"Pokitto.h"
 	"fix16.h"
 	"main.h"
 	"gfx_hdr/GameData.h"
 	"ship.h"
+	"playerShip.h"
 	"menu.h"
 
 1540963760 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\gamedata.h
@@ -1484,10 +1486,10 @@
 1540443051 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\image_sky_long.h
 	<stdint.h>
 
-1541022055 c:\git\pokittolib2\examples\pzerodemo\ship.h
+1541051169 c:\git\pokittolib2\examples\pzerodemo\ship.h
 	"main.h"
 
-1541028145 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
+1541367464 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
@@ -1502,4 +1504,14 @@
 	"Pokitto.h"
 	"main.h"
 	"menu.h"
+
+1541361285 c:\git\pokittolib2\examples\pzerodemo\playership.h
+	"main.h"
+	"ship.h"
+
+1541367465 source:c:\git\pokittolib2\examples\pzerodemo\playership.cpp
+	"Pokitto.h"
+	"PokittoCookie.h"
+	"fix16.h"
+	"playerShip.h"
 

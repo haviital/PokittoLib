@@ -148,6 +148,7 @@ int main () {
             fix16_t fxCamY = g_playerShip.m_fxY;
             //fxCamX += (g_rotatingCenterX * fix16_cos(-g_playerShip.m_fxAngle));
             //fxCamY += (g_rotatingCenterY * fix16_sin(-g_playerShip.m_fxAngle));
+            fxCamY += -g_playerShip.m_fxCameraBehindPlayerCurrent;
 
             DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle);
 
@@ -199,7 +200,7 @@ void ResetGame(bool isRace_)
 // Init game objects
 void InitGameObjectsForTrack1(bool isRace)
 {
-    #if 0
+    #if 1
     // Copy cactus and rock array pointers to the object list.
     for(int32_t i = 0; i < 2*8; i++ )
     {
@@ -651,8 +652,8 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
     const fix16_t fxCos = fix16_cos(-fxAngle);
     const fix16_t fxSin = fix16_sin(-fxAngle);
-    const fix16_t fxRotCenterX = fix16_from_int(g_rotatingCenterX);
-    const fix16_t fxRotCenterY = fix16_from_int(g_rotatingCenterY-6);
+    const fix16_t fxRotCenterX = g_playerShip.m_fxX - fxCamPosX;
+    const fix16_t fxRotCenterY = g_playerShip.m_fxY - fxCamPosY;
     const int32_t horizonY = 0 + sceneryH;
     bool isCollidedToPlayerShip = false;
 

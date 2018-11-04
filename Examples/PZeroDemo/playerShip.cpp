@@ -24,6 +24,8 @@ CPlayerShip::CPlayerShip()
     m_tonefreq=0;
     snd.ampEnable(1);
     snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+    m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY;
+    m_fxCameraBehindPlayerCurrent = fxCameraBehindPlayerY;
 }
 
 void CPlayerShip::Update()
@@ -34,8 +36,8 @@ void CPlayerShip::Update()
     // *** Check collision to road edges
     m_isCollidedToSurface = false;
     uint8_t wavetype = 1;
-    uint8_t tileIndex = 5;
-    //uint8_t tileIndex = GetTileIndexCommon(fix16_to_int(m_fxX), fix16_to_int(m_fxY));
+    //uint8_t tileIndex = 5;
+    uint8_t tileIndex = GetTileIndexCommon(fix16_to_int(m_fxX), fix16_to_int(m_fxY));
     if(
         tileIndex != 5 && tileIndex != 6 &&
         (tileIndex < 11 || tileIndex > 15)
@@ -162,33 +164,44 @@ void CPlayerShip::Update()
                 m_fxVel = 0;
         }
     }
-    else
+
+    // Limit turning speed
+    if(m_fxRotVel>fxInitialRotVel*10)
+        m_fxRotVel = fxInitialRotVel*10;
+
+    // Limit speed
+    if(m_fxVel>fxMaxSpeed)
+        m_fxVel = fxMaxSpeed;
+    else if(m_fxVel<-fxMaxSpeed)
+        m_fxVel = -fxMaxSpeed;
+
+    fix16_t fxCos = fix16_cos(m_fxAngle);
+    fix16_t fxSin = fix16_sin(m_fxAngle);
+
+    m_fxX += fix16_mul(m_fxVel, fxCos);
+    m_fxY += fix16_mul(m_fxVel, fxSin);
+
+    // Change sound effect if needed.
+    if(fxVelOld != m_fxVel || prevCollided != m_isCollidedToSurface )
     {
-        // Not collided
+        m_tonefreq = fix16_to_int(abs(m_fxVel*5));
+        if(m_tonefreq>50) m_tonefreq = 50;
+        snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+    }
 
-        // Limit turning speed
-        if(m_fxRotVel>fxInitialRotVel*10)
-            m_fxRotVel = fxInitialRotVel*10;
+    // Update camera pos
 
-        // Limit speed
-        if(m_fxVel>fxMaxSpeed)
-            m_fxVel = fxMaxSpeed;
-        else if(m_fxVel<-fxMaxSpeed)
-            m_fxVel = -fxMaxSpeed;
+    //fix16_t fxDiff =  m_fxCameraBehindPlayerTarget - m_fxCameraBehindPlayerCurrent;
+    //fxDiff >>= 1;
+    //m_fxCameraBehindPlayerCurrent += fxDiff;
 
-        fix16_t fxCos = fix16_cos(m_fxAngle);
-        fix16_t fxSin = fix16_sin(m_fxAngle);
-
-        m_fxX += fix16_mul(m_fxVel, fxCos);
-        m_fxY += fix16_mul(m_fxVel, fxSin);
-
-        // Change sound effect if needed.
-        if(fxVelOld != m_fxVel || prevCollided != m_isCollidedToSurface )
-        {
-            m_tonefreq = fix16_to_int(abs(m_fxVel*5));
-            if(m_tonefreq>50) m_tonefreq = 50;
-            snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
-        }
+    if(m_fxCameraBehindPlayerTarget > m_fxCameraBehindPlayerCurrent)
+    {
+        m_fxCameraBehindPlayerCurrent += fix16_one>>2;
+    }
+    else if(m_fxCameraBehindPlayerTarget < m_fxCameraBehindPlayerCurrent)
+    {
+        m_fxCameraBehindPlayerCurrent -= fix16_one>>2;
     }
 }
 
@@ -196,8 +209,8 @@ void CPlayerShip::Reset()
 {
      // Reset game
     m_lapTimingState = enumReadyToStart;
-    m_fxX = fix16_from_int(42+50);
-    m_fxY = fix16_from_int(490);
+    m_fxX = fix16_from_int(30);
+    m_fxY = fix16_from_int(550);
     m_fxVel = 0;
     m_fxAngle = fix16_pi>>1;
     m_fxRotVel = fxInitialRotVel;
@@ -243,20 +256,30 @@ void CPlayerShip::HandleGameKeys()
     if(mygame.buttons.aBtn()) {
 
         if(!m_isCollidedToSurface || m_fxVel<=fxMaxSpeedCollided)
+        {
             m_fxVel = m_fxVel + (fix16_one>>4);
+            m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY + fix16_from_int(3);
+        }
     }
 
     // Reverse
     else if(mygame.buttons.bBtn()) {
 
         if(!m_isCollidedToSurface || m_fxVel>=fxMaxSpeedCollided)
+        {
             m_fxVel = m_fxVel - (fix16_one>>4);
+            m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY - fix16_from_int(5);
+        }
     }
     // Break a little if no A button is pressed
     else  {
 
         if(!m_isCollidedToSurface || m_fxVel>=fxMaxSpeedCollided)
+        {
             m_fxVel = m_fxVel - (fix16_one>>5);
+            m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY;
+        }
+
         if(m_fxVel < 0)
             m_fxVel = 0;
     }

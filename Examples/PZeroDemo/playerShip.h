@@ -20,4 +20,6 @@ public:
     int m_tonefreq;
     bool m_isTurningLeft;
     bool m_isTurningRight;
+    fix16_t m_fxCameraBehindPlayerTarget;
+    fix16_t m_fxCameraBehindPlayerCurrent;
 };
