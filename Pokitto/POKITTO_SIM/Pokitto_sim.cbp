@@ -1162,6 +1162,24 @@
 		<Unit filename="../../Examples/PZeroDemo/main.h">
 			<Option target="PZeroDemo" />
 		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/menu.cpp">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/menu.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/playerShip.cpp">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/playerShip.h">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/ship.cpp">
+			<Option target="PZeroDemo" />
+		</Unit>
+		<Unit filename="../../Examples/PZeroDemo/ship.h">
+			<Option target="PZeroDemo" />
+		</Unit>
 		<Unit filename="../../Examples/Pakman_GB/My_settings.h">
 			<Option target="Pakman_GB" />
 		</Unit>

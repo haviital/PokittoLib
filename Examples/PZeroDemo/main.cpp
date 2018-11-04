@@ -132,8 +132,8 @@ int main () {
 
         if (mygame.update()) {
 
-            fix16_t fxCos = fix16_cos(-g_playerShip.m_fxAngle);
-            fix16_t fxSin = fix16_sin(-g_playerShip.m_fxAngle);
+            fix16_t fxCos = fix16_cos(g_playerShip.m_fxAngle);
+            fix16_t fxSin = fix16_sin(g_playerShip.m_fxAngle);
 
            // Draw sky
             fix16_t fxAnglePositive =  ((-g_playerShip.m_fxAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
@@ -669,63 +669,6 @@ void HandleSetupMenu(int32_t& lastListPos)
     }
 }
 
-uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY)
-{
-    const uint16_t sceneryH = 16;
-    uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH*mygame.display.width); // 8-bit screen buffer
-    fix16_t fxStepX = fix16_one;
-    const fix16_t fxCos = fix16_cos(fxAngle);
-    const fix16_t fxSin = fix16_sin(fxAngle);
-
-    // Move caused by rotation.
-    const int32_t reqRotateCenterX = tile2PosX + g_rotatingCenterX;
-    const int32_t reqRotateCenterY = tile2PosY + g_rotatingCenterY;
-    const fix16_t fxRotatedRotateCenterX = (reqRotateCenterX * fxCos) - (reqRotateCenterY * fxSin);
-    const fix16_t fxRotatedRotateCenterY = (reqRotateCenterX * fxSin) + (reqRotateCenterY * fxCos);
-    const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fix16_from_int(reqRotateCenterX);
-    const fix16_t fxRotatedCenterDiffY = fxRotatedRotateCenterY - fix16_from_int(reqRotateCenterY);
-
-    fix16_t fxZ = PerspectiveScaleY[getY];
-    fix16_t fxstepXFromY = PerspectiveScaleX[getY];
-    fix16_t fxFinalY =  fxZ + fix16_from_int(tile2PosY);
-
-    // *** Step for scaling
-    fxStepX = fxstepXFromY >> 7;
-    fix16_t fxStepXInU = fix16_mul(fxStepX, fxCos);
-    fix16_t fxStepXInV = fix16_mul(fxStepX, fxSin);
-
-     // *** Shear the scanline to move horizontal origo to the middle
-    fix16_t fxFinalX = -(fxstepXFromY>>1) + fix16_from_int(tile2PosX);
-    fix16_t fxU2 = fix16_mul(fxFinalX, fxCos) - fix16_mul(fxFinalY, fxSin) - fxRotatedCenterDiffX;
-    fix16_t fxV2 = fix16_mul(fxFinalX, fxSin) + fix16_mul(fxFinalY, fxCos) - fxRotatedCenterDiffY;
-
-    fxU2 += fxStepXInU * getX;
-    fxV2 += fxStepXInV * getX;
-
-    uint32_t finalU = fix16_to_int( fxU2 );
-    uint32_t finalV = fix16_to_int( fxV2 );
-
-    // *** Get the tile number from the "map"
-
-    // Raad the game map.
-    uint32_t blockDataX = (finalU >> 3);
-    uint32_t blockDataY = (finalV >> 3);
-    const uint8_t blockMapX = (blockDataX >> 3);
-    const uint8_t blockMapY = (blockDataY >> 3);
-    uint8_t* tileBitmapPtr;
-    uint8_t tileIndex = 0;
-    if(blockMapX < mapWidth && blockMapY < mapHeight) {
-        const uint8_t blockDataIndex = blockMap[blockMapX+ (blockMapY*mapWidth)];
-        // Get the tile.
-        tileIndex = blockData[blockDataIndex][(blockDataX & 0x7) + ((blockDataY & 0x7)*8)];
-    }
-    else
-        tileIndex = 0; // Background tile
-
-    //
-    return tileIndex;
-}
-
 uint8_t GetTileIndexCommon(int32_t posX, int32_t posY)
 {
     // *** Get the tile number from the "map"
@@ -750,8 +693,11 @@ uint8_t GetTileIndexCommon(int32_t posX, int32_t posY)
 
 bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 {
-    const fix16_t fxCos = fix16_cos(-fxAngle);
-    const fix16_t fxSin = fix16_sin(-fxAngle);
+    // Turn the objects to the other direction than the camera.
+    fxAngle = -fxAngle;
+
+    const fix16_t fxCos = fix16_cos(fxAngle);
+    const fix16_t fxSin = fix16_sin(fxAngle);
     const fix16_t fxRotCenterX = fix16_from_int(g_rotatingCenterX);
     const fix16_t fxRotCenterY = fix16_from_int(g_rotatingCenterY-6);
     const int32_t horizonY = 0 + sceneryH;
@@ -794,8 +740,9 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                 fxX = fxRotatedX + fxRotCenterX;
                 fxY = fxRotatedY + fxRotCenterY;
 
-                obj->m_fxXInView = fxX;
-                obj->m_fxYInView = fxY;
+                // Note: the camera zero degrees is facing along the positive x-axis, not y-axis!
+                obj->m_fxXInView = -fxY;
+                obj->m_fxYInView = fxX;
 
                 // Calculate distance.
                 // Scale down so that it will not overflow

@@ -176,11 +176,11 @@ void CPlayerShip::Update()
         else if(m_fxVel<-fxMaxSpeed)
             m_fxVel = -fxMaxSpeed;
 
-        fix16_t fxCos = fix16_cos(-m_fxAngle);
-        fix16_t fxSin = fix16_sin(-m_fxAngle);
+        fix16_t fxCos = fix16_cos(m_fxAngle);
+        fix16_t fxSin = fix16_sin(m_fxAngle);
 
-        m_fxY += fix16_mul(m_fxVel, fxSin);
         m_fxX += fix16_mul(m_fxVel, fxCos);
+        m_fxY += fix16_mul(m_fxVel, fxSin);
 
         // Change sound effect if needed.
         if(fxVelOld != m_fxVel || prevCollided != m_isCollidedToSurface )
