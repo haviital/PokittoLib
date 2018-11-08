@@ -11,11 +11,12 @@ public:
 
 public:
     CMenu();
-    void HandleMenus(bool isRace_, uint32_t bestLap_ms );
+    void HandleMenus(bool isRace_, uint32_t bestLap_ms, bool doOpen );
     bool HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4);
 
 public:
     bool m_isOpen;
     MenuMode m_mode = enumMainMenu;
     int32_t m_cursorPos;
+    bool m_pressedAkeyDownOutsideMenu;
 };

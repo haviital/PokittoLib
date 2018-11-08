@@ -4,6 +4,7 @@
 #include "fix16.h"
 #include "PokittoCookie.h"
 
+class CShip;
 class CPlayerShip;
 
 // Constants
@@ -88,8 +89,14 @@ extern const CWaypoint waypoints[];
 extern const uint32_t waypointCount;
 extern const CObject3d g_timeTrialBilboardObjects[];
 extern CPlayerShip g_playerShip;
+extern const uint8_t image_numbers[];
+
 
 extern mycookie highscore;
+extern uint32_t g_frameNum;
+extern bool g_isRace;
+extern uint32_t g_shipCount;
+extern CShip* g_ships[];
 
 //
 uint8_t GetTileIndexCommon(int32_t posX, int32_t posY);

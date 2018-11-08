@@ -3,21 +3,17 @@
 #include "menu.h"
 
 CMenu::CMenu() :
-    m_isOpen( true ),
+    m_isOpen( false ),
     m_mode(enumMainMenu),
-    m_cursorPos(0)
+    m_cursorPos(0),
+    m_pressedAkeyDownOutsideMenu(false)
 {
 }
 
-void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms)
+void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, bool doOpen)
 {
-           // Open/close the setup menu
-    if(m_isOpen || mygame.buttons.pressed(BTN_C))
-    {
-        m_isOpen = true;
-    }
 
-    if(m_isOpen)
+    if(m_isOpen || mygame.buttons.pressed(BTN_C) || doOpen)
     {
         switch( m_mode )
         {
@@ -115,6 +111,13 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms)
 //
 bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4)
 {
+    // If the menu is not yet open, make sure that the A key is pressed down *after* the menu is opened.
+    if( mygame.buttons.pressed(BTN_A) )
+    {
+        if(! m_isOpen  )
+            m_pressedAkeyDownOutsideMenu = true;
+    }
+
     // Set window
     int32_t winX = 0;
     int32_t winY = 16;
@@ -217,12 +220,28 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
        if(++cursorPos >= numItems )
             cursorPos = numItems-1;
 
-    if(mygame.buttons.released(BTN_B))
+    else
     {
-        return false;
+        m_pressedAkeyDownOutsideMenu = false;
+    }
+
+    if(mygame.buttons.released(BTN_A))
+    {
+        if(! m_pressedAkeyDownOutsideMenu)
+        {
+            // Close the menu
+            return false;
+        }
+        else
+        {
+            // Do not close the menu
+            m_pressedAkeyDownOutsideMenu = false;
+            return true;
+        }
     }
     else
     {
+        // Do not close the menu
         return true;
     }
 }

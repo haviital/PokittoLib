@@ -37,7 +37,8 @@ const uint8_t* activeShipBitmapData = billboard_object_bitmaps[0];
 uint32_t shipBitmapW = *(activeShipBitmapData - 2);
 uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 
-bool isRace = true;
+uint32_t g_frameNum = 0;
+bool g_isRace = true;
 
 //
 int32_t textureMode = 1;
@@ -79,6 +80,7 @@ int main () {
     // Initialize variables.
     bool prevCollided = false;
     bool isManualRotation = true;
+    bool isStartup = true;
     //bool isSetupMenuActive = false;
     int32_t lastSetupListPos = 1;
     CMenu menu;
@@ -99,7 +101,7 @@ int main () {
     #endif // PROJ_SIM
 
     // Init game object.
-    InitGameObjectsForTrack1(isRace);
+    InitGameObjectsForTrack1(g_isRace);
 
     // *** Calculate lookup tables.
 
@@ -135,7 +137,7 @@ int main () {
             fix16_t fxCos = fix16_cos(fxCamAngle);
             fix16_t fxSin = fix16_sin(fxCamAngle);
 
-           // Draw sky
+            // Draw sky
             fix16_t fxAnglePositive =  ((fxCamAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
             int16_t skyX = ((fxAnglePositive>>9) % 22);
             uint16_t skyW = image_sky_long[0];
@@ -149,38 +151,60 @@ int main () {
             //fxCamX += (g_rotatingCenterX * fix16_cos(-g_playerShip.m_fxAngle));
             //fxCamY += (g_rotatingCenterY * fix16_sin(-g_playerShip.m_fxAngle));
             fxCamY += -g_playerShip.m_fxCameraBehindPlayerCurrent;
-
             DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle);
 
             // Draw 3d objects and check collisions.
             bool isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxCamAngle);
 
+            // Draw the current lap time
+            int32_t lapStartX = 110-5;  // 5 pixel margin
+            lapStartX -= 5*6; // 5 chars
+            DrawLapTime(g_playerShip.m_current_lap_time_ms, lapStartX, 1, fix16_one );
+
+            // Draw the current rank
+            int32_t playerRank = g_playerShip.m_currentRank;
+            if(playerRank>0)
+            {
+                fix16_t fxScaleFactor = fix16_from_float(1.5);
+                const uint8_t* numbersBitmapPtr = &(image_numbers[2]);
+                uint32_t numbersBitmapW = 6, numbersBitmapH = 7;
+                DrawScaledBitmap8bit(1,1, numbersBitmapPtr + (numbersBitmapW * numbersBitmapH)*playerRank,
+                                     numbersBitmapW, numbersBitmapH,
+                                     fix16_to_int(numbersBitmapW*fxScaleFactor),
+                                     fix16_to_int(numbersBitmapH*fxScaleFactor) );
+            }
+
             // Print coordinates on screen
-            #if 0
+            #if 1
             char text[128];
+            mygame.display.setColor(2,1);
             mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10)); mygame.display.print(", ");
             mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10)); mygame.display.print("     ");
-            mygame.display.print(0,10, itoa(fix16_to_int(fxVel),text,10)); mygame.display.print(", ");
+            mygame.display.print(0,10, itoa(g_playerShip.m_currentRank,text,10)); mygame.display.print(", ");
             mygame.display.print( itoa(fix16_to_int(g_ships[0]->m_fxVel),text,10) ); mygame.display.print("; ");
             mygame.display.print( itoa(g_ships[0]->m_activeWaypointIndex,text,10) ); mygame.display.print("     ");
-          #endif
+            #endif
 
             // Handle menus
-            menu.HandleMenus(isRace, highscore.bestLap_ms);
+            menu.HandleMenus(g_isRace, highscore.bestLap_ms, isStartup );
+            isStartup = false;
 
             if(!menu.m_isOpen)
             {
                 // No menu opean
 
                 // Move all ships
-                if( isRace )
+                if( g_isRace )
                     for(int32_t i=0; i < g_shipCount; i++)
                     {
                         g_ships[i]->Update();
                     }
             }
-        }
-    }
+
+            g_frameNum++;
+
+        }  // end if
+    }  // end while
 }
 
 
@@ -188,12 +212,16 @@ void ResetGame(bool isRace_)
 {
      // Reset game
 
-    g_playerShip.Reset();
-
-    isRace = isRace_;
+    g_isRace = isRace_;
 
     // Init game object.
-    InitGameObjectsForTrack1(isRace);
+    InitGameObjectsForTrack1(g_isRace);
+
+    for(int32_t i=0; i < g_shipCount; i++)
+    {
+        g_ships[i]->Reset();
+    }
+
 }
 
 
@@ -261,7 +289,7 @@ void InitGameObjectsForTrack1(bool isRace)
         // Race
 
         // Copy ship array pointers to the object list.
-        g_shipCount = 6;
+        g_shipCount = 7;
         //g_shipCount = 1;
         fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
 
@@ -291,8 +319,8 @@ void InitGameObjectsForTrack1(bool isRace)
         i=1;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(30);
-        g_objects3d[ii]->m_fxY = fix16_from_int(600+(2*50));
+        g_objects3d[ii]->m_fxX = fix16_from_int(35);
+        g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
         g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[1];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
@@ -306,7 +334,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxMaxSpeed = fxDefaultOtherShipSpeed;
         g_ships[i]->m_fxCornerSpeed1 = fxDefaultOtherShipSpeedInCorner;
         g_ships[i]->m_fxCornerSpeed2 = fxDefaultOtherShipSpeedInSlowCorner;
-        g_ships[i]->m_fxWaypointTargetSpeed = g_ships[0]->m_fxMaxSpeed;
+        g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
         g_ships[i]->m_fxAngle = fix16_pi>>1;
         g_ships[i]->m_activeWaypointIndex = 0;
 
@@ -314,7 +342,7 @@ void InitGameObjectsForTrack1(bool isRace)
         i=2;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(30+50);
+        g_objects3d[ii]->m_fxX = fix16_from_int(35+50);
         g_objects3d[ii]->m_fxY = fix16_from_int(600+(2*50));
         g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[8];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
@@ -337,7 +365,7 @@ void InitGameObjectsForTrack1(bool isRace)
         i=3;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(30 + 50);
+        g_objects3d[ii]->m_fxX = fix16_from_int(35 + 50);
         g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
         g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[14];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
@@ -361,7 +389,7 @@ void InitGameObjectsForTrack1(bool isRace)
         i=4;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(30);
+        g_objects3d[ii]->m_fxX = fix16_from_int(35);
         g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
         g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[20];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
@@ -384,7 +412,7 @@ void InitGameObjectsForTrack1(bool isRace)
         i=5;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(30 + 50);
+        g_objects3d[ii]->m_fxX = fix16_from_int(35 + 50);
         g_objects3d[ii]->m_fxY = fix16_from_int(600);
         g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[21];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
@@ -408,7 +436,7 @@ void InitGameObjectsForTrack1(bool isRace)
         i=6;
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(30);
+        g_objects3d[ii]->m_fxX = fix16_from_int(35);
         g_objects3d[ii]->m_fxY = fix16_from_int(600);
         g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[22];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);

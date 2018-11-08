@@ -33,6 +33,9 @@ void CPlayerShip::Update()
     fix16_t fxVelOld = m_fxVel;
     bool prevCollided = m_isCollidedToSurface;
 
+    // Calcucalate the current waypoint and rank.
+    CalculateRank();
+
     // *** Check collision to road edges
     m_isCollidedToSurface = false;
     uint8_t wavetype = 1;
@@ -48,54 +51,17 @@ void CPlayerShip::Update()
 
     }
 
-    // Direction vector to the current waypoint.
-    fix16_t fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex].x) - m_fxX;
-    fix16_t fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex].y) - m_fxY;
-
-    // Calculate distance.
-    // Scale down so that it will not overflow
-    fix16_t fxX3 = fxDirX;
-    fix16_t fxY3 = fxDirY;
-    fxX3 >>= 4;
-    fxY3 >>= 4;
-    fix16_t fxDistanceToWaypoint = fix16_mul(fxX3, fxX3) + fix16_mul(fxY3,fxY3);
-    const fix16_t fxLimit = fix16_from_int(20*20);
-    if( fxDistanceToWaypoint < fxLimit>>7 )
-    {
-        // Ship is inside the waypoint radious. Stop following it and go towards the next waypoint.
-
-        // Next waypoint.
-        int32_t i = m_activeWaypointIndex;
-        if(++i >= waypointCount)
-            i = 0;
-        m_activeWaypointIndex = i;
-        //fxLastDistanceToWaypoint = fxDistanceToWaypoint;
-
-        // Direction vector to the current waypoint.
-        fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex].x) - m_fxX;
-        fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex].y) - m_fxY;
-
-    }
-
-    // get current lap time
-    uint32_t current_lap_time_ms = 0;
+    // get the current lap time
     if( m_lapTimingState == enumReadyToStart )
-        current_lap_time_ms = 0;
+        m_current_lap_time_ms = 0;
     else if( m_lapTimingState == enumFinished )
-        current_lap_time_ms = m_final_lap_time_ms;
+        m_current_lap_time_ms = m_final_lap_time_ms;
     else
-        current_lap_time_ms = mygame.getTime() - m_start_ms;
+        m_current_lap_time_ms = mygame.getTime() - m_start_ms;
 
-    // Draw lap time
-    int32_t lapStartX = 110-5;  // 5 pixel margin
-    lapStartX -= 5*6; // 5 chars
-    DrawLapTime(current_lap_time_ms, lapStartX, 1, fix16_one );
-
-    // *** starting line
+    // Handle lap starting and ending detection.
     bool isOnStartingGrid = ( tileIndex >= 11 && tileIndex <= 14);
     bool isOnHalfWayPoint = (tileIndex == 15);
-
-    // Hit the starting line
     switch(m_lapTimingState)
     {
     case enumReadyToStart:
@@ -205,15 +171,91 @@ void CPlayerShip::Update()
     }
 }
 
+void CPlayerShip::CalculateRank()
+{
+    // Calc distance to the 4 next waypoints and choose the nearest.
+    int32_t oldWaypointIndex = m_activeWaypointIndex;
+    int32_t ii = m_activeWaypointIndex;
+    fix16_t fxPlayerMinDist = 0;
+    for(int32_t i=0; i<4; i++, ii++)
+    {
+        if(ii >= waypointCount)
+            ii = 0;
+
+       // Direction vector to the current waypoint.
+        fix16_t fxDirX = fix16_from_int(waypoints[ii].x) - m_fxX;
+        fix16_t fxDirY = fix16_from_int(waypoints[ii].y) - m_fxY;
+
+        // Calculate distance.
+        // Scale down so that it will not overflow
+        fix16_t fxX3 = fxDirX;
+        fix16_t fxY3 = fxDirY;
+        fxX3 >>= 4;
+        fxY3 >>= 4;
+        fix16_t fxDistanceToWaypoint = fix16_mul(fxX3, fxX3) + fix16_mul(fxY3,fxY3);
+        if(fxDistanceToWaypoint< fxPlayerMinDist)
+        {
+            fxPlayerMinDist = fxDistanceToWaypoint;
+            m_activeWaypointIndex = ii;
+        }
+    }
+
+    // Should we increase the lap?
+    if(oldWaypointIndex > m_activeWaypointIndex)
+        m_activeLapNum++;
+
+    // Calc the current rank.
+    if( g_isRace && (g_frameNum % 100) == 0)
+    {
+        m_currentRank = 1;
+        for(int32_t i=1; i < g_shipCount; i++)
+        {
+            if( g_ships[i]->m_activeLapNum > m_activeLapNum ||
+                g_ships[i]->m_activeWaypointIndex > m_activeWaypointIndex )
+            {
+                m_currentRank++;
+            }
+            else if( g_ships[i]->m_activeLapNum == m_activeLapNum ||
+                g_ships[i]->m_activeWaypointIndex == m_activeWaypointIndex )
+            {
+                // The same waypoint as the player. Compare the distances.
+
+               // Direction vector to the current waypoint.
+                int32_t index = g_ships[i]->m_activeWaypointIndex;
+                fix16_t fxDirX = fix16_from_int(waypoints[index].x) - m_fxX;
+                fix16_t fxDirY = fix16_from_int(waypoints[index].y) - m_fxY;
+
+                // Calculate distance.
+                // Scale down so that it will not overflow
+                fix16_t fxX3 = fxDirX;
+                fix16_t fxY3 = fxDirY;
+                fxX3 >>= 4;
+                fxY3 >>= 4;
+                fix16_t fxOtherShipDistance = fix16_mul(fxX3, fxX3) + fix16_mul(fxY3,fxY3);
+
+                // Check which is nearer to the waypoint
+                if(fxOtherShipDistance < fxPlayerMinDist)
+                    m_currentRank++;
+            }
+        }
+    }
+}
+
 void CPlayerShip::Reset()
 {
+    CShip::Reset();
+
      // Reset game
     m_lapTimingState = enumReadyToStart;
-    m_fxX = fix16_from_int(30);
+    m_fxX = fix16_from_int(35);
     m_fxY = fix16_from_int(550);
     m_fxVel = 0;
     m_fxAngle = fix16_pi>>1;
     m_fxRotVel = fxInitialRotVel;
+    m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY;
+    m_fxCameraBehindPlayerCurrent = fxCameraBehindPlayerY;
+    m_currentRank = 0;
+    m_current_lap_time_ms = 0;
 }
 
 // Handle keys

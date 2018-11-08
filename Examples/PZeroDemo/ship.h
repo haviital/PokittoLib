@@ -7,6 +7,7 @@ class CShip : public CObject3d
 public:
     CShip();
     virtual void Update();
+    virtual void Reset();
 
 public:
     fix16_t m_fxVel;
@@ -20,6 +21,7 @@ public:
     int32_t m_activeWaypointIndex;
     fix16_t m_fxWaypointTargetSpeed;
     //fix16_t m_fxLastDistanceToWaypoint;
+    int32_t m_activeLapNum;
     bool isPlayer;
 
 };

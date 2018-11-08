@@ -4,7 +4,8 @@
 #include "ship.h"
 
 CShip::CShip() :
-    isPlayer(false)
+    isPlayer(false),
+    m_activeLapNum(0)
 {
 }
 
@@ -42,7 +43,10 @@ void CShip::Update()
         // Next waypoint.
         int32_t i = m_activeWaypointIndex;
         if(++i >= waypointCount)
+        {
             i = 0;
+            m_activeLapNum++;
+        }
         m_activeWaypointIndex = i;
         //fxLastDistanceToWaypoint = fxDistanceToWaypoint;
 
@@ -140,3 +144,10 @@ void CShip::Update()
     m_fxX += fix16_mul(m_fxVel, fxCos);
     m_fxY += fix16_mul(m_fxVel, fxSin);
 }
+
+void CShip::Reset()
+{
+     // Reset game
+    m_activeLapNum = 1;
+}
+
