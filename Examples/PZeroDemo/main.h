@@ -26,10 +26,15 @@ const int32_t g_rotatingCenterY = 72;
 
 const fix16_t fxMaxSpeedCollided = fix16_one>>1;
 const fix16_t fxMaxSpeed = fix16_one*6;  // player max speed
-const fix16_t fxDefaultOtherShipSpeed = fix16_one*10;
-const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
-const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;
+//const fix16_t fxDefaultOtherShipSpeed = fix16_one*10;
+//const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
+//const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;
+const fix16_t fxDefaultOtherShipSpeed = (fix16_one*10)>>2;
+const fix16_t fxDefaultOtherShipSpeedInCorner =  (fxMaxSpeedCollided * 12)>>2;
+const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  (fxMaxSpeedCollided * 7)>>2;
+
 const fix16_t fxCameraBehindPlayerY = fix16_from_int(70);
+const uint8_t trackTraceLineCount = 30;
 //const fix16_t fxDefaultOtherShipSpeed = fix16_one;
 
 //const fix16_t fxMaxSpeedCollided = fix16_one>>4;
@@ -82,6 +87,7 @@ extern fix16_t PerspectiveScaleY[];
 extern fix16_t PerspectiveScaleX[];
 extern const uint8_t blockMap[];
 extern const uint8_t blockData[][8*8];
+extern const uint8_t trackTraceLine[trackTraceLineCount];
 extern const uint8_t* current_texture_bitmaps[];
 extern const uint8_t* current_texture_bitmaps_mm1[];
 extern const uint8_t* current_texture_bitmaps_mm2[];
@@ -107,5 +113,6 @@ void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFa
 void DrawBitmapOpaque8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );
 void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
+void DrawRankNumber(int32_t x, int32_t y);
 
 

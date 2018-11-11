@@ -12,7 +12,6 @@ const fix16_t fxRotAccFactor = fix16_from_float(1.2);
 
 CPlayerShip::CPlayerShip()
 {
-    m_lapTimingState = enumReadyToStart;
     m_final_lap_time_ms = 0;
     m_start_ms = 0;
     m_isCollidedToPlayerShip = false;
@@ -74,8 +73,8 @@ void CPlayerShip::Update()
     case enumStarted:
         if( ! isOnStartingGrid )
         {
-            m_lapTimingState = enumOnTimedTrack;
-            //m_lapTimingState = enumOverHalfWayPoint;
+            //!!!HV m_lapTimingState = enumOnTimedTrack;
+            m_lapTimingState = enumOverHalfWayPoint;
         }
         break;
     case enumOnTimedTrack:
@@ -90,17 +89,27 @@ void CPlayerShip::Update()
             // Finished!
             m_final_lap_time_ms = mygame.getTime() - m_start_ms;
             m_lapTimingState = enumFinished;
-            //menu.m_mode = CMenu::enumTimeTrialFinishedMenu;
-            //menu.m_isOpen = true;
+
+            // Open the menu after the race.
+            //!!!HV if( g_isRace && m_activeLapNum>3)
+            if( g_isRace )
+                m_requestedMenuMode = CMenu::enumRaceFinishedMenu;
+
+            // Open the menu after the time trial.
+            if( !g_isRace )
+                m_requestedMenuMode = CMenu::enumTimeTrialFinishedMenu;
 
             // Save cookie if this is the best time
-            if(highscore.bestLap_ms == 0 || m_final_lap_time_ms < highscore.bestLap_ms)
+            if( g_isRace && (highscore.bestLap_ms == 0 || m_final_lap_time_ms < highscore.bestLap_ms))
             {
                 highscore.bestLap_ms = m_final_lap_time_ms;
                 highscore.saveCookie();
             }
+
+            m_activeLapNum++;
         }
         break;
+
     case enumFinished:
         break;
     }
@@ -173,71 +182,24 @@ void CPlayerShip::Update()
 
 void CPlayerShip::CalculateRank()
 {
-    // Calc distance to the 4 next waypoints and choose the nearest.
-    int32_t oldWaypointIndex = m_activeWaypointIndex;
-    int32_t ii = m_activeWaypointIndex;
-    fix16_t fxPlayerMinDist = 0;
-    for(int32_t i=0; i<4; i++, ii++)
+    // Update the ship position on track.
+    int32_t oldTrackIndex = m_trackIndex;
+    UpdateTrackPos();
+
+    //
+    if(oldTrackIndex != m_trackIndex)
     {
-        if(ii >= waypointCount)
-            ii = 0;
-
-       // Direction vector to the current waypoint.
-        fix16_t fxDirX = fix16_from_int(waypoints[ii].x) - m_fxX;
-        fix16_t fxDirY = fix16_from_int(waypoints[ii].y) - m_fxY;
-
-        // Calculate distance.
-        // Scale down so that it will not overflow
-        fix16_t fxX3 = fxDirX;
-        fix16_t fxY3 = fxDirY;
-        fxX3 >>= 4;
-        fxY3 >>= 4;
-        fix16_t fxDistanceToWaypoint = fix16_mul(fxX3, fxX3) + fix16_mul(fxY3,fxY3);
-        if(fxDistanceToWaypoint< fxPlayerMinDist)
-        {
-            fxPlayerMinDist = fxDistanceToWaypoint;
-            m_activeWaypointIndex = ii;
-        }
-    }
-
-    // Should we increase the lap?
-    if(oldWaypointIndex > m_activeWaypointIndex)
-        m_activeLapNum++;
-
-    // Calc the current rank.
-    if( g_isRace && (g_frameNum % 100) == 0)
-    {
-        m_currentRank = 1;
+        int32_t numOfCarsWithBetterRank = 0;
         for(int32_t i=1; i < g_shipCount; i++)
         {
             if( g_ships[i]->m_activeLapNum > m_activeLapNum ||
-                g_ships[i]->m_activeWaypointIndex > m_activeWaypointIndex )
+                ( g_ships[i]->m_activeLapNum == m_activeLapNum && g_ships[i]->m_trackIndex >= m_trackIndex ))
             {
-                m_currentRank++;
-            }
-            else if( g_ships[i]->m_activeLapNum == m_activeLapNum ||
-                g_ships[i]->m_activeWaypointIndex == m_activeWaypointIndex )
-            {
-                // The same waypoint as the player. Compare the distances.
-
-               // Direction vector to the current waypoint.
-                int32_t index = g_ships[i]->m_activeWaypointIndex;
-                fix16_t fxDirX = fix16_from_int(waypoints[index].x) - m_fxX;
-                fix16_t fxDirY = fix16_from_int(waypoints[index].y) - m_fxY;
-
-                // Calculate distance.
-                // Scale down so that it will not overflow
-                fix16_t fxX3 = fxDirX;
-                fix16_t fxY3 = fxDirY;
-                fxX3 >>= 4;
-                fxY3 >>= 4;
-                fix16_t fxOtherShipDistance = fix16_mul(fxX3, fxX3) + fix16_mul(fxY3,fxY3);
-
-                // Check which is nearer to the waypoint
-                if(fxOtherShipDistance < fxPlayerMinDist)
-                    m_currentRank++;
+                numOfCarsWithBetterRank++;
             }
         }
+
+        m_currentRank = numOfCarsWithBetterRank+1;
     }
 }
 
@@ -246,7 +208,6 @@ void CPlayerShip::Reset()
     CShip::Reset();
 
      // Reset game
-    m_lapTimingState = enumReadyToStart;
     m_fxX = fix16_from_int(35);
     m_fxY = fix16_from_int(550);
     m_fxVel = 0;
@@ -256,6 +217,7 @@ void CPlayerShip::Reset()
     m_fxCameraBehindPlayerCurrent = fxCameraBehindPlayerY;
     m_currentRank = 0;
     m_current_lap_time_ms = 0;
+    m_requestedMenuMode = CMenu::enumNoMenu;
 }
 
 // Handle keys

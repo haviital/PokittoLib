@@ -4,16 +4,18 @@
 
 CMenu::CMenu() :
     m_isOpen( false ),
-    m_mode(enumMainMenu),
+    m_mode(enumNoMenu),
     m_cursorPos(0),
     m_pressedAkeyDownOutsideMenu(false)
 {
 }
 
-void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, bool doOpen)
+void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMenuMode)
 {
+    if(requestedMenuMode != enumNoMenu )
+        m_mode = requestedMenuMode;
 
-    if(m_isOpen || mygame.buttons.pressed(BTN_C) || doOpen)
+    if(m_isOpen || mygame.buttons.pressed(BTN_C) || (requestedMenuMode != enumNoMenu) )
     {
         switch( m_mode )
         {
@@ -48,37 +50,81 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, bool doOpen)
         case enumContinueMenu:
             {
                 if(isRace_)
+                {
                     m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Continue", "Exit race", NULL);
-                else
-                    m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Continue", "Exit time trial", NULL);
 
+                    if( ! m_isOpen )
+                    {
+                         // if "Restart" selected, go to main menu
+                        if(m_cursorPos == 0)
+                            ResetGame(isRace_);
+
+                       // if "Continue", go to main menu
+                        else if(m_cursorPos == 1)
+                        {
+                            // Continue
+                        }
+
+                       // if "Exit race" selected, go to main menu
+                        else if(m_cursorPos == 2)
+                        {
+                            m_mode = enumMainMenu;
+                            m_isOpen = true;
+                        }
+
+                         // Menu closed
+                        m_cursorPos = 0;
+
+                   }
+                 }
+               else  // !isRace_
+                {
+                    m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Exit trial", NULL, NULL);
+
+                    if( ! m_isOpen )
+                    {
+                         // if "Restart" selected, go to main menu
+                        if(m_cursorPos == 0)
+                            ResetGame(isRace_);
+
+                       // if "Exit" selected, go to main menu
+                        else if(m_cursorPos == 1)
+                        {
+                            m_mode = enumMainMenu;
+                            m_isOpen = true;
+                        }
+
+                         // Menu closed
+                        m_cursorPos = 0;
+                   }
+               }
+           }
+            break;
+
+        case enumTimeTrialFinishedMenu:
+            {
+               m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Exit trial", NULL, NULL);
                 if( ! m_isOpen )
                 {
-                     // if "Restart" selected, go to main menu
+                    // if "Restart" selected, go to main menu
                     if(m_cursorPos == 0)
                         ResetGame(isRace_);
 
-                   // if "Continue", go to main menu
+                    // if "Exit race" selected, go to main menu
                     else if(m_cursorPos == 1)
-                    {
-                        // Continue
-                    }
-
-                   // if "Exit race" selected, go to main menu
-                    else if(m_cursorPos == 2)
                     {
                         m_mode = enumMainMenu;
                         m_isOpen = true;
                     }
 
-                     // Menu closed
+                    // Menu closed
                     m_cursorPos = 0;
 
-               }
+                }
             }
             break;
 
-        case enumTimeTrialFinishedMenu:
+        case enumRaceFinishedMenu:
             {
                m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Exit race", NULL, NULL);
                 if( ! m_isOpen )
@@ -112,7 +158,8 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, bool doOpen)
 bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4)
 {
     // If the menu is not yet open, make sure that the A key is pressed down *after* the menu is opened.
-    if( mygame.buttons.pressed(BTN_A) )
+    //if( mygame.buttons.pressed(BTN_A) )
+    if( mygame.buttons.aBtn() )
     {
         if(! m_isOpen  )
             m_pressedAkeyDownOutsideMenu = true;
@@ -143,7 +190,19 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
     mygame.display.setInvisibleColor(1);
 
     // Print Best time
-    if( bestLap_ms > 0 )
+    if( m_mode == enumRaceFinishedMenu )
+    {
+        mygame.display.setColor(2,1);
+        mygame.display.print(winX+4,currY,"Rank: ");
+        //DrawLapTime(bestLap_ms, winX+55, currY, fix16_from_float(1.5) );
+
+        // Draw the current rank
+        DrawRankNumber(winX+55, currY);
+
+        currY += 15;
+    }
+    // Print Best time
+    else if( bestLap_ms > 0 )
     {
         mygame.display.setColor(2,1);
         //currY += 4;

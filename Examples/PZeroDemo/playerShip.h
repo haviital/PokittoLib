@@ -2,6 +2,7 @@
 
 #include "main.h"
 #include "ship.h"
+#include "menu.h"
 
 class CPlayerShip : public CShip
 {
@@ -13,7 +14,6 @@ public:
     void CalculateRank();
 
 public:
-    LapTimingState m_lapTimingState;
     uint32_t m_final_lap_time_ms;
     uint32_t m_start_ms;
     bool m_isCollidedToPlayerShip;
@@ -25,4 +25,5 @@ public:
     fix16_t m_fxCameraBehindPlayerCurrent;
     int32_t m_currentRank;
     uint32_t m_current_lap_time_ms;
+    CMenu::MenuMode m_requestedMenuMode;
 };

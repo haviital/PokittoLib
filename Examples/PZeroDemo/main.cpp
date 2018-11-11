@@ -148,8 +148,6 @@ int main () {
             // ** Draw the road and edges and terrain.
             fix16_t fxCamX = g_playerShip.m_fxX;
             fix16_t fxCamY = g_playerShip.m_fxY;
-            //fxCamX += (g_rotatingCenterX * fix16_cos(-g_playerShip.m_fxAngle));
-            //fxCamY += (g_rotatingCenterY * fix16_sin(-g_playerShip.m_fxAngle));
             fxCamY += -g_playerShip.m_fxCameraBehindPlayerCurrent;
             DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle);
 
@@ -162,43 +160,44 @@ int main () {
             DrawLapTime(g_playerShip.m_current_lap_time_ms, lapStartX, 1, fix16_one );
 
             // Draw the current rank
-            int32_t playerRank = g_playerShip.m_currentRank;
-            if(playerRank>0)
-            {
-                fix16_t fxScaleFactor = fix16_from_float(1.5);
-                const uint8_t* numbersBitmapPtr = &(image_numbers[2]);
-                uint32_t numbersBitmapW = 6, numbersBitmapH = 7;
-                DrawScaledBitmap8bit(1,1, numbersBitmapPtr + (numbersBitmapW * numbersBitmapH)*playerRank,
-                                     numbersBitmapW, numbersBitmapH,
-                                     fix16_to_int(numbersBitmapW*fxScaleFactor),
-                                     fix16_to_int(numbersBitmapH*fxScaleFactor) );
-            }
+            DrawRankNumber(1, 1);
 
             // Print coordinates on screen
-            #if 1
+            #if 0
             char text[128];
             mygame.display.setColor(2,1);
             mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10)); mygame.display.print(", ");
             mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10)); mygame.display.print("     ");
             mygame.display.print(0,10, itoa(g_playerShip.m_currentRank,text,10)); mygame.display.print(", ");
             mygame.display.print( itoa(fix16_to_int(g_ships[0]->m_fxVel),text,10) ); mygame.display.print("; ");
-            mygame.display.print( itoa(g_ships[0]->m_activeWaypointIndex,text,10) ); mygame.display.print("     ");
+            mygame.display.print( itoa(g_ships[0]->m_trackIndex,text,10) ); mygame.display.print("     ");
             #endif
 
             // Handle menus
-            menu.HandleMenus(g_isRace, highscore.bestLap_ms, isStartup );
+            CMenu::MenuMode requestedMenuMode =  g_playerShip.m_requestedMenuMode;
+            if( isStartup )
+                requestedMenuMode =  CMenu::MenuMode::enumMainMenu;
+            menu.HandleMenus(g_isRace, highscore.bestLap_ms, requestedMenuMode );
+            g_playerShip.m_requestedMenuMode = CMenu::MenuMode::enumNoMenu;
             isStartup = false;
 
             if(!menu.m_isOpen)
             {
                 // No menu opean
 
-                // Move all ships
+                // Race is ongoing. Move all the ships
                 if( g_isRace )
+                {
                     for(int32_t i=0; i < g_shipCount; i++)
                     {
                         g_ships[i]->Update();
                     }
+                }
+                else
+                {
+                    // Time trial. Only update the player ship.
+                    g_playerShip.Update();
+                }
             }
 
             g_frameNum++;
@@ -224,6 +223,22 @@ void ResetGame(bool isRace_)
 
 }
 
+// Draw rank number
+void DrawRankNumber(int32_t x, int32_t y)
+{
+    // Draw the current rank
+    int32_t playerRank = g_playerShip.m_currentRank;
+    //if(playerRank>0)
+    {
+        fix16_t fxScaleFactor = fix16_from_float(1.5);
+        const uint8_t* numbersBitmapPtr = &(image_numbers[2]);
+        uint32_t numbersBitmapW = 6, numbersBitmapH = 7;
+        DrawScaledBitmap8bit(x, y, numbersBitmapPtr + (numbersBitmapW * numbersBitmapH)*playerRank,
+                             numbersBitmapW, numbersBitmapH,
+                             fix16_to_int(numbersBitmapW*fxScaleFactor),
+                             fix16_to_int(numbersBitmapH*fxScaleFactor) );
+    }
+}
 
 // Init game objects
 void InitGameObjectsForTrack1(bool isRace)
@@ -271,7 +286,8 @@ void InitGameObjectsForTrack1(bool isRace)
         // Time trial
 
         // Copy ship array pointers to the object list.
-        for(int32_t i = 0; i < 1*8; i++ )
+        int32_t i = 0;
+        for(; i < 1*8; i++ )
         {
             ii = i + (2*8);
             g_objects3d[ii] = &g_ShipObjectArray[i];
@@ -283,6 +299,28 @@ void InitGameObjectsForTrack1(bool isRace)
             g_objects3d[ii]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxScaledWidth;
             g_objects3d[ii]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxScaledHeight;
         }
+
+        // Player Ship
+        ii = i + (2*8);
+        g_objects3d[ii] = &g_ShipObjectArray[i];
+        fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
+        g_playerShip.m_bitmap = billboard_object_bitmaps[0];
+        g_playerShip.m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
+        g_playerShip.m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
+        g_playerShip.m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
+        g_playerShip.m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_playerShip.m_fxVel = 0;
+        g_playerShip.m_fxAcc = 0;
+        g_playerShip.m_fxDeacc = 0;
+        g_playerShip.m_fxRotVel = 0;
+        g_playerShip.m_fxMaxSpeed = 0;
+        g_playerShip.m_fxCornerSpeed1 = 0;
+        g_playerShip.m_fxCornerSpeed2 = 0;
+        g_playerShip.m_fxWaypointTargetSpeed = 0;
+        g_playerShip.m_fxAngle = fix16_pi>>1;
+        g_playerShip.m_activeWaypointIndex = 0;
+        g_playerShip.Reset();
+
     }
     else
     {
@@ -321,7 +359,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(35);
         g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[1];
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[17];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
         g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
@@ -344,7 +382,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(35+50);
         g_objects3d[ii]->m_fxY = fix16_from_int(600+(2*50));
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[8];
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[13];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
         g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
@@ -367,7 +405,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(35 + 50);
         g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[14];
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[1];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
         g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
@@ -391,7 +429,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(35);
         g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[20];
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[9];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
         g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
@@ -414,7 +452,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(35 + 50);
         g_objects3d[ii]->m_fxY = fix16_from_int(600);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[21];
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[20];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
         g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
@@ -438,7 +476,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(35);
         g_objects3d[ii]->m_fxY = fix16_from_int(600);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[22];
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[11];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
         g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
@@ -744,7 +782,7 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                     obj->m_fxDistancePot = fxDistancePot;
 
                     // *** Check collision
-                    if( ! isCollidedToPlayerShip )
+                    if( ! isCollidedToPlayerShip && obj != &g_playerShip )  // Only if not already collided and obj is not the player ship itself
                     {
 
                         // Position relative to player ship.
@@ -801,9 +839,24 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
             fix16_t  fxScreenTrX = fix16_mul(fx3dX, fxZFactor );
             fix16_t  fxScreenTrY = fix16_mul( fx3dY + fxScaledHeight, fxZFactor );
 
-            // Draw scaled bitmap
+            //
             int32_t scaledWidth = fix16_to_int((fxScreenTrX - fxScreenBlX));
             int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY));
+
+            // Draw shadow
+            if( drawablePrevObj == &g_playerShip )
+            {
+                uint16_t shadowW = image_shadow[0];
+                uint16_t shadowH = image_shadow[1];
+                uint16_t shadowScreenOffsetY = 5;
+                const uint8_t* shadowBitmapPtr = &(image_shadow[2]);
+                DrawScaledBitmap8bit(
+                    fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight + shadowScreenOffsetY,
+                    shadowBitmapPtr,
+                    shadowW, shadowH, scaledWidth, scaledHeight );
+            }
+
+            // Draw scaled bitmap
             DrawScaledBitmap8bit(
                 fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
                 bitmapData,

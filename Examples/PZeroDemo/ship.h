@@ -8,6 +8,7 @@ public:
     CShip();
     virtual void Update();
     virtual void Reset();
+    virtual void UpdateTrackPos();
 
 public:
     fix16_t m_fxVel;
@@ -22,6 +23,7 @@ public:
     fix16_t m_fxWaypointTargetSpeed;
     //fix16_t m_fxLastDistanceToWaypoint;
     int32_t m_activeLapNum;
-    bool isPlayer;
-
+    bool m_isPlayer;
+    int32_t m_trackIndex;
+    LapTimingState m_lapTimingState;
 };

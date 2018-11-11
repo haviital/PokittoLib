@@ -4,8 +4,10 @@
 #include "ship.h"
 
 CShip::CShip() :
-    isPlayer(false),
-    m_activeLapNum(0)
+    m_isPlayer(false),
+    m_activeLapNum(0),
+    m_trackIndex(0),
+    m_lapTimingState(enumReadyToStart)
 {
 }
 
@@ -20,6 +22,42 @@ void CShip::Update()
     )
     {
         collided = true;
+    }
+
+    // Handle lap starting and ending detection.
+    bool isOnStartingGrid = ( tileIndex >= 11 && tileIndex <= 14);
+    bool isOnHalfWayPoint = (tileIndex == 15);
+    switch(m_lapTimingState)
+    {
+    case enumReadyToStart:
+        if( isOnStartingGrid )
+        {
+            m_lapTimingState = enumStarted;
+        }
+        break;
+    case enumStarted:
+        if( ! isOnStartingGrid )
+        {
+            m_lapTimingState = enumOnTimedTrack;
+            //m_lapTimingState = enumOverHalfWayPoint;
+        }
+        break;
+    case enumOnTimedTrack:
+        if( isOnHalfWayPoint )
+        {
+            m_lapTimingState = enumOverHalfWayPoint;
+         }
+        break;
+    case enumOverHalfWayPoint:
+        if( isOnStartingGrid )
+        {
+            // Finished!
+            m_lapTimingState = enumFinished;
+            m_activeLapNum++;
+        }
+        break;
+    case enumFinished:
+        break;
     }
 
     // *** Follow the waypoint
@@ -45,7 +83,6 @@ void CShip::Update()
         if(++i >= waypointCount)
         {
             i = 0;
-            m_activeLapNum++;
         }
         m_activeWaypointIndex = i;
         //fxLastDistanceToWaypoint = fxDistanceToWaypoint;
@@ -143,11 +180,38 @@ void CShip::Update()
 
     m_fxX += fix16_mul(m_fxVel, fxCos);
     m_fxY += fix16_mul(m_fxVel, fxSin);
+
+    // Update the ship position on track.
+    UpdateTrackPos();
 }
 
 void CShip::Reset()
 {
      // Reset game
     m_activeLapNum = 1;
+    m_lapTimingState = enumReadyToStart;
+}
+
+// Update the ship position on track.
+void CShip::UpdateTrackPos()
+{
+     // Get the position.
+     //int32_t pos = fix16_to_int((m_fxX>>8) + ((m_fxY>>8) * 8));
+     int32_t pos = (fix16_to_int(m_fxX)>>8) + ((fix16_to_int(m_fxY)>>8) * 8);
+
+    // Find the current track index
+    int32_t i = m_trackIndex;
+    for(int32_t ii=0; ii<10; ii++, i++ )
+    {
+        if(i>=trackTraceLineCount)
+            i = 0;
+
+        if(trackTraceLine[i] == pos)
+        {
+            // Found the ship position on track!
+            m_trackIndex = i;
+            break;
+        }
+    }
 }
 

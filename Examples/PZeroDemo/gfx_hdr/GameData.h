@@ -380,12 +380,12 @@ const uint8_t blockMap[mapWidth*mapHeight] = {
 };
 
 // The whole track in sequence of big blocks (4x4 blockmap blocks)
-const uint8_t trackTraceLine[] =
+const uint8_t trackTraceLine[trackTraceLineCount] =
 {
-    4*8 + 0, 5*8 + 0, 5*8 + 1, 5*8 + 2, 6*8 + 2, 7*8 + 2, 7*8 + 3, 7*8 + 4, 7*8 + 5, 7*8 + 6, 7*8 + 7,
-    6*8 + 7, 5*8 + 7, 4*8 + 7, 3*8 + 7, 2*8 + 7, 1*8 + 7, 0*8 + 7, 0*8 + 6, 0*8 + 5, 0*8 + 4, 0*8 + 3,
-    0*8 + 2, 0*8 + 1, 1*8 + 1, 1*8 + 2, 2*8 + 2, 2*8 + 1, 2*8 + 0, 3*8 + 0,
-}
+    4*8 + 0, 5*8 + 0, 5*8 + 1, 5*8 + 2, 6*8 + 2, 7*8 + 2, 7*8 + 3, 7*8 + 4, 7*8 + 5, 7*8 + 6,
+    7*8 + 7, 6*8 + 7, 5*8 + 7, 4*8 + 7, 3*8 + 7, 2*8 + 7, 1*8 + 7, 0*8 + 7, 0*8 + 6, 0*8 + 5,
+    0*8 + 4, 0*8 + 3, 0*8 + 2, 0*8 + 1, 1*8 + 1, 1*8 + 2, 2*8 + 2, 2*8 + 1, 2*8 + 0, 3*8 + 0,
+};
 
 const uint8_t billboard_object_bitmaps_count = 25 + 3;
 
