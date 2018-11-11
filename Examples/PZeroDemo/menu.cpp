@@ -1,6 +1,7 @@
 #include "Pokitto.h"
 #include "main.h"
 #include "menu.h"
+#include "gfx_hdr/pilots.h"
 
 CMenu::CMenu() :
     m_isOpen( false ),
@@ -21,7 +22,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
         {
         case enumMainMenu:
             {
-                m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Time trial", "Race", NULL, NULL);
+                m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Time trial", "Race", "Pilots", NULL);
                 if( ! m_isOpen )
                 {
                     if(m_cursorPos == 0)
@@ -40,12 +41,32 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                          // Reset game
                         ResetGame( true );
                     }
+                    else if(m_cursorPos == 2)
+                    {
+                        // race
+                        m_mode = enumPilotPictureMenu;
+                        m_isOpen = true;
+                    }
 
-                     // Menu closed
+                    // Menu closed
                     m_cursorPos = 0;
                }
            }
            break;
+
+        case enumPilotPictureMenu:
+            {
+                m_isOpen =  HandlePilotPictureMenu();
+                if( ! m_isOpen )
+                {
+                    m_mode = enumMainMenu;
+                    m_isOpen = true;
+
+                    // Menu closed
+                    m_cursorPos = 0;
+                }
+            }
+            break;
 
         case enumContinueMenu:
             {
@@ -279,11 +300,6 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
        if(++cursorPos >= numItems )
             cursorPos = numItems-1;
 
-    else
-    {
-        m_pressedAkeyDownOutsideMenu = false;
-    }
-
     if(mygame.buttons.released(BTN_A))
     {
         if(! m_pressedAkeyDownOutsideMenu)
@@ -304,6 +320,45 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
         return true;
     }
 }
+
+//
+bool CMenu::HandlePilotPictureMenu()
+{
+    // If the menu is not yet open, make sure that the A key is pressed down *after* the menu is opened.
+    if( mygame.buttons.aBtn() )
+    {
+        if(! m_isOpen  )
+            m_pressedAkeyDownOutsideMenu = true;
+    }
+
+    // Load palette
+    Pokitto::Core::display.load565Palette(pilots_pal);
+
+    // Show picture
+    DrawBitmapOpaque8bit(0, 0, &(pilots[2]), pilots[0], pilots[1] );
+
+    if(Pokitto::Core::buttons.released(BTN_A))
+    {
+        if(! m_pressedAkeyDownOutsideMenu)
+        {
+            // Close the menu
+            Pokitto::Core::display.load565Palette(palette_pal);
+            return false;
+        }
+        else
+        {
+            // Do not close the menu
+            m_pressedAkeyDownOutsideMenu = false;
+            return true;
+        }
+    }
+    else
+    {
+        // Do not close the menu
+        return true;
+    }
+}
+
 
 //
 

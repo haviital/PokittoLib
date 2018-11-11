@@ -73,8 +73,8 @@ void CPlayerShip::Update()
     case enumStarted:
         if( ! isOnStartingGrid )
         {
-            //!!!HV m_lapTimingState = enumOnTimedTrack;
-            m_lapTimingState = enumOverHalfWayPoint;
+            m_lapTimingState = enumOnTimedTrack;
+            //m_lapTimingState = enumOverHalfWayPoint;
         }
         break;
     case enumOnTimedTrack:
@@ -91,8 +91,8 @@ void CPlayerShip::Update()
             m_lapTimingState = enumFinished;
 
             // Open the menu after the race.
-            //!!!HV if( g_isRace && m_activeLapNum>3)
-            if( g_isRace )
+            if( g_isRace && m_activeLapNum>3)
+            //if( g_isRace )
                 m_requestedMenuMode = CMenu::enumRaceFinishedMenu;
 
             // Open the menu after the time trial.

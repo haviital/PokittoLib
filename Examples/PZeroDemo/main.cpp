@@ -62,7 +62,7 @@ uint32_t g_objects3dCount = 0;
 CObject3d* g_objects3d[ g_objects3dMaxCount ] = {0};
 
 // Reserve space for objects in RAM.
-CObject3d g_BillboardObjectArray[2*8];
+CObject3d g_BillboardObjectArray[3*8];
 CShip g_ShipObjectArray[1*8];
 CPlayerShip g_playerShip;
 
@@ -160,7 +160,8 @@ int main () {
             DrawLapTime(g_playerShip.m_current_lap_time_ms, lapStartX, 1, fix16_one );
 
             // Draw the current rank
-            DrawRankNumber(1, 1);
+            if( g_isRace )
+                DrawRankNumber(1, 1);
 
             // Print coordinates on screen
             #if 0
@@ -216,9 +217,16 @@ void ResetGame(bool isRace_)
     // Init game object.
     InitGameObjectsForTrack1(g_isRace);
 
-    for(int32_t i=0; i < g_shipCount; i++)
+    if( g_isRace )
     {
-        g_ships[i]->Reset();
+        for(int32_t i=0; i < g_shipCount; i++)
+        {
+            g_ships[i]->Reset();
+        }
+    }
+    else
+    {
+        g_playerShip.Reset();
     }
 
 }
@@ -245,7 +253,12 @@ void InitGameObjectsForTrack1(bool isRace)
 {
     #if 1
     // Copy cactus and rock array pointers to the object list.
-    for(int32_t i = 0; i < 2*8; i++ )
+    int32_t billboardObjectCount = 2*8;
+    if( !g_isRace )
+        billboardObjectCount = 3*8;
+
+    int32_t i = 0;
+    for(; i < billboardObjectCount; i++ )
     {
         g_objects3d[i] = &g_BillboardObjectArray[i];
         g_objects3d[i]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[i].m_fxX;
@@ -281,28 +294,14 @@ void InitGameObjectsForTrack1(bool isRace)
     #endif
 
     int32_t ii = 0;
-    if( ! isRace )
+    if( !g_isRace )
     {
         // Time trial
 
-        // Copy ship array pointers to the object list.
-        int32_t i = 0;
-        for(; i < 1*8; i++ )
-        {
-            ii = i + (2*8);
-            g_objects3d[ii] = &g_ShipObjectArray[i];
-            g_objects3d[ii]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxX;
-            g_objects3d[ii]->m_fxY = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxY;
-            g_objects3d[ii]->m_bitmap = g_timeTrialBilboardObjectsInRom_track1[ii].m_bitmap;
-            g_objects3d[ii]->m_bitmapW = g_timeTrialBilboardObjectsInRom_track1[ii].m_bitmapW;
-            g_objects3d[ii]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[ii].m_bitmapH;
-            g_objects3d[ii]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxScaledWidth;
-            g_objects3d[ii]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[ii].m_fxScaledHeight;
-        }
-
         // Player Ship
-        ii = i + (2*8);
-        g_objects3d[ii] = &g_ShipObjectArray[i];
+        g_shipCount = 0;
+        ii = i;
+        g_objects3d[ii] = &g_playerShip;
         fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
         g_playerShip.m_bitmap = billboard_object_bitmaps[0];
         g_playerShip.m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);

@@ -26,12 +26,12 @@ const int32_t g_rotatingCenterY = 72;
 
 const fix16_t fxMaxSpeedCollided = fix16_one>>1;
 const fix16_t fxMaxSpeed = fix16_one*6;  // player max speed
-//const fix16_t fxDefaultOtherShipSpeed = fix16_one*10;
-//const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
-//const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;
-const fix16_t fxDefaultOtherShipSpeed = (fix16_one*10)>>2;
-const fix16_t fxDefaultOtherShipSpeedInCorner =  (fxMaxSpeedCollided * 12)>>2;
-const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  (fxMaxSpeedCollided * 7)>>2;
+const fix16_t fxDefaultOtherShipSpeed = fix16_one*10;
+const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
+const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;
+//const fix16_t fxDefaultOtherShipSpeed = (fix16_one*10)>>2;
+//const fix16_t fxDefaultOtherShipSpeedInCorner =  (fxMaxSpeedCollided * 12)>>2;
+//const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  (fxMaxSpeedCollided * 7)>>2;
 
 const fix16_t fxCameraBehindPlayerY = fix16_from_int(70);
 const uint8_t trackTraceLineCount = 30;
@@ -96,7 +96,7 @@ extern const uint32_t waypointCount;
 extern const CObject3d g_timeTrialBilboardObjects[];
 extern CPlayerShip g_playerShip;
 extern const uint8_t image_numbers[];
-
+extern const uint16_t palette_pal[];
 
 extern mycookie highscore;
 extern uint32_t g_frameNum;
