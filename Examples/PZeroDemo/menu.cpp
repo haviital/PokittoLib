@@ -18,6 +18,10 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
     if(m_isOpen || mygame.buttons.pressed(BTN_C) || (requestedMenuMode != enumNoMenu) )
     {
+        // Enable sound
+        snd.ampEnable(0);
+
+        //
         switch( m_mode )
         {
         case enumMainMenu:
@@ -171,7 +175,6 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
         default:
             break;
         }
-
     }
 }
 

@@ -52,7 +52,7 @@ void CShip::Update()
         if( isOnStartingGrid )
         {
             // Finished!
-            m_lapTimingState = enumFinished;
+            m_lapTimingState = enumStarted;
             m_activeLapNum++;
         }
         break;

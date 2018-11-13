@@ -17,7 +17,7 @@ public:
     uint32_t m_final_lap_time_ms;
     uint32_t m_start_ms;
     bool m_isCollidedToPlayerShip;
-    bool m_isCollidedToSurface;
+    bool m_isCollided;
     int m_tonefreq;
     bool m_isTurningLeft;
     bool m_isTurningRight;

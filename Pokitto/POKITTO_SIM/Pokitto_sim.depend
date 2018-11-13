@@ -1250,7 +1250,7 @@
 	"SimSound.h"
 	"PokittoSimulator.h"
 
-1526157760 c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth.h
+1542141174 c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth.h
 	"Synth_osc.h"
 	"Synth_song.h"
 
@@ -4166,7 +4166,7 @@
 	"SimEEPROM.h"
 	<stdio.h>
 
-1541963843 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+1542055811 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -4559,7 +4559,7 @@
 	"gfx_hdr/image_numbers.h"
 	"playerShip.h"
 
-1541964324 c:\git\pokittolib2\examples\pzerodemo\main.h
+1542055026 c:\git\pokittolib2\examples\pzerodemo\main.h
 	"fix16.h"
 	"PokittoCookie.h"
 
@@ -4921,7 +4921,7 @@
 1541711380 c:\git\pokittolib2\examples\pzerodemo\ship.h
 	"main.h"
 
-1541716121 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
+1542055626 source:c:\git\pokittolib2\examples\pzerodemo\ship.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
@@ -4932,23 +4932,58 @@
 
 1541963234 c:\git\pokittolib2\examples\pzerodemo\menu.h
 
-1541963754 source:c:\git\pokittolib2\examples\pzerodemo\menu.cpp
+1541969787 source:c:\git\pokittolib2\examples\pzerodemo\menu.cpp
 	"Pokitto.h"
 	"main.h"
 	"menu.h"
 	"gfx_hdr/pilots.h"
 
-1541955994 source:c:\git\pokittolib2\examples\pzerodemo\playership.cpp
+1542138509 source:c:\git\pokittolib2\examples\pzerodemo\playership.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
 	"playerShip.h"
 
-1541716097 c:\git\pokittolib2\examples\pzerodemo\playership.h
+1541968854 c:\git\pokittolib2\examples\pzerodemo\playership.h
 	"main.h"
 	"ship.h"
 	"menu.h"
 
 1541961253 c:\git\pokittolib2\examples\pzerodemo\gfx_hdr\pilots.h
 	<stdint.h>
+
+1535653756 c:\git\pokittolib2\examples\101starships_gb\my_settings.h
+
+1535653756 source:c:\git\pokittolib2\examples\101starships_gb\101starships.cpp
+	"Pokitto.h"
+	"PokittoCookie.h"
+	"WString.h"
+
+1529866734 c:\git\pokittolib2\examples\101starships_gb\wstring.h
+	<Arduino.h>
+	"PokittoFakeavr.h"
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
+1529866734 c:\git\pokittolib2\examples\101starships_gb\arduino.h
+	<stdlib.h>
+	<string.h>
+	<math.h>
+	"PokittoFakeavr.h"
+	<stdint.h>
+	"binary.h"
+	"WCharacter.h"
+	"WString.h"
+
+1529866734 c:\git\pokittolib2\examples\101starships_gb\wcharacter.h
+	<ctype.h>
+
+1529866734 source:c:\git\pokittolib2\examples\101starships_gb\main.cpp
+	"Pokitto.h"
+
+1529866734 source:c:\git\pokittolib2\examples\101starships_gb\settings.c
+
+1529866734 source:c:\git\pokittolib2\examples\101starships_gb\wstring.cpp
+	"WString.h"
 

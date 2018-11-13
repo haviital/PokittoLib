@@ -15,37 +15,37 @@ CPlayerShip::CPlayerShip()
     m_final_lap_time_ms = 0;
     m_start_ms = 0;
     m_isCollidedToPlayerShip = false;
-    m_isCollidedToSurface = false;
+    m_isCollided = false;
     m_isTurningLeft = false;
     m_isTurningRight = false;
 
     // *** Setup sound
     m_tonefreq=0;
-    snd.ampEnable(1);
-    snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
-    m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY;
+   m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY;
     m_fxCameraBehindPlayerCurrent = fxCameraBehindPlayerY;
 }
 
 void CPlayerShip::Update()
 {
     fix16_t fxVelOld = m_fxVel;
-    bool prevCollided = m_isCollidedToSurface;
+    bool prevCollided = m_isCollided;
 
     // Calcucalate the current waypoint and rank.
     CalculateRank();
 
     // *** Check collision to road edges
-    m_isCollidedToSurface = false;
+    m_isCollided = false;
     uint8_t wavetype = 1;
     //uint8_t tileIndex = 5;
     uint8_t tileIndex = GetTileIndexCommon(fix16_to_int(m_fxX), fix16_to_int(m_fxY));
-    if(
-        tileIndex != 5 && tileIndex != 6 &&
-        (tileIndex < 11 || tileIndex > 15)
+    if( m_isCollidedToPlayerShip ||
+        (
+            tileIndex != 5 && tileIndex != 6 &&
+            (tileIndex < 11 || tileIndex > 15)
+        )
     )
     {
-        m_isCollidedToSurface = true;
+        m_isCollided = true;
         wavetype = 5;
 
     }
@@ -88,19 +88,31 @@ void CPlayerShip::Update()
         {
             // Finished!
             m_final_lap_time_ms = mygame.getTime() - m_start_ms;
-            m_lapTimingState = enumFinished;
 
             // Open the menu after the race.
-            if( g_isRace && m_activeLapNum>3)
+            if( g_isRace)
             //if( g_isRace )
-                m_requestedMenuMode = CMenu::enumRaceFinishedMenu;
-
-            // Open the menu after the time trial.
-            if( !g_isRace )
+            {
+                if( m_activeLapNum>2)
+                {
+                    // Race finished
+                    m_requestedMenuMode = CMenu::enumRaceFinishedMenu;
+                    m_lapTimingState = enumFinished;
+                }
+                else
+                {
+                    m_lapTimingState = enumStarted;
+                }
+            }
+            else
+            {
+                // Open the menu after the time trial.
                 m_requestedMenuMode = CMenu::enumTimeTrialFinishedMenu;
+            }
+
 
             // Save cookie if this is the best time
-            if( g_isRace && (highscore.bestLap_ms == 0 || m_final_lap_time_ms < highscore.bestLap_ms))
+            if( !g_isRace && (highscore.bestLap_ms == 0 || m_final_lap_time_ms < highscore.bestLap_ms))
             {
                 highscore.bestLap_ms = m_final_lap_time_ms;
                 highscore.saveCookie();
@@ -118,7 +130,7 @@ void CPlayerShip::Update()
     HandleGameKeys();
 
     // If colliding, slow down
-    if( m_isCollidedToSurface ) {
+    if( m_isCollided ) {
 
 
         // Break or stop
@@ -157,11 +169,11 @@ void CPlayerShip::Update()
     m_fxY += fix16_mul(m_fxVel, fxSin);
 
     // Change sound effect if needed.
-    if(fxVelOld != m_fxVel || prevCollided != m_isCollidedToSurface )
+    if(fxVelOld != m_fxVel || prevCollided != m_isCollided )
     {
         m_tonefreq = fix16_to_int(abs(m_fxVel*5));
         if(m_tonefreq>50) m_tonefreq = 50;
-        snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+            snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
     }
 
     // Update camera pos
@@ -178,6 +190,9 @@ void CPlayerShip::Update()
     {
         m_fxCameraBehindPlayerCurrent -= fix16_one>>2;
     }
+
+    //
+    m_isCollidedToPlayerShip = false;
 }
 
 void CPlayerShip::CalculateRank()
@@ -218,7 +233,9 @@ void CPlayerShip::Reset()
     m_currentRank = 0;
     m_current_lap_time_ms = 0;
     m_requestedMenuMode = CMenu::enumNoMenu;
-}
+    snd.ampEnable(1);
+    snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+ }
 
 // Handle keys
 void CPlayerShip::HandleGameKeys()
@@ -259,7 +276,7 @@ void CPlayerShip::HandleGameKeys()
     // Thrust
     if(mygame.buttons.aBtn()) {
 
-        if(!m_isCollidedToSurface || m_fxVel<=fxMaxSpeedCollided)
+        if(!m_isCollided || m_fxVel<=fxMaxSpeedCollided)
         {
             m_fxVel = m_fxVel + (fix16_one>>4);
             m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY + fix16_from_int(3);
@@ -269,7 +286,7 @@ void CPlayerShip::HandleGameKeys()
     // Reverse
     else if(mygame.buttons.bBtn()) {
 
-        if(!m_isCollidedToSurface || m_fxVel>=fxMaxSpeedCollided)
+        if(!m_isCollided || m_fxVel>=fxMaxSpeedCollided)
         {
             m_fxVel = m_fxVel - (fix16_one>>4);
             m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY - fix16_from_int(5);
@@ -278,7 +295,7 @@ void CPlayerShip::HandleGameKeys()
     // Break a little if no A button is pressed
     else  {
 
-        if(!m_isCollidedToSurface || m_fxVel>=fxMaxSpeedCollided)
+        if(!m_isCollided || m_fxVel>=fxMaxSpeedCollided)
         {
             m_fxVel = m_fxVel - (fix16_one>>5);
             m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY;

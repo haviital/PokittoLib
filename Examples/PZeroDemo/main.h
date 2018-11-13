@@ -26,6 +26,7 @@ const int32_t g_rotatingCenterY = 72;
 
 const fix16_t fxMaxSpeedCollided = fix16_one>>1;
 const fix16_t fxMaxSpeed = fix16_one*6;  // player max speed
+
 const fix16_t fxDefaultOtherShipSpeed = fix16_one*10;
 const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
 const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;

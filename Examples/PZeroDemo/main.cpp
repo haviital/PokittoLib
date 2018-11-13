@@ -143,7 +143,7 @@ int main () {
             uint16_t skyW = image_sky_long[0];
             uint16_t skyH = image_sky_long[1];
             const uint8_t* skyBitmapPtr = &(image_sky_long[2]);
-            DrawBitmapOpaque8bit( 0 - skyX, 0, skyBitmapPtr, skyW, skyH );
+            DrawBitmapOpaque8bit( skyX-22, 0, skyBitmapPtr, skyW, skyH );
 
             // ** Draw the road and edges and terrain.
             fix16_t fxCamX = g_playerShip.m_fxX;
@@ -152,7 +152,7 @@ int main () {
             DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle);
 
             // Draw 3d objects and check collisions.
-            bool isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxCamAngle);
+            g_playerShip.m_isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxCamAngle);
 
             // Draw the current lap time
             int32_t lapStartX = 110-5;  // 5 pixel margin
@@ -166,12 +166,12 @@ int main () {
             // Print coordinates on screen
             #if 0
             char text[128];
-            mygame.display.setColor(2,1);
+            mygame.display.setColor(9,3);
             mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10)); mygame.display.print(", ");
             mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10)); mygame.display.print("     ");
             mygame.display.print(0,10, itoa(g_playerShip.m_currentRank,text,10)); mygame.display.print(", ");
-            mygame.display.print( itoa(fix16_to_int(g_ships[0]->m_fxVel),text,10) ); mygame.display.print("; ");
-            mygame.display.print( itoa(g_ships[0]->m_trackIndex,text,10) ); mygame.display.print("     ");
+            mygame.display.print( itoa(g_playerShip.m_activeLapNum,text,10) ); mygame.display.print(", ");
+            mygame.display.print( itoa(g_playerShip.m_trackIndex,text,10) ); mygame.display.print("     ");
             #endif
 
             // Handle menus
@@ -236,7 +236,7 @@ void DrawRankNumber(int32_t x, int32_t y)
 {
     // Draw the current rank
     int32_t playerRank = g_playerShip.m_currentRank;
-    //if(playerRank>0)
+    if(playerRank>0)
     {
         fix16_t fxScaleFactor = fix16_from_float(1.5);
         const uint8_t* numbersBitmapPtr = &(image_numbers[2]);
@@ -357,7 +357,7 @@ void InitGameObjectsForTrack1(bool isRace)
         ii = i + (2*8);
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(35);
-        g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
+        g_objects3d[ii]->m_fxY = fix16_from_int(600+(2*50));
         g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[17];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
@@ -391,7 +391,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_ships[i]->m_fxAcc = fix16_from_float(0.200);
         g_ships[i]->m_fxDeacc = fix16_from_float(3.0);
         g_ships[i]->m_fxRotVel = fix16_pi / 50;
-        g_ships[i]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.8) );
+        g_ships[i]->m_fxMaxSpeed = fix16_mul(fxDefaultOtherShipSpeed, fix16_from_float(0.7) );
         g_ships[i]->m_fxCornerSpeed1 = fix16_mul(fxDefaultOtherShipSpeedInCorner, fix16_from_float(1.2) );
         g_ships[i]->m_fxCornerSpeed2 = fix16_mul(fxDefaultOtherShipSpeedInSlowCorner, fix16_from_float(1.2) );
         g_ships[i]->m_fxWaypointTargetSpeed = g_ships[i]->m_fxMaxSpeed;
@@ -475,7 +475,7 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[ii] = &g_ShipObjectArray[i];
         g_objects3d[ii]->m_fxX = fix16_from_int(35);
         g_objects3d[ii]->m_fxY = fix16_from_int(600);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[11];
+        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[6];
         g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
         g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
         g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
