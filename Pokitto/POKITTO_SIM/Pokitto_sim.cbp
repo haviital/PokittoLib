@@ -311,6 +311,18 @@
 					<Add directory="../../Examples/SFXeditor" />
 				</Compiler>
 			</Target>
+			<Target title="PokittoGP">
+				<Option output="bin/Debug/Pokitto_sim" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/Debug" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="../../Examples/PokittoGP" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -330,6 +342,7 @@
 			<Add directory="../POKITTO_CORE/FONTS" />
 			<Add directory="tinydir" />
 			<Add directory="../POKITTO_LIBS/ImageFormat" />
+			<Add directory="../POKITTO_LIBS/FixMath" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,-Map=main.map" />
@@ -689,6 +702,261 @@
 		<Unit filename="../../Examples/Pakman_GB/main.cpp">
 			<Option target="Pakman_GB" />
 		</Unit>
+		<Unit filename="../../Examples/PokittoGP/My_settings.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/GameData.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball1_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball1_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball1_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball1_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball2_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball2_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball2_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball2_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball3_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball3_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball3_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball3_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball4_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball4_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball4_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball4_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball5_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball5_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball5_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ball5_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_cactus.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_light.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_numbers.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_road1.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_road2.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_rock1.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_shadow.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_1_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_1_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_1_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_1_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_1_e.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_2_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_2_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_2_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_2_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_2_e.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_3_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_3_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_3_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_3_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_3_e.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_4_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_4_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_4_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_4_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_4_e.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_5_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_5_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_5_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_5_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_ship_5_e.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_sky.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_sky_long.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_spot.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_spot2.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_start_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_start_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_start_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_start_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_6_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_6_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_6_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_6_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_7_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_7_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_7_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_7_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_8_a.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_8_b.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_8_c.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/image_terrain_8_d.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/palette.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfx_hdr/pilots.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/gfxdraw.cpp">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/main.cpp">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/main.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/menu.cpp">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/menu.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/playerShip.cpp">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/playerShip.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/ship.cpp">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/ship.h">
+			<Option target="PokittoGP" />
+		</Unit>
 		<Unit filename="../../Examples/SFXeditor/My_settings.h">
 			<Option target="SFXeditor" />
 		</Unit>
@@ -825,48 +1093,48 @@
 		<Unit filename="../POKITTO_LIBS/FileIO/FileIO_SIM.cpp" />
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16.hpp">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16_exp.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16_sqrt.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16_trig.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fix16_trig_sin_lut.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fixmath.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fract32.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/fract32.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/int64.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/uint32.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/FixMath/uint32.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/MicroPython/My_settings.h">
 			<Option target="MicroPython" />
