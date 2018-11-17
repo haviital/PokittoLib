@@ -23,7 +23,7 @@
 1535654860 c:\git\pokittolib2\pokitto\pokitto_settings.h
 	"My_settings.h"
 
-1537479642 c:\git\pokittolib2\examples\pzerodemo\my_settings.h
+1542321895 c:\git\pokittolib2\examples\pzerodemo\my_settings.h
 
 1526157759 c:\git\pokittolib2\pokitto\pokitto_core\pokittocore.h
 	<stdint.h>
@@ -504,7 +504,7 @@
 	"Pokitto_settings.h"
 	<stdint.h>
 
-1526157760 c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth.h
+1542141342 c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth.h
 	"Synth_osc.h"
 	"Synth_song.h"
 
@@ -524,7 +524,7 @@
 	"fix16.h"
 	"PokittoCookie.h"
 
-1542055811 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+1542448528 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -1444,10 +1444,10 @@
 	"PokittoGlobs.h"
 	"Synth.h"
 
-1535654860 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_oscfuncs.cpp
+1542141342 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_oscfuncs.cpp
 	"Synth.h"
 
-1526157760 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_songfuncs.cpp
+1542259456 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_songfuncs.cpp
 	"PokittoDisk.h"
 	"Synth.h"
 	"Tracker.h"
@@ -1500,7 +1500,7 @@
 
 1541963234 c:\git\pokittolib2\examples\pzerodemo\menu.h
 
-1541969787 source:c:\git\pokittolib2\examples\pzerodemo\menu.cpp
+1542259282 source:c:\git\pokittolib2\examples\pzerodemo\menu.cpp
 	"Pokitto.h"
 	"main.h"
 	"menu.h"
@@ -1511,7 +1511,7 @@
 	"ship.h"
 	"menu.h"
 
-1542051182 source:c:\git\pokittolib2\examples\pzerodemo\playership.cpp
+1542259282 source:c:\git\pokittolib2\examples\pzerodemo\playership.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"

@@ -1250,7 +1250,7 @@
 	"SimSound.h"
 	"PokittoSimulator.h"
 
-1542141174 c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth.h
+1542141342 c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth.h
 	"Synth_osc.h"
 	"Synth_song.h"
 
@@ -1331,10 +1331,10 @@
 	"PokittoGlobs.h"
 	"Synth.h"
 
-1535654860 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_oscfuncs.cpp
+1542141342 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_oscfuncs.cpp
 	"Synth.h"
 
-1526157760 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_songfuncs.cpp
+1542259456 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_songfuncs.cpp
 	"PokittoDisk.h"
 	"Synth.h"
 	"Tracker.h"
@@ -1394,7 +1394,7 @@
 	"PokittoSimulator.h"
 	<algorithm>
 
-1535653756 source:c:\git\pokittolib2\pokitto\pokitto_sim\simsound.cpp
+1542322223 source:c:\git\pokittolib2\pokitto\pokitto_sim\simsound.cpp
 	"SimSound.h"
 	"PokittoSimulator.h"
 	"PokittoGlobs.h"
@@ -4166,7 +4166,7 @@
 	"SimEEPROM.h"
 	<stdio.h>
 
-1542055811 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
+1542449691 source:c:\git\pokittolib2\examples\pzerodemo\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -4175,7 +4175,7 @@
 	"playerShip.h"
 	"menu.h"
 
-1537479642 c:\git\pokittolib2\examples\pzerodemo\my_settings.h
+1542321895 c:\git\pokittolib2\examples\pzerodemo\my_settings.h
 
 1535658872 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\fix16.h
 	"Pokitto_settings.h"
@@ -4932,13 +4932,13 @@
 
 1541963234 c:\git\pokittolib2\examples\pzerodemo\menu.h
 
-1541969787 source:c:\git\pokittolib2\examples\pzerodemo\menu.cpp
+1542259282 source:c:\git\pokittolib2\examples\pzerodemo\menu.cpp
 	"Pokitto.h"
 	"main.h"
 	"menu.h"
 	"gfx_hdr/pilots.h"
 
-1542138509 source:c:\git\pokittolib2\examples\pzerodemo\playership.cpp
+1542259282 source:c:\git\pokittolib2\examples\pzerodemo\playership.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"

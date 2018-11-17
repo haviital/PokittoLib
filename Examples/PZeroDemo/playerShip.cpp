@@ -172,8 +172,8 @@ void CPlayerShip::Update()
     if(fxVelOld != m_fxVel || prevCollided != m_isCollided )
     {
         m_tonefreq = fix16_to_int(abs(m_fxVel*5));
-        if(m_tonefreq>50) m_tonefreq = 50;
-            snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+        //!!!HV  if(m_tonefreq>50) m_tonefreq = 50;
+            //!!!HV snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
     }
 
     // Update camera pos
@@ -233,8 +233,8 @@ void CPlayerShip::Reset()
     m_currentRank = 0;
     m_current_lap_time_ms = 0;
     m_requestedMenuMode = CMenu::enumNoMenu;
-    snd.ampEnable(1);
-    snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+    //!!!HV snd.ampEnable(1);
+    //!!!HV snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
  }
 
 // Handle keys

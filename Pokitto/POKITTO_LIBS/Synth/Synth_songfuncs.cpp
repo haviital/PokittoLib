@@ -53,7 +53,6 @@ streamsFunction streamCallbackPtr;
 
 
 #if POK_ENABLE_SOUND > 0
-#if POK_ENABLE_SD > 0
 void updatePlaybackSD(uint8_t row) {
     // samplespertick determines how long the oscillators are active before they are recalculated (i.e. the next tick
     uint8_t i=0;
@@ -231,6 +230,7 @@ void emptySong(){
     song.note_stream[2] = &block[2].notenumber[0];
     sequencepos = 0;
 }
+#if POK_ENABLE_SD > 0
 
 int openSongFromSD(char* buffer) {
     if (!isThisFileOpen(buffer)) {
