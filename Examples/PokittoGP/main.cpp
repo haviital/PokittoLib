@@ -153,18 +153,18 @@ int main () {
     patch[p1].wave = WSQUARE;
     patch[p1].on = 1;
     patch[p1].vol = 143;
-    patch[p1].loop = 1;
+    patch[p1].loop = 0;
     patch[p1].echo = 0;
 
     patch[p1].adsr = 0;
     patch[p1].attack = 0;
-    patch[p1].decay = 0;
-    patch[p1].sustain = 0;
-    patch[p1].release = 0;
+    patch[p1].decay = 102;
+    patch[p1].sustain = 62;
+    patch[p1].release = 23;
 
     patch[p1].maxbend = 0;
     patch[p1].bendrate = 0;
-    patch[p1].arpmode = 2;
+    patch[p1].arpmode = 1;
     patch[p1].overdrive = 1;
     patch[p1].kick = 0;
 
@@ -207,9 +207,9 @@ int main () {
     patch[p1].kick = 0;
 
     //const int32_t songLenght = 64;
-    const int32_t songLenght = 7;
-    const uint8_t pitch[songLenght] =
-    {
+//    const int32_t songLenght = 7;
+//    const uint8_t pitch[songLenght] =
+//    {
 //        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
 //        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
 //        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
@@ -239,10 +239,10 @@ int main () {
 //        70, 255,  70, 255, 70, 255, 70, 255, 70, 255,
 //        73, 255,  73, 255, 73, 255, 73, 255, 73, 255,
 //        255,255,  255, 255,
-        47,255,255,255,255,255,47,
-    };
-    const uint8_t patch[songLenght] =
-    {
+//        47,255,255,255,255,255,47,
+//    };
+//    const uint8_t patch[songLenght] =
+//    {
 //        1,0,1,0,1,0,1,0,1,0,
 //        1,0,1,0,1,0,1,0,1,0,
 //        1,0,1,0,1,0,1,0,1,0,
@@ -250,8 +250,8 @@ int main () {
 //        1,0,1,0,1,0,1,0,1,0,
 //        1,0,1,0,1,0,1,0,1,0,
 //        0,0,0,0,
-        1,0,0,0,0,0,1,
-    };
+//        1,0,0,0,0,0,1,
+//    };
 
 
     const uint8_t pitchAndPatch_old[][2] =
@@ -273,12 +273,18 @@ int main () {
 
     const uint8_t pitchAndPatch[][2] =
     {
-        {60, 1},{255, 0},{255, 0},{255, 0},
-        {61, 1},{255, 0},{255, 0},{255, 0},
-        {62, 1},{255, 0},{255, 0},{255, 0},
-        {63, 1},{255, 0},{255, 0},{255, 0},
-        {64, 1},{255, 0},{255, 0},{255, 0},
-        {65, 1},{255, 0},{255, 0},{255, 0},
+        {50, 1},{255, 0},{255, 0},{255, 0},
+        {51, 1},{255, 0},{255, 0},{255, 0},
+        {52, 1},{255, 0},{255, 0},{255, 0},
+        {53, 1},{255, 0},{255, 0},{255, 0},
+        {54, 1},{255, 0},{255, 0},{255, 0},
+        {55, 1},{255, 0},{255, 0},{255, 0},
+        {56, 1},{255, 0},{255, 0},{255, 0},
+        //{61, 1},{255, 0},{255, 0},{255, 0},
+        //{62, 1},{255, 0},{255, 0},{255, 0},
+        //{63, 1},{255, 0},{255, 0},{255, 0},
+        //{64, 1},{255, 0},{255, 0},{255, 0},
+        //{65, 1},{255, 0},{255, 0},{255, 0},
     };
 
 
@@ -293,14 +299,14 @@ int main () {
     //initStreams(0);
     song.song_end=0; // last block
     song.song_loop=0; // loop back to
-    //song.song_loop = loopTo; //legacy synth code
     //streamsFunction ptr = (streamsFunction)&Tracker::initStreams;
     //registerStreamsCallback(ptr);
 
     playing=true;
 
     snd.ampEnable(1);
-
+    uint32_t noteIndex = 0;
+    int notenumber = 50;
 
     // *** The game loop
     while (mygame.isRunning()) {
@@ -378,7 +384,29 @@ int main () {
 
             g_frameNum++;
 
+             // !!HV Music test
+            if(mygame.frameCount%50 == 0)
+            {
+                notenumber = pitchAndPatch[noteIndex][0];
+
+                if( mygame.buttons.upBtn() )
+                    notenumber++;
+                if( mygame.buttons.downBtn() )
+                    notenumber--;
+
+//                setOSC(&osc1,1, patch[1].wave, patch[1].loop, patch[1].echo, patch[1].adsr,
+//                    notenumber, patch[1].vol,
+//                    patch[1].attack, patch[1].decay, patch[1].sustain, patch[1].release,
+//                    patch[1].maxbend, patch[1].bendrate,
+//                    patch[1].arpmode, patch[1].overdrive, patch[1].kick );
+                noteIndex += 4;
+                if(noteIndex>=songLen2)
+                    noteIndex = 0;
+
+            }
         }  // end if
+
+
     }  // end while
 }
 

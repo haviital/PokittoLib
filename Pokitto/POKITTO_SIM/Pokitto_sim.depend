@@ -5037,7 +5037,7 @@
 	"gfx_hdr/image_numbers.h"
 	"playerShip.h"
 
-1542321895 c:\git\pokittolib2\examples\pokittogp\my_settings.h
+1542498313 c:\git\pokittolib2\examples\pokittogp\my_settings.h
 
 1535658872 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\fix16.h
 	"Pokitto_settings.h"
@@ -5063,7 +5063,7 @@
 
 1541963234 c:\git\pokittolib2\examples\pokittogp\menu.h
 
-1542449691 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
+1542498179 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"

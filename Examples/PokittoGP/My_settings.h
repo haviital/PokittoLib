@@ -17,7 +17,7 @@
 
 #define PROJ_ENABLE_SOUND 1     // 0 = all sound functions disabled
 #define PROJ_ENABLE_SYNTH 1
-#define PROJ_AUD_FREQ 8000
+//#define PROJ_AUD_FREQ 8000
 
 //#define FIXMATH_NO_64BIT
 //#define FIXMATH_NO_OVERFLOW
