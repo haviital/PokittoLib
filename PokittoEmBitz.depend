@@ -7699,7 +7699,7 @@
 	"gfx_hdr/image_numbers.h"
 	"playerShip.h"
 
-1542498313 c:\git\pokittolib2\examples\pokittogp\my_settings.h
+1542552818 c:\git\pokittolib2\examples\pokittogp\my_settings.h
 
 1535658872 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\fix16.h
 	"Pokitto_settings.h"
@@ -7729,7 +7729,7 @@
 
 1541963234 c:\git\pokittolib2\examples\pokittogp\menu.h
 
-1542498511 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
+1542558835 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -8088,4 +8088,18 @@
 
 1509275041 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\uint32.h
 	<stdint.h>
+
+1542451138 source:c:\git\pokittolib2\examples\sfxeditor\sfxeditor.cpp
+	"Pokitto.h"
+	"Synth.h"
+	"beat11k.h"
+	"SFXeditor.h"
+
+1542553944 c:\git\pokittolib2\examples\sfxeditor\my_settings.h
+
+1542451138 c:\git\pokittolib2\examples\sfxeditor\beat11k.h
+
+1542451138 c:\git\pokittolib2\examples\sfxeditor\sfxeditor.h
+	"PokittoCookie.h"
+	"Synth.h"
 

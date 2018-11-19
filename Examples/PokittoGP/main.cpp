@@ -12,12 +12,9 @@ Pokitto::Sound snd;
 
 // Prototypes
 void InitGameObjectsForTrack1(bool isRace);
-void HandleSetupMenu(int32_t& lastListPos);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
 bool Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
-bool HandleStartGameMenu( int32_t lastLap_ms );
-bool HandleGenericMenu( bool showBestTime, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4);
 
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
@@ -128,7 +125,7 @@ int main () {
     }
 
     //!!HV
-    uint32_t tempo = 60;
+    uint32_t tempo = 30;
     samplespertick = (float)((60.0f/(float)tempo)*POK_AUD_FREQ)/16;
     emptySong();
     emptyBlocks();
@@ -141,19 +138,13 @@ int main () {
     track3on = false;
     makeSampleInstruments();
 
-//         setOSC(&osc1,1,patch[i].wave,patch[i].loop, patch[i].echo, patch[i].adsr,
-//                *song.note_stream[0],patch[i].vol,
-//                patch[i].attack, patch[i].decay, patch[i].sustain,patch[i].release,
-//                patch[i].maxbend, patch[i].bendrate, patch[i].arpmode, patch[i].overdrive, patch[i].kick );
-//
-
     // Instruments
 
     int32_t p1 = 1;
     patch[p1].wave = WSQUARE;
     patch[p1].on = 1;
-    patch[p1].vol = 143;
-    patch[p1].loop = 0;
+    patch[p1].vol = 150;
+    patch[p1].loop = 1;
     patch[p1].echo = 0;
 
     patch[p1].adsr = 0;
@@ -195,10 +186,10 @@ int main () {
     patch[p1].echo = 0;
 
     patch[p1].adsr = 0;
-    patch[p1].attack = 158;
-    patch[p1].decay = 44;
-    patch[p1].sustain = 230;
-    patch[p1].release = 48;
+    patch[p1].attack = 0;
+    patch[p1].decay = 0;
+    patch[p1].sustain = 0;
+    patch[p1].release = 0;
 
     patch[p1].maxbend = 0;
     patch[p1].bendrate = 0;
@@ -206,85 +197,32 @@ int main () {
     patch[p1].overdrive = 1;
     patch[p1].kick = 0;
 
-    //const int32_t songLenght = 64;
-//    const int32_t songLenght = 7;
-//    const uint8_t pitch[songLenght] =
-//    {
-//        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
-//        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
-//        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
-//        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
-//        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
-//        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
-//        40, 40, 40, 40,
-//        40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
-//        50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
-//        60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
-//        70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
-//        80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
-//        90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
-//        100, 101, 102, 103,
-
-//        70, 255,  255, 255, 255, 255, 255, 255, 255, 255,
-//        73, 255,  255, 255, 255, 255, 255, 255, 255, 255,
-//        76, 255,  255, 255, 255, 255, 255, 255, 255, 255,
-//        70, 255,  70, 255, 70, 255, 70, 255, 70, 255,
-//        73, 255,  73, 255, 73, 255, 73, 255, 73, 255,
-//        76, 255,  76, 255, 76, 255, 76, 255, 76, 255,
-//        255,255,  255, 255,
-//        73, 255,  73, 255, 73, 255, 73, 255, 73, 255,
-//        70, 255,  70, 255, 70, 255, 70, 255, 70, 255,
-//        73, 255,  73, 255, 73, 255, 73, 255, 73, 255,
-//        73, 255,  73, 255, 73, 255, 73, 255, 73, 255,
-//        70, 255,  70, 255, 70, 255, 70, 255, 70, 255,
-//        73, 255,  73, 255, 73, 255, 73, 255, 73, 255,
-//        255,255,  255, 255,
-//        47,255,255,255,255,255,47,
-//    };
-//    const uint8_t patch[songLenght] =
-//    {
-//        1,0,1,0,1,0,1,0,1,0,
-//        1,0,1,0,1,0,1,0,1,0,
-//        1,0,1,0,1,0,1,0,1,0,
-//        1,0,1,0,1,0,1,0,1,0,
-//        1,0,1,0,1,0,1,0,1,0,
-//        1,0,1,0,1,0,1,0,1,0,
-//        0,0,0,0,
-//        1,0,0,0,0,0,1,
-//    };
-
-
-    const uint8_t pitchAndPatch_old[][2] =
-    {
-        {77, 1},{255, 0},
-        {57, 1},{255, 0},{255, 0},{255, 0},
-        {77, 1},{255, 0},
-        {57, 1},{255, 0},{255, 0},{255, 0},
-        {77, 1},{255, 0},{255, 0},{255, 0},
-        {87, 1},{255, 0},{255, 0},{255, 0},
-        {97, 1},{255, 0},{255, 0},{255, 0},
-        {107, 1},{255, 0},{255, 0},{255, 0},
-        {117, 1},{255, 0},{255, 0},{255, 0},
-        {127, 1},{255, 0},{255, 0},{255, 0},
-        {137, 1},{255, 0},{255, 0},{255, 0},
-        {147, 1},{255, 0},{255, 0},{255, 0},
-        {157, 1},{255, 0},{255, 0},{255, 0},
-    };
-
     const uint8_t pitchAndPatch[][2] =
     {
-        {50, 1},{255, 0},{255, 0},{255, 0},
-        {51, 1},{255, 0},{255, 0},{255, 0},
-        {52, 1},{255, 0},{255, 0},{255, 0},
-        {53, 1},{255, 0},{255, 0},{255, 0},
-        {54, 1},{255, 0},{255, 0},{255, 0},
+        // working notes!
         {55, 1},{255, 0},{255, 0},{255, 0},
         {56, 1},{255, 0},{255, 0},{255, 0},
-        //{61, 1},{255, 0},{255, 0},{255, 0},
-        //{62, 1},{255, 0},{255, 0},{255, 0},
-        //{63, 1},{255, 0},{255, 0},{255, 0},
-        //{64, 1},{255, 0},{255, 0},{255, 0},
-        //{65, 1},{255, 0},{255, 0},{255, 0},
+        {57, 1},{255, 0},{255, 0},{255, 0},
+        {58, 1},{255, 0},{255, 0},{255, 0},
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {60, 1},{255, 0},{255, 0},{255, 0},
+        {61, 1},{255, 0},{255, 0},{255, 0},
+        {62, 1},{255, 0},{255, 0},{255, 0},
+        {63, 1},{255, 0},{255, 0},{255, 0},
+        {64, 1},{255, 0},{255, 0},{255, 0},
+
+        {65, 1},{255, 0},{255, 0},{255, 0},
+        {66, 1},{255, 0},{255, 0},{255, 0},
+        {67, 1},{255, 0},{255, 0},{255, 0},
+        {68, 1},{255, 0},{255, 0},{255, 0},
+        {69, 1},{255, 0},{255, 0},{255, 0},
+        {70, 1},{255, 0},{255, 0},{255, 0},
+        {71, 1},{255, 0},{255, 0},{255, 0},
+        {72, 1},{255, 0},{255, 0},{255, 0},
+        {73, 1},{255, 0},{255, 0},{255, 0},
+        {74, 1},{255, 0},{255, 0},{255, 0},
+
+
     };
 
 
@@ -712,187 +650,6 @@ void InitGameObjectsForTrack1(bool isRace)
 
 }
 
-bool HandleStartGameMenu( int32_t lastLap_ms )
-{
-    //
-    int32_t winX = 0;
-    int32_t winY = 16;
-    int32_t winW = 110;
-    int32_t winH = 31;
-    if( lastLap_ms > 0 )
-		winH += 20;
-    int32_t currY = winY;
-
-    // Draw menu window background
-    mygame.display.setColor(1,1);
-    mygame.display.fillRect(winX, winY, winW, winH);
-
-    // Best time
-    mygame.display.setColor(2,1);
-    mygame.display.setInvisibleColor(1);
-	currY += 4;
-    mygame.display.print(winX+5,currY,"BEST: ");
-    currY -= 1;
-    DrawLapTime(highscore.bestLap_ms, winX+55, currY, fix16_from_float(1.5) );
-    currY += 15;
-
-    // Last time
-    if( lastLap_ms > 0 )
-    {
-        DrawLapTime(lastLap_ms, winX+30, currY, fix16_one<<1 );
-        currY += 20;
-    }
-
-//
-    mygame.display.setColor(2,1);
-    mygame.display.setInvisibleColor(1);
-    mygame.display.print(winX+5,currY,"C TO START");
-
-    // Read keys
-    if(mygame.buttons.pressed(BTN_C))
-    {
-        // Reset game
-        g_playerShip.Reset();
-
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-
-
-// Draw the setup menu and handle keys.
-void HandleSetupMenu(int32_t& lastListPos)
-{
-    const int32_t itemsCount = 4;
-    char menuStr[itemsCount][10] =
-    {
-        "SHIP","EDGE","TERRAIN","T.MODE=0"
-    };
-    menuStr[3][7] = (char)(textureMode+'0');
-
-    // Draw the list of texture types
-    int32_t y = 0;
-    mygame.display.setColor(1,2);
-    mygame.display.setInvisibleColor(2);
-    for(int32_t im = lastListPos-1; im<min(itemsCount, lastListPos+2); im++)
-    {
-        if(im<0)
-        {
-            // skip
-        }
-        else if(im==lastListPos)
-        {
-             mygame.display.print(12,y,"<");
-             mygame.display.print(menuStr[im]);
-             mygame.display.print(">");
-        }
-        else
-            mygame.display.print(12,y,menuStr[im]);
-        y += 9;
-    }
-
-    // Read keys
-    int32_t changeDir = 0;
-    if(mygame.buttons.pressed(BTN_RIGHT))
-        changeDir = 1;
-    else if(mygame.buttons.pressed(BTN_LEFT))
-        changeDir = -1;
-    else if(mygame.buttons.pressed(BTN_UP))
-    {
-        if(--lastListPos<0)
-           lastListPos = 0;
-    }
-    else if(mygame.buttons.pressed(BTN_DOWN))
-    {
-        if(++lastListPos>=itemsCount)
-           lastListPos = itemsCount-1;
-    }
-
-    // Change the texture on the game
-    if(changeDir!=0)
-    {
-        if(lastListPos==0) // ship
-        {
-             // Switch active bitmap data
-            int32_t i=0;
-            for(; i< billboard_object_bitmaps_count; i++)
-                if(activeShipBitmapData==billboard_object_bitmaps[i])
-                    break;
-            i+= changeDir;
-            if(i>= billboard_object_bitmaps_count)
-                i=0;
-            if(i < 0)
-                i=billboard_object_bitmaps_count-1;
-            activeShipBitmapData=billboard_object_bitmaps[i];
-            shipBitmapW = *(activeShipBitmapData - 2);
-            shipBitmapH = *(activeShipBitmapData - 1);
-        }
-        else if(lastListPos==1) // edge
-        {
-            // Switch active tile bitmap data
-            int32_t i=0;
-            for(; i< edge_bitmaps_count; i+=4)
-                if(current_texture_bitmaps[1]==edge_bitmaps[i])
-                    break;
-
-            i+=4*changeDir; // next 4 textures
-
-            if(i >= edge_bitmaps_count)
-                i=0;
-            if(i < 0)
-                i=edge_bitmaps_count-4;
-            current_texture_bitmaps[1] = edge_bitmaps[i];
-            current_texture_bitmaps[2] = edge_bitmaps[i+1];
-            current_texture_bitmaps[3] = edge_bitmaps[i+2];
-            current_texture_bitmaps[4] = edge_bitmaps[i+3];
-
-            // Get mipmap pointers.
-            for( uint32_t i=0; i<current_texture_bitmaps_count; i++)
-            {
-                current_texture_bitmaps_mm1[i] =  current_texture_bitmaps[i] + (texW * tileH);
-                current_texture_bitmaps_mm2[i] =  current_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
-            }
-        }
-        else if(lastListPos==2) // terrain
-        {
-            // Switch active tile bitmap data
-            int32_t i=0;
-            for(; i< terrain_bitmaps_count; i+=4)
-                if(current_texture_bitmaps[7]==terrain_bitmaps[i])
-                    break;
-
-            i+=4*changeDir; // next 4 textures
-
-            if(i >= terrain_bitmaps_count)
-                i=0;
-            if(i < 0)
-                i=terrain_bitmaps_count-4;
-            current_texture_bitmaps[7] = terrain_bitmaps[i];
-            current_texture_bitmaps[8] = terrain_bitmaps[i+1];
-            current_texture_bitmaps[9] = terrain_bitmaps[i+2];
-            current_texture_bitmaps[10] = terrain_bitmaps[i+3];
-
-            // Get mipmap pointers.
-            for( uint32_t i=0; i<current_texture_bitmaps_count; i++)
-            {
-                current_texture_bitmaps_mm1[i] =  current_texture_bitmaps[i] + (texW * tileH);
-                current_texture_bitmaps_mm2[i] =  current_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
-            }
-        }
-        else if(lastListPos==3) // texture mode
-        {
-            textureMode+=changeDir; // next 4 textures
-            if(textureMode<0)
-                textureMode = 1;
-            if(textureMode>1)
-                textureMode = 0;
-        }
-    }
-}
 
 uint8_t GetTileIndexCommon(int32_t posX, int32_t posY)
 {
