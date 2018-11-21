@@ -121,7 +121,7 @@ int main () {
     }
 
     //!!HV
-    uint32_t tempo = 30;
+    uint32_t tempo = 45;
     samplespertick = (float)((60.0f/(float)tempo)*POK_AUD_FREQ)/16;
     emptySong();
     emptyBlocks();
@@ -136,7 +136,7 @@ int main () {
 
     // Instruments
 
-    int32_t p1 = 1;
+    int32_t p1 = 0;
     patch[p1].wave = WSQUARE;
     patch[p1].on = 1;
     patch[p1].vol = 150;
@@ -155,30 +155,49 @@ int main () {
     patch[p1].overdrive = 1;
     patch[p1].kick = 0;
 
-    p1 = 0;
-    patch[p1].wave = WSAW;
+    p1 = 1;
+    patch[p1].wave = WSQUARE;
     patch[p1].on = 1;
-    patch[p1].vol = 180;
-    patch[p1].loop = 1;
-    patch[p1].echo = 1;
+    patch[p1].vol = 150;
+    patch[p1].loop = 0;
+    patch[p1].echo = 0;
 
     patch[p1].adsr = 0;
     patch[p1].attack = 0;
-    patch[p1].decay = 5;
+    patch[p1].decay = 102;
+    patch[p1].sustain = 62;
+    patch[p1].release = 23;
+
+    patch[p1].maxbend = 0;
+    patch[p1].bendrate = 0;
+    patch[p1].arpmode = 2;
+    patch[p1].overdrive = 1;
+    patch[p1].kick = 0;
+
+    p1 = 0;
+    patch[p1].wave = WSAW;
+    patch[p1].on = 1;
+    patch[p1].vol = 200;
+    patch[p1].loop = 0;
+    patch[p1].echo = 0;
+
+    patch[p1].adsr = 0;
+    patch[p1].attack = 0;
+    patch[p1].decay = 0;
     patch[p1].sustain = 0;
     patch[p1].release = 0;
 
     patch[p1].maxbend = 0;
     patch[p1].bendrate = 0;
-    patch[p1].arpmode = 0;
-    patch[p1].overdrive = 1;
-    patch[p1].kick = 1;
+    patch[p1].arpmode = 1;
+    patch[p1].overdrive = 0;
+    patch[p1].kick = 0;
 
-    p1 = 0;
-    patch[p1].wave = WSQUARE;
+    p1 = 2;
+    patch[p1].wave = WOFF;
     patch[p1].on = 1;
-    patch[p1].vol = 143;
-    patch[p1].loop = 1;
+    patch[p1].vol = 0;
+    patch[p1].loop = 0;
     patch[p1].echo = 0;
 
     patch[p1].adsr = 0;
@@ -190,49 +209,105 @@ int main () {
     patch[p1].maxbend = 0;
     patch[p1].bendrate = 0;
     patch[p1].arpmode = 0;
-    patch[p1].overdrive = 1;
+    patch[p1].overdrive = 0;
     patch[p1].kick = 0;
+
 
     // q2w3er5t6y7ui9o0p
     // 01234567891123456
-    const uint8_t pitchAndPatch[][2] =
+    const uint8_t pitchAndPatch0[][2] =
+    {
+        // yuio-oopo- => 9-,11-,12-,13--,13,13,15-,13-
+        {59, 1},{255, 0},
+        {61, 1},{255, 0},
+        {62, 1},{255, 0},
+        {63, 1},{255, 0},{255, 0},{255, 0},
+        {65, 1},{255, 0},
+        {63, 1},{255, 0},{255, 0},{255, 0},
+        {255, 2}
+    };
+    const uint8_t pitchAndPatch3[][2] =
     {
         // vivaldi
+        // ry-ry-ry-u-9- => 5,9-,5,9-,5,9-,11-,13-
+        {55, 1},{255, 0},
         {59, 1},{255, 0},{255, 0},{255, 0},
-        {54, 1},{255, 0},
+        {55, 1},{255, 0},
         {59, 1},{255, 0},{255, 0},{255, 0},
-        {54, 1},{255, 0},
-        {59, 1},{255, 0},
-        {54, 1},{255, 0},
-        {51, 1},{255, 0},
-        {54, 1},{255, 0},
+        {55, 1},{255, 0},
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {61, 1},{255, 0},{255, 0},{255, 0},
         {63, 1},{255, 0},{255, 0},{255, 0},
+        {255, 2}
 
-        // vivaldi
-        // ryryryu9
+    };
+
+#if 0
+    const uint8_t pitchAndPatch6[][2] =
+    {
+        // y-y-ry-i-i-uy- => 5,9-,5,9-,5,9-,11-,13-
+        {55, 1},{255, 0},
         {59, 1},{255, 0},{255, 0},{255, 0},
-        {54, 1},{255, 0},
+        {55, 1},{255, 0},
         {59, 1},{255, 0},{255, 0},{255, 0},
-        {54, 1},{255, 0},
-        {59, 1},{255, 0},
-        {54, 1},{255, 0},
-        {51, 1},{255, 0},
-        {54, 1},{255, 0},
+        {55, 1},{255, 0},
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {61, 1},{255, 0},{255, 0},{255, 0},
         {63, 1},{255, 0},{255, 0},{255, 0},
+        {255, 2}
+
+    };
+#endif
+    const uint8_t pitchAndPatch6[][2] =
+    {
+        // yyuyiuiuy =>  2-askelta alempaa
+        {50, 1},{255, 0},
+        {50, 1},{255, 0},
+        {52, 1},{255, 0},
+        {50, 1},{255, 0},
+        {53, 1},{255, 0},
+        {52, 1},{255, 0},
+        {53, 1},{255, 0},
+        {52, 1},{255, 0},
+        {50, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
+
+        {255, 2}, {255, 2}, {255, 2}, {255, 2},{255, 2}, {255, 2},
+
+        {48, 1},{255, 0},
+        {48, 1},{255, 0},
+        {50, 1},{255, 0},
+        {48, 1},{255, 0},
+        {51, 1},{255, 0},
+        {50, 1},{255, 0},
+        {51, 1},{255, 0},
+        {50, 1},{255, 0},
+        {48, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
+        {255, 2}
 
     };
 
 
-    //const int32_t channel = 0;
-    uint8_t songLen2 = sizeof(pitchAndPatch) / sizeof(pitchAndPatch[0]);
+    uint8_t songLen2 = sizeof(pitchAndPatch0) / sizeof(pitchAndPatch0[0]);
     for(int32_t i=0; i<songLen2;i++)
     {
-        block[0].notenumber[i] = pitchAndPatch[i][0];
-        block[0].instrument[i] = pitchAndPatch[i][1];
+        block[0].notenumber[i] = pitchAndPatch0[i][0];
+        block[0].instrument[i] = pitchAndPatch0[i][1];
+    }
+    songLen2 = sizeof(pitchAndPatch3) / sizeof(pitchAndPatch3[0]);
+    for(int32_t i=0; i<songLen2;i++)
+    {
+        block[3].notenumber[i] = pitchAndPatch3[i][0];
+        block[3].instrument[i] = pitchAndPatch3[i][1];
+    }
+    songLen2 = sizeof(pitchAndPatch6) / sizeof(pitchAndPatch6[0]);
+    for(int32_t i=0; i<songLen2;i++)
+    {
+        block[6].notenumber[i] = pitchAndPatch6[i][0];
+        block[6].instrument[i] = pitchAndPatch6[i][1];
     }
 
     //initStreams(0);
-    song.song_end=0; // last block
+    song.song_end=2; // last block
     song.song_loop=0; // loop back to
     //streamsFunction ptr = (streamsFunction)&Tracker::initStreams;
     //registerStreamsCallback(ptr);
@@ -316,26 +391,6 @@ int main () {
 
             g_frameNum++;
 
-             // !!HV Music test
-            if(mygame.frameCount%50 == 0)
-            {
-                notenumber = pitchAndPatch[noteIndex][0];
-
-                if( mygame.buttons.upBtn() )
-                    notenumber++;
-                if( mygame.buttons.downBtn() )
-                    notenumber--;
-
-//                setOSC(&osc1,1, patch[1].wave, patch[1].loop, patch[1].echo, patch[1].adsr,
-//                    notenumber, patch[1].vol,
-//                    patch[1].attack, patch[1].decay, patch[1].sustain, patch[1].release,
-//                    patch[1].maxbend, patch[1].bendrate,
-//                    patch[1].arpmode, patch[1].overdrive, patch[1].kick );
-                noteIndex += 4;
-                if(noteIndex>=songLen2)
-                    noteIndex = 0;
-
-            }
         }  // end if
 
 

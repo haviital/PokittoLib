@@ -2042,7 +2042,7 @@
 1542451138 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_oscfuncs.cpp
 	"Synth.h"
 
-1542259456 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_songfuncs.cpp
+1542829409 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_songfuncs.cpp
 	"PokittoDisk.h"
 	"Synth.h"
 	"Tracker.h"
@@ -7729,7 +7729,7 @@
 
 1541963234 c:\git\pokittolib2\examples\pokittogp\menu.h
 
-1542668589 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
+1542835525 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"

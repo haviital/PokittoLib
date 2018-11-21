@@ -251,11 +251,11 @@ void readChunkFromSD(uint8_t* buffer) {
         fileReadBytes(buffer, CHUNKSIZE);
     }
 }
+#endif
 
 void registerStreamsCallback(streamsFunction ptr) {
     streamCallbackPtr = ptr;
 }
 
-#endif
 #endif // POK_ENABLE_SOUND
 
