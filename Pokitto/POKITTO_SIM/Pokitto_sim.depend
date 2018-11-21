@@ -619,7 +619,7 @@
 1526157759 c:\git\pokittolib2\pokitto\pokitto_core\pokittofonts.h
 	"Pokitto_settings.h"
 
-1542451139 c:\git\pokittolib2\pokitto\pokitto_settings.h
+1542605351 c:\git\pokittolib2\pokitto\pokitto_settings.h
 	"My_settings.h"
 
 1509483430 c:\git\pokittolib2\pokitto\pokitto_libs\micropython\my_settings.h
@@ -1241,7 +1241,7 @@
 	"HWLCD.h"
 	"SimLCD.h"
 
-1542451140 source:c:\git\pokittolib2\pokitto\pokitto_core\pokittosound.cpp
+1542605353 source:c:\git\pokittolib2\pokitto\pokitto_core\pokittosound.cpp
 	"PokittoSound.h"
 	"Pokitto_settings.h"
 	"PokittoCore.h"
@@ -1327,7 +1327,7 @@
 	"Synth.h"
 	"Pokitto_settings.h"
 
-1542451138 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_mixfuncs.cpp
+1542605351 source:c:\git\pokittolib2\pokitto\pokitto_libs\synth\synth_mixfuncs.cpp
 	"PokittoGlobs.h"
 	"Synth.h"
 
@@ -1394,7 +1394,7 @@
 	"PokittoSimulator.h"
 	<algorithm>
 
-1542322223 source:c:\git\pokittolib2\pokitto\pokitto_sim\simsound.cpp
+1542605351 source:c:\git\pokittolib2\pokitto\pokitto_sim\simsound.cpp
 	"SimSound.h"
 	"PokittoSimulator.h"
 	"PokittoGlobs.h"
@@ -5063,7 +5063,7 @@
 
 1541963234 c:\git\pokittolib2\examples\pokittogp\menu.h
 
-1542555349 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
+1542662693 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"

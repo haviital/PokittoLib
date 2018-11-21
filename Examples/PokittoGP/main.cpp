@@ -75,11 +75,7 @@ mycookie highscore;
 int main () {
 
     // Initialize variables.
-    bool prevCollided = false;
-    bool isManualRotation = true;
     bool isStartup = true;
-    //bool isSetupMenuActive = false;
-    int32_t lastSetupListPos = 1;
     CMenu menu;
 
     // Load cookie
@@ -197,36 +193,37 @@ int main () {
     patch[p1].overdrive = 1;
     patch[p1].kick = 0;
 
+    // q2w3er5t6y7ui9o0p
+    // 01234567891123456
     const uint8_t pitchAndPatch[][2] =
     {
-        // working notes!
-        {55, 1},{255, 0},{255, 0},{255, 0},
-        {56, 1},{255, 0},{255, 0},{255, 0},
-        {57, 1},{255, 0},{255, 0},{255, 0},
-        {58, 1},{255, 0},{255, 0},{255, 0},
+        // vivaldi
         {59, 1},{255, 0},{255, 0},{255, 0},
-        {60, 1},{255, 0},{255, 0},{255, 0},
-        {61, 1},{255, 0},{255, 0},{255, 0},
-        {62, 1},{255, 0},{255, 0},{255, 0},
+        {54, 1},{255, 0},
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {54, 1},{255, 0},
+        {59, 1},{255, 0},
+        {54, 1},{255, 0},
+        {51, 1},{255, 0},
+        {54, 1},{255, 0},
         {63, 1},{255, 0},{255, 0},{255, 0},
-        {64, 1},{255, 0},{255, 0},{255, 0},
 
-        {65, 1},{255, 0},{255, 0},{255, 0},
-        {66, 1},{255, 0},{255, 0},{255, 0},
-        {67, 1},{255, 0},{255, 0},{255, 0},
-        {68, 1},{255, 0},{255, 0},{255, 0},
-        {69, 1},{255, 0},{255, 0},{255, 0},
-        {70, 1},{255, 0},{255, 0},{255, 0},
-        {71, 1},{255, 0},{255, 0},{255, 0},
-        {72, 1},{255, 0},{255, 0},{255, 0},
-        {73, 1},{255, 0},{255, 0},{255, 0},
-        {74, 1},{255, 0},{255, 0},{255, 0},
-
+        // vivaldi
+        // ryryryu9
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {54, 1},{255, 0},
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {54, 1},{255, 0},
+        {59, 1},{255, 0},
+        {54, 1},{255, 0},
+        {51, 1},{255, 0},
+        {54, 1},{255, 0},
+        {63, 1},{255, 0},{255, 0},{255, 0},
 
     };
 
 
-    const int32_t channel = 0;
+    //const int32_t channel = 0;
     uint8_t songLen2 = sizeof(pitchAndPatch) / sizeof(pitchAndPatch[0]);
     for(int32_t i=0; i<songLen2;i++)
     {
@@ -252,9 +249,6 @@ int main () {
         if (mygame.update()) {
 
             fix16_t fxCamAngle = g_playerShip.m_fxAngle - (fix16_pi>>1);
-
-            fix16_t fxCos = fix16_cos(fxCamAngle);
-            fix16_t fxSin = fix16_sin(fxCamAngle);
 
             // Draw sky
             fix16_t fxAnglePositive =  ((fxCamAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
@@ -346,6 +340,8 @@ int main () {
 
 
     }  // end while
+
+    return 0;
 }
 
 
