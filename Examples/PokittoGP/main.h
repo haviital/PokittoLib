@@ -108,6 +108,7 @@ extern CShip* g_ships[];
 //
 uint8_t GetTileIndexCommon(int32_t posX, int32_t posY);
 void ResetGame(bool isRace_);
+void SetupMusic(int32_t songNumber);
 
 //
 void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor);

@@ -16,7 +16,6 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
 bool Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 void InitMusicPlayer();
-void SetupMusic(int32_t songNumber);
 
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
@@ -124,8 +123,9 @@ int main () {
 
     // Initialize the music player
     InitMusicPlayer();
+    snd.ampEnable(1);
 
-    // Play the startup song (0).
+    // Startup song.
     SetupMusic(0);
 
     uint32_t noteIndex = 0;
@@ -232,7 +232,7 @@ void InitMusicPlayer()
     makeSampleInstruments();
 
     // Song end block.
-    song.song_end=2;
+    song.song_end=0;
 
     // Loop back to block.
     song.song_loop=0;
@@ -256,7 +256,7 @@ void InitMusicPlayer()
     patch[p1].maxbend = 0;
     patch[p1].bendrate = 0;
     patch[p1].arpmode = 2;
-    patch[p1].overdrive = 1;
+    patch[p1].overdrive = 0;
     patch[p1].kick = 0;
 
     // Instrument 2:  silence, used for pauses.
@@ -281,14 +281,26 @@ void InitMusicPlayer()
 
 
     // This starts the music
-    snd.ampEnable(1);
-    playing = true;
+    //snd.ampEnable(1);
+    //playing = true;
 
 }
 
 void SetupMusic(int32_t songNumber)
 {
     // *** Songs
+
+    playing = false; // stop playing during the settings are changed
+
+    // Clear any previous data.
+    emptyBlocks();
+    setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+    setOSC(&osc2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+    setOSC(&osc3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+
+    // Reset song.
+    emptySong();
+
 
     // Fanfare 1
     const uint8_t Fanfare1pitchAndPatch[][2] =
@@ -335,8 +347,8 @@ void SetupMusic(int32_t songNumber)
         {52+MUSIC_STEP, 1},{255, 0},
         {50+MUSIC_STEP, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
 
-        {255, 2}, // pause
-        {255, 0}, {255, 0}, {255, 0},{255, 0}, {255, 0},
+        {255, 2},  // pause
+        {255, 0}, {255, 0}, {255, 0},{255, 0}, {255, 0},{255, 0}, {255, 0},
 
         {48+MUSIC_STEP, 1},{255, 0},
         {48+MUSIC_STEP, 1},{255, 0},
@@ -347,8 +359,10 @@ void SetupMusic(int32_t songNumber)
         {51+MUSIC_STEP, 1},{255, 0},
         {50+MUSIC_STEP, 1},{255, 0},
         {48+MUSIC_STEP, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
+
         {255, 2}, // pause
-        {255, 0}, {255, 0}, {255, 0},{{255, 0}, {255, 0},
+        {255, 0}, {255, 0}, {255, 0}, {255, 0}, {255, 0},
+        {255, 0}, {255, 0},
 
         {50, 1},{255, 0},
         {50, 1},{255, 0},
@@ -361,7 +375,7 @@ void SetupMusic(int32_t songNumber)
         {50, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
 
         {255, 2},  // pause
-        {255, 0}, {255, 0}, {255, 0},{{255, 0}, {255, 0},
+        {255, 0}, {255, 0}, {255, 0},{255, 0}, {255, 0},{255, 0}, {255, 0},
 
         {48, 1},{255, 0},
         {48, 1},{255, 0},
@@ -382,7 +396,7 @@ void SetupMusic(int32_t songNumber)
     {
         pitchAndPatchPtr = (const uint8_t*)StartupMusicPitchAndPatch;
         songLen = sizeof(StartupMusicPitchAndPatch) / sizeof(StartupMusicPitchAndPatch[0]);
-        song.song_end=0; // Song end block.
+        song.song_end=1; // Song end block.
         song.song_loop=0; // Loop back to block.
     }
     else if(songNumber==1)
@@ -398,21 +412,20 @@ void SetupMusic(int32_t songNumber)
         songLen = sizeof(Fanfare2pitchAndPatch) / sizeof(Fanfare2pitchAndPatch[0]);
          song.song_end=0; // Song end block.
         song.song_loop=-1; // Loop back to block.
-   }
+    }
 
     // Store Fanfare 1 to the block 0.
-    for(int32_t i=0; i<PATTERNLENGTH;i++)
+    int32_t blockNum = 0;
+    for(int32_t i=0, ii=0; i<songLen;i++,ii++)
     {
-        if(i<songLen)
+        if(ii>=PATTERNLENGTH)
         {
-            block[0].notenumber[i] = *(pitchAndPatchPtr+(i*2));
-            block[0].instrument[i] = *(pitchAndPatchPtr+(i*2)+1);
+            blockNum += 3;
+            ii = 0;
         }
-        else
-        {
-            block[0].notenumber[i] = 255;
-            block[0].instrument[i] = 0;
-        }
+
+        block[blockNum].notenumber[ii] = *(pitchAndPatchPtr+(i*2));
+        block[blockNum].instrument[ii] = *(pitchAndPatchPtr+(i*2)+1);
     }
 
     // This starts the music

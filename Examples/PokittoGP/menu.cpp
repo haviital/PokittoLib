@@ -18,9 +18,9 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
     if(m_isOpen || mygame.buttons.pressed(BTN_C) || (requestedMenuMode != enumNoMenu) )
     {
-        // Disable sound
-        //!!!HV snd.ampEnable(0);
-
+        // Stop the sound if the menu is opened and no music is played.
+        if(!m_isOpen && !playing )
+            setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
         //
         switch( m_mode )
         {
@@ -29,6 +29,10 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Time trial", "Race", "Pilots", NULL);
                 if( ! m_isOpen )
                 {
+                    //
+                    playing = false;
+                    setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+
                     if(m_cursorPos == 0)
                     {
                         // time trial
@@ -131,6 +135,10 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Exit trial", NULL, NULL);
                 if( ! m_isOpen )
                 {
+                    //
+                    playing = false;
+                    setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+
                     // if "Restart" selected, go to main menu
                     if(m_cursorPos == 0)
                         ResetGame(isRace_);
@@ -154,7 +162,11 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Exit race", NULL, NULL);
                 if( ! m_isOpen )
                 {
-                    // if "Restart" selected, go to main menu
+                    //
+                    playing = false;
+                    setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+
+                     // if "Restart" selected, go to main menu
                     if(m_cursorPos == 0)
                         ResetGame(isRace_);
 

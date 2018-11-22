@@ -86,6 +86,9 @@ void CPlayerShip::Update()
     case enumOverHalfWayPoint:
         if( isOnStartingGrid )
         {
+            // Startup song.
+            SetupMusic(2);
+
             // Finished!
             m_final_lap_time_ms = mygame.getTime() - m_start_ms;
 
@@ -172,8 +175,8 @@ void CPlayerShip::Update()
     if(fxVelOld != m_fxVel || prevCollided != m_isCollided )
     {
         m_tonefreq = fix16_to_int(abs(m_fxVel*5));
-        //!!!HV  if(m_tonefreq>50) m_tonefreq = 50;
-            //!!!HV snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+        if(m_tonefreq>50) m_tonefreq = 50;
+            snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
     }
 
     // Update camera pos
@@ -234,7 +237,7 @@ void CPlayerShip::Reset()
     m_current_lap_time_ms = 0;
     m_requestedMenuMode = CMenu::enumNoMenu;
     //!!!HV snd.ampEnable(1);
-    //!!!HV snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+    snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
  }
 
 // Handle keys
