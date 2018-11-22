@@ -15,6 +15,8 @@ void InitGameObjectsForTrack1(bool isRace);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
 bool Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
+void InitMusicPlayer();
+void SetupMusic(int32_t songNumber);
 
 const int32_t KRotCenterX = 0;
 const int32_t KRotCenterY = -44;
@@ -120,201 +122,12 @@ int main () {
         current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
     }
 
-    //!!HV
-    uint32_t tempo = 45;
-    samplespertick = (float)((60.0f/(float)tempo)*POK_AUD_FREQ)/16;
-    emptySong();
-    emptyBlocks();
-    initStreams(0);
-    setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-    setOSC(&osc2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-    setOSC(&osc3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-    track1on = true;
-    track2on = false;
-    track3on = false;
-    makeSampleInstruments();
+    // Initialize the music player
+    InitMusicPlayer();
 
-    // Instruments
+    // Play the startup song (0).
+    SetupMusic(0);
 
-    int32_t p1 = 0;
-    patch[p1].wave = WSQUARE;
-    patch[p1].on = 1;
-    patch[p1].vol = 150;
-    patch[p1].loop = 1;
-    patch[p1].echo = 0;
-
-    patch[p1].adsr = 0;
-    patch[p1].attack = 0;
-    patch[p1].decay = 102;
-    patch[p1].sustain = 62;
-    patch[p1].release = 23;
-
-    patch[p1].maxbend = 0;
-    patch[p1].bendrate = 0;
-    patch[p1].arpmode = 1;
-    patch[p1].overdrive = 1;
-    patch[p1].kick = 0;
-
-    p1 = 1;
-    patch[p1].wave = WSQUARE;
-    patch[p1].on = 1;
-    patch[p1].vol = 150;
-    patch[p1].loop = 0;
-    patch[p1].echo = 0;
-
-    patch[p1].adsr = 0;
-    patch[p1].attack = 0;
-    patch[p1].decay = 102;
-    patch[p1].sustain = 62;
-    patch[p1].release = 23;
-
-    patch[p1].maxbend = 0;
-    patch[p1].bendrate = 0;
-    patch[p1].arpmode = 2;
-    patch[p1].overdrive = 1;
-    patch[p1].kick = 0;
-
-    p1 = 0;
-    patch[p1].wave = WSAW;
-    patch[p1].on = 1;
-    patch[p1].vol = 200;
-    patch[p1].loop = 0;
-    patch[p1].echo = 0;
-
-    patch[p1].adsr = 0;
-    patch[p1].attack = 0;
-    patch[p1].decay = 0;
-    patch[p1].sustain = 0;
-    patch[p1].release = 0;
-
-    patch[p1].maxbend = 0;
-    patch[p1].bendrate = 0;
-    patch[p1].arpmode = 1;
-    patch[p1].overdrive = 0;
-    patch[p1].kick = 0;
-
-    p1 = 2;
-    patch[p1].wave = WOFF;
-    patch[p1].on = 1;
-    patch[p1].vol = 0;
-    patch[p1].loop = 0;
-    patch[p1].echo = 0;
-
-    patch[p1].adsr = 0;
-    patch[p1].attack = 0;
-    patch[p1].decay = 0;
-    patch[p1].sustain = 0;
-    patch[p1].release = 0;
-
-    patch[p1].maxbend = 0;
-    patch[p1].bendrate = 0;
-    patch[p1].arpmode = 0;
-    patch[p1].overdrive = 0;
-    patch[p1].kick = 0;
-
-
-    // q2w3er5t6y7ui9o0p
-    // 01234567891123456
-    const uint8_t pitchAndPatch0[][2] =
-    {
-        // yuio-oopo- => 9-,11-,12-,13--,13,13,15-,13-
-        {59, 1},{255, 0},
-        {61, 1},{255, 0},
-        {62, 1},{255, 0},
-        {63, 1},{255, 0},{255, 0},{255, 0},
-        {65, 1},{255, 0},
-        {63, 1},{255, 0},{255, 0},{255, 0},
-        {255, 2}
-    };
-    const uint8_t pitchAndPatch3[][2] =
-    {
-        // vivaldi
-        // ry-ry-ry-u-9- => 5,9-,5,9-,5,9-,11-,13-
-        {55, 1},{255, 0},
-        {59, 1},{255, 0},{255, 0},{255, 0},
-        {55, 1},{255, 0},
-        {59, 1},{255, 0},{255, 0},{255, 0},
-        {55, 1},{255, 0},
-        {59, 1},{255, 0},{255, 0},{255, 0},
-        {61, 1},{255, 0},{255, 0},{255, 0},
-        {63, 1},{255, 0},{255, 0},{255, 0},
-        {255, 2}
-
-    };
-
-#if 0
-    const uint8_t pitchAndPatch6[][2] =
-    {
-        // y-y-ry-i-i-uy- => 5,9-,5,9-,5,9-,11-,13-
-        {55, 1},{255, 0},
-        {59, 1},{255, 0},{255, 0},{255, 0},
-        {55, 1},{255, 0},
-        {59, 1},{255, 0},{255, 0},{255, 0},
-        {55, 1},{255, 0},
-        {59, 1},{255, 0},{255, 0},{255, 0},
-        {61, 1},{255, 0},{255, 0},{255, 0},
-        {63, 1},{255, 0},{255, 0},{255, 0},
-        {255, 2}
-
-    };
-#endif
-    const uint8_t pitchAndPatch6[][2] =
-    {
-        // yyuyiuiuy =>  2-askelta alempaa
-        {50, 1},{255, 0},
-        {50, 1},{255, 0},
-        {52, 1},{255, 0},
-        {50, 1},{255, 0},
-        {53, 1},{255, 0},
-        {52, 1},{255, 0},
-        {53, 1},{255, 0},
-        {52, 1},{255, 0},
-        {50, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
-
-        {255, 2}, {255, 2}, {255, 2}, {255, 2},{255, 2}, {255, 2},
-
-        {48, 1},{255, 0},
-        {48, 1},{255, 0},
-        {50, 1},{255, 0},
-        {48, 1},{255, 0},
-        {51, 1},{255, 0},
-        {50, 1},{255, 0},
-        {51, 1},{255, 0},
-        {50, 1},{255, 0},
-        {48, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
-        {255, 2}
-
-    };
-
-
-    uint8_t songLen2 = sizeof(pitchAndPatch0) / sizeof(pitchAndPatch0[0]);
-    for(int32_t i=0; i<songLen2;i++)
-    {
-        block[0].notenumber[i] = pitchAndPatch0[i][0];
-        block[0].instrument[i] = pitchAndPatch0[i][1];
-    }
-    songLen2 = sizeof(pitchAndPatch3) / sizeof(pitchAndPatch3[0]);
-    for(int32_t i=0; i<songLen2;i++)
-    {
-        block[3].notenumber[i] = pitchAndPatch3[i][0];
-        block[3].instrument[i] = pitchAndPatch3[i][1];
-    }
-    songLen2 = sizeof(pitchAndPatch6) / sizeof(pitchAndPatch6[0]);
-    for(int32_t i=0; i<songLen2;i++)
-    {
-        block[6].notenumber[i] = pitchAndPatch6[i][0];
-        block[6].instrument[i] = pitchAndPatch6[i][1];
-    }
-
-    //initStreams(0);
-    song.song_end=2; // last block
-    song.song_loop=0; // loop back to
-    //streamsFunction ptr = (streamsFunction)&Tracker::initStreams;
-    //registerStreamsCallback(ptr);
-
-    playing=true;
-
-    snd.ampEnable(1);
     uint32_t noteIndex = 0;
     int notenumber = 50;
 
@@ -399,6 +212,214 @@ int main () {
     return 0;
 }
 
+
+void InitMusicPlayer()
+{
+    // Set tempo
+    uint32_t tempo = 45;
+    samplespertick = (float)((60.0f/(float)tempo)*POK_AUD_FREQ)/16;
+
+    // Reset all
+    emptySong();
+    emptyBlocks();
+    initStreams(0);
+    setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+    setOSC(&osc2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+    setOSC(&osc3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+    track1on = true;  // Only one simultaneous sound
+    track2on = false;
+    track3on = false;
+    makeSampleInstruments();
+
+    // Song end block.
+    song.song_end=2;
+
+    // Loop back to block.
+    song.song_loop=0;
+
+    // Setup instruments
+
+    // Instrument 1:  keyboard
+    int32_t p1 = 1;
+    patch[p1].wave = WSQUARE;
+    patch[p1].on = 1;
+    patch[p1].vol = 150;
+    patch[p1].loop = 0;
+    patch[p1].echo = 0;
+
+    patch[p1].adsr = 0;
+    patch[p1].attack = 0;
+    patch[p1].decay = 102;
+    patch[p1].sustain = 62;
+    patch[p1].release = 23;
+
+    patch[p1].maxbend = 0;
+    patch[p1].bendrate = 0;
+    patch[p1].arpmode = 2;
+    patch[p1].overdrive = 1;
+    patch[p1].kick = 0;
+
+    // Instrument 2:  silence, used for pauses.
+    p1 = 2;
+    patch[p1].wave = WOFF;
+    patch[p1].on = 1;
+    patch[p1].vol = 0;
+    patch[p1].loop = 0;
+    patch[p1].echo = 0;
+
+    patch[p1].adsr = 0;
+    patch[p1].attack = 0;
+    patch[p1].decay = 0;
+    patch[p1].sustain = 0;
+    patch[p1].release = 0;
+
+    patch[p1].maxbend = 0;
+    patch[p1].bendrate = 0;
+    patch[p1].arpmode = 0;
+    patch[p1].overdrive = 0;
+    patch[p1].kick = 0;
+
+
+    // This starts the music
+    snd.ampEnable(1);
+    playing = true;
+
+}
+
+void SetupMusic(int32_t songNumber)
+{
+    // *** Songs
+
+    // Fanfare 1
+    const uint8_t Fanfare1pitchAndPatch[][2] =
+    {
+        // yuio-oopo- => 9-,11-,12-,13--,13,13,15-,13-
+        {59, 1},{255, 0},
+        {61, 1},{255, 0},
+        {62, 1},{255, 0},
+        {63, 1},{255, 0},{255, 0},{255, 0},
+        {65, 1},{255, 0},
+        {63, 1},{255, 0},{255, 0},{255, 0},
+        {255, 2}
+    };
+
+    // Fanfare 2
+    const uint8_t Fanfare2pitchAndPatch[][2] =
+    {
+        // ry-ry-ry-u-9- => 5,9-,5,9-,5,9-,11-,13-
+        {55, 1},{255, 0},
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {55, 1},{255, 0},
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {55, 1},{255, 0},
+        {59, 1},{255, 0},{255, 0},{255, 0},
+        {61, 1},{255, 0},{255, 0},{255, 0},
+        {63, 1},{255, 0},{255, 0},{255, 0},
+        {255, 2}
+
+    };
+
+    // Startup music.
+    #define MUSIC_STEP 5
+    const uint8_t StartupMusicPitchAndPatch[][2] =
+    {
+        // yyuyiuiuy =>  2-askelta alempaa
+
+        {50+MUSIC_STEP, 1},{255, 0},
+        {50+MUSIC_STEP, 1},{255, 0},
+        {52+MUSIC_STEP, 1},{255, 0},
+        {50+MUSIC_STEP, 1},{255, 0},
+        {53+MUSIC_STEP, 1},{255, 0},
+        {52+MUSIC_STEP, 1},{255, 0},
+        {53+MUSIC_STEP, 1},{255, 0},
+        {52+MUSIC_STEP, 1},{255, 0},
+        {50+MUSIC_STEP, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
+
+        {255, 2}, // pause
+        {255, 0}, {255, 0}, {255, 0},{255, 0}, {255, 0},
+
+        {48+MUSIC_STEP, 1},{255, 0},
+        {48+MUSIC_STEP, 1},{255, 0},
+        {50+MUSIC_STEP, 1},{255, 0},
+        {48+MUSIC_STEP, 1},{255, 0},
+        {51+MUSIC_STEP, 1},{255, 0},
+        {50+MUSIC_STEP, 1},{255, 0},
+        {51+MUSIC_STEP, 1},{255, 0},
+        {50+MUSIC_STEP, 1},{255, 0},
+        {48+MUSIC_STEP, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
+        {255, 2}, // pause
+        {255, 0}, {255, 0}, {255, 0},{{255, 0}, {255, 0},
+
+        {50, 1},{255, 0},
+        {50, 1},{255, 0},
+        {52, 1},{255, 0},
+        {50, 1},{255, 0},
+        {53, 1},{255, 0},
+        {52, 1},{255, 0},
+        {53, 1},{255, 0},
+        {52, 1},{255, 0},
+        {50, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
+
+        {255, 2},  // pause
+        {255, 0}, {255, 0}, {255, 0},{{255, 0}, {255, 0},
+
+        {48, 1},{255, 0},
+        {48, 1},{255, 0},
+        {50, 1},{255, 0},
+        {48, 1},{255, 0},
+        {51, 1},{255, 0},
+        {50, 1},{255, 0},
+        {51, 1},{255, 0},
+        {50, 1},{255, 0},
+        {48, 1},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},{255, 0},
+        {255, 2},  // pause
+
+    };
+
+    const uint8_t* pitchAndPatchPtr = NULL;
+    uint8_t songLen = 0;
+    if(songNumber==0)
+    {
+        pitchAndPatchPtr = (const uint8_t*)StartupMusicPitchAndPatch;
+        songLen = sizeof(StartupMusicPitchAndPatch) / sizeof(StartupMusicPitchAndPatch[0]);
+        song.song_end=0; // Song end block.
+        song.song_loop=0; // Loop back to block.
+    }
+    else if(songNumber==1)
+    {
+        pitchAndPatchPtr = (const uint8_t*)Fanfare1pitchAndPatch;
+        songLen = sizeof(Fanfare1pitchAndPatch) / sizeof(Fanfare1pitchAndPatch[0]);
+        song.song_end=0; // Song end block.
+        song.song_loop=-1; // Loop back to block.
+    }
+    else
+    {
+        pitchAndPatchPtr = (const uint8_t*)Fanfare2pitchAndPatch;
+        songLen = sizeof(Fanfare2pitchAndPatch) / sizeof(Fanfare2pitchAndPatch[0]);
+         song.song_end=0; // Song end block.
+        song.song_loop=-1; // Loop back to block.
+   }
+
+    // Store Fanfare 1 to the block 0.
+    for(int32_t i=0; i<PATTERNLENGTH;i++)
+    {
+        if(i<songLen)
+        {
+            block[0].notenumber[i] = *(pitchAndPatchPtr+(i*2));
+            block[0].instrument[i] = *(pitchAndPatchPtr+(i*2)+1);
+        }
+        else
+        {
+            block[0].notenumber[i] = 255;
+            block[0].instrument[i] = 0;
+        }
+    }
+
+    // This starts the music
+    snd.ampEnable(1);
+    playing = true;
+
+}
 
 void ResetGame(bool isRace_)
 {
