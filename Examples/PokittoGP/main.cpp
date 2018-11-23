@@ -256,7 +256,7 @@ void InitMusicPlayer()
     patch[p1].maxbend = 0;
     patch[p1].bendrate = 0;
     patch[p1].arpmode = 2;
-    patch[p1].overdrive = 0;
+    patch[p1].overdrive = 1;
     patch[p1].kick = 0;
 
     // Instrument 2:  silence, used for pauses.

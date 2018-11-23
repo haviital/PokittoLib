@@ -7729,7 +7729,7 @@
 
 1541963234 c:\git\pokittolib2\examples\pokittogp\menu.h
 
-1542928375 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
+1542960435 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -8036,7 +8036,7 @@
 1541961253 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\pilots.h
 	<stdint.h>
 
-1542928570 source:c:\git\pokittolib2\examples\pokittogp\playership.cpp
+1542960091 source:c:\git\pokittolib2\examples\pokittogp\playership.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"

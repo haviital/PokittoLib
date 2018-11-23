@@ -4,10 +4,10 @@
 #include "playerShip.h"
 
 const fix16_t fxInitialRotVel = fix16_pi / 1000;
-const uint8_t amplitude = 255;//127;
+const uint8_t amplitude = 170;
 const int8_t wavetype = 1;
 const int8_t wavetypeCrash = 4;
-const int8_t arpmode=1;
+const int8_t arpmode=0;
 const fix16_t fxRotAccFactor = fix16_from_float(1.2);
 
 CPlayerShip::CPlayerShip()
@@ -176,7 +176,8 @@ void CPlayerShip::Update()
     {
         m_tonefreq = fix16_to_int(abs(m_fxVel*5));
         if(m_tonefreq>50) m_tonefreq = 50;
-            snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+            //snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+            setOSC(&osc1,1,wavetype,1,0,0,m_tonefreq,amplitude,0,0,0,0,0,0,arpmode,1,0);
     }
 
     // Update camera pos
@@ -237,7 +238,8 @@ void CPlayerShip::Reset()
     m_current_lap_time_ms = 0;
     m_requestedMenuMode = CMenu::enumNoMenu;
     //!!!HV snd.ampEnable(1);
-    snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+    //snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+    setOSC(&osc1,1,wavetype,1,0,0,m_tonefreq,amplitude,0,0,0,0,0,0,arpmode,1,0);
  }
 
 // Handle keys
