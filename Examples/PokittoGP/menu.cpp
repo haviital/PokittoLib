@@ -1,19 +1,22 @@
 #include "Pokitto.h"
 #include "main.h"
 #include "menu.h"
-#include "gfx_hdr/pilots.h"
+#include "gfx_hdr/image_pilots1.h"
+#include "gfx_hdr/image_pilots2.h"
+#include "gfx_hdr/image_titlescreen.h"
 
 CMenu::CMenu() :
     m_isOpen( false ),
     m_mode(enumNoMenu),
     m_cursorPos(0),
-    m_pressedAkeyDownOutsideMenu(false)
+    m_pressedAkeyDownOutsideMenu(false),
+    m_pilotPicturePage(0)
 {
 }
 
 void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMenuMode)
 {
-    if(requestedMenuMode != enumNoMenu )
+     if(requestedMenuMode != enumNoMenu )
         m_mode = requestedMenuMode;
 
     if(m_isOpen || mygame.buttons.pressed(BTN_C) || (requestedMenuMode != enumNoMenu) )
@@ -24,11 +27,42 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
         //
         switch( m_mode )
         {
+        case enumStartupEmptyMenu:
+            {
+                // At startup show "empty" menu until the user presses a button.
+
+                // Load palette ant the title image.
+                Pokitto::Core::display.load565Palette(image_titlescreen_pal);
+                DrawBitmapOpaque8bit(0, 0, &(image_titlescreen[2]), image_titlescreen[0], image_titlescreen[1] );
+
+                m_isOpen =  HandleGenericMenu( 0, m_cursorPos, NULL, NULL, NULL, NULL);
+                if( ! m_isOpen )
+                {
+                    playing = false;
+                    setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+
+                    // show the main menu next.
+                    m_mode = enumMainMenu;
+                    m_isOpen = true;
+
+                    // Menu closed
+                    m_cursorPos = 0;
+               }
+           }
+           break;
+
         case enumMainMenu:
             {
+                // Load palette ant the title image.
+                Pokitto::Core::display.load565Palette(image_titlescreen_pal);
+                DrawBitmapOpaque8bit(0, 0, &(image_titlescreen[2]), image_titlescreen[0], image_titlescreen[1] );
+
                 m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Time trial", "Race", "Pilots", NULL);
                 if( ! m_isOpen )
                 {
+                    // Restore the original palette.
+                    Pokitto::Core::display.load565Palette(palette_pal);
+
                     //
                     playing = false;
                     setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
@@ -97,7 +131,8 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                        // if "Exit race" selected, go to main menu
                         else if(m_cursorPos == 2)
                         {
-                            m_mode = enumMainMenu;
+                            m_mode = enumStartupEmptyMenu;
+                            SetupMusic(0);
                             m_isOpen = true;
                         }
 
@@ -119,7 +154,8 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                        // if "Exit" selected, go to main menu
                         else if(m_cursorPos == 1)
                         {
-                            m_mode = enumMainMenu;
+                            m_mode = enumStartupEmptyMenu;
+                            SetupMusic(0);
                             m_isOpen = true;
                         }
 
@@ -146,7 +182,8 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                     // if "Exit race" selected, go to main menu
                     else if(m_cursorPos == 1)
                     {
-                        m_mode = enumMainMenu;
+                        m_mode = enumStartupEmptyMenu;
+                        SetupMusic(0);
                         m_isOpen = true;
                     }
 
@@ -173,7 +210,8 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                     // if "Exit race" selected, go to main menu
                     else if(m_cursorPos == 1)
                     {
-                        m_mode = enumMainMenu;
+                        m_mode = enumStartupEmptyMenu;
+                        SetupMusic(0);
                         m_isOpen = true;
                     }
 
@@ -203,12 +241,16 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
 
     // Set window
     int32_t winX = 0;
-    int32_t winY = 16;
+    int32_t winY = 16+20;
     int32_t winW = 110;
     int32_t winH = 0;
 
     // Set window height
-    if(bestLap_ms>0) winH += 15;
+    if(bestLap_ms>0)
+    {
+        winH += 15;
+        winY -= 5;
+    }
     int32_t H = 0;
     if(item1) winH += 10;
     if(item2) winH += 10;
@@ -220,7 +262,8 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
 
     // Draw menu window background
     mygame.display.setColor(1,1);
-    mygame.display.fillRect(winX, winY, winW, winH);
+    if(item1)
+        mygame.display.fillRect(winX, winY, winW, winH);
 
 	currY += 4;  // margin
     mygame.display.setInvisibleColor(1);
@@ -243,8 +286,15 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
         mygame.display.setColor(2,1);
         //currY += 4;
         mygame.display.print(winX+4,currY,"Best: ");
+        int32_t milliseconds = bestLap_ms;
+        int32_t seconds = milliseconds / 1000;
+        milliseconds -= seconds*1000;
+        mygame.display.print(seconds,10);
+        mygame.display.print("'");
+        int32_t a10ms = milliseconds / 100;
+        mygame.display.print(a10ms,10);
         //currY -= 1;
-        DrawLapTime(bestLap_ms, winX+55, currY, fix16_from_float(1.5) );
+        //DrawLapTime(bestLap_ms, winX+55, currY, fix16_from_float(1.5) );
         currY += 15;
     }
 
@@ -346,11 +396,22 @@ bool CMenu::HandlePilotPictureMenu()
             m_pressedAkeyDownOutsideMenu = true;
     }
 
-    // Load palette
-    Pokitto::Core::display.load565Palette(pilots_pal);
+    if(m_pilotPicturePage == 0)
+    {
+        // Load palette
+        Pokitto::Core::display.load565Palette(image_pilots1_pal);
 
-    // Show picture
-    DrawBitmapOpaque8bit(0, 0, &(pilots[2]), pilots[0], pilots[1] );
+        // Show picture
+        DrawBitmapOpaque8bit(0, 0, &(image_pilots1[2]), image_pilots1[0], image_pilots1[1] );
+    }
+    else
+    {
+        // Load palette
+        Pokitto::Core::display.load565Palette(image_pilots2_pal);
+
+        // Show picture
+        DrawBitmapOpaque8bit(0, 0, &(image_pilots2[2]), image_pilots2[0], image_pilots2[1] );
+    }
 
     if(Pokitto::Core::buttons.released(BTN_A))
     {
@@ -366,6 +427,20 @@ bool CMenu::HandlePilotPictureMenu()
             m_pressedAkeyDownOutsideMenu = false;
             return true;
         }
+    }
+    else if(Pokitto::Core::buttons.released(BTN_UP) && m_pilotPicturePage == 1)
+    {
+        m_pilotPicturePage = 0;
+
+        // Do not close the menu
+        return true;
+    }
+    else if(Pokitto::Core::buttons.released(BTN_DOWN) && m_pilotPicturePage == 0)
+    {
+        m_pilotPicturePage = 1;
+
+        // Do not close the menu
+        return true;
     }
     else
     {

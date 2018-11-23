@@ -53,13 +53,26 @@ call ./genhdr.cmd image_light
 call ./genhdr.cmd image_sky
 call ./genhdr.cmd image_sky_long
 
-rem special pictures
-copy pilots.bmp output\pilots.bmp
+rem *** special pictures
+
+rem the pilots
+copy image_pilots1.bmp output\image_pilots1.bmp
 cd output
-..\bmp2pok pilots.bmp -8 -p -n
-copy pilots.c ..\..\..\gfx_hdr\pilots.h
+..\bmp2pok image_pilots1.bmp -8 -p -n
+copy image_pilots1.c ..\..\..\gfx_hdr\image_pilots1.h
+cd ..
+copy image_pilots2.bmp output\image_pilots2.bmp
+cd output
+..\bmp2pok image_pilots2.bmp -8 -p -n
+copy image_pilots2.c ..\..\..\gfx_hdr\image_pilots2.h
 cd ..
 
+rem the title screen
+copy image_titlescreen.bmp output\image_titlescreen.bmp
+cd output
+..\bmp2pok image_titlescreen.bmp -8 -p -n
+copy image_titlescreen.c ..\..\..\gfx_hdr\image_titlescreen.h
+cd ..
 
 
 

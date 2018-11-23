@@ -125,9 +125,6 @@ int main () {
     InitMusicPlayer();
     snd.ampEnable(1);
 
-    // Startup song.
-    SetupMusic(0);
-
     uint32_t noteIndex = 0;
     int notenumber = 50;
 
@@ -178,7 +175,11 @@ int main () {
             // Handle menus
             CMenu::MenuMode requestedMenuMode =  g_playerShip.m_requestedMenuMode;
             if( isStartup )
-                requestedMenuMode =  CMenu::MenuMode::enumMainMenu;
+            {
+                requestedMenuMode =  CMenu::MenuMode::enumStartupEmptyMenu;
+                SetupMusic(0);
+            }
+
             menu.HandleMenus(g_isRace, highscore.bestLap_ms, requestedMenuMode );
             g_playerShip.m_requestedMenuMode = CMenu::MenuMode::enumNoMenu;
             isStartup = false;
