@@ -482,7 +482,7 @@ bool CMenu::HandleSelectTrackMenu()
 //    }
 
     // Setup track
-    const char asciiTrackConversionTable[19] = {
+    const char asciiTrackConversionTable[20] = {
         '|',  // The left edge.
         '!',  // The right edge.
         ' ',  // None.
@@ -497,35 +497,36 @@ bool CMenu::HandleSelectTrackMenu()
         ',',  // The inner corner of the 3rd quarter.
         '%',  // The outer corner of the 2nd quarter.
         'j',  // The inner corner of the 2nd quarter.
+        '.',  // The surface.
         '#',  // The starting grid, left side.
         '*',  // The starting grid, right side.
         'X',  // The halfway mark, left side.
         'x',  // The halfway mark, right side.
     };
 
-    const char* myTrack = R"V0G0N(
+const char* myTrack = R"V0G0N(
 ....../-----------------------`.
 ......|r=====================,!.
 ......|!.....................|!.
 ......|!.....................|!.
 ......|!.....................|!.
 ......|!.....................|!.
-......|!---`.................|!.
+......|+---`.................|!.
 ......\===,!.................|!.
 /---------j!.................|!.
-|r=========%.................+x.
+|r=========%.................Xx.
 |!...........................|!.
 |!...........................|!.
 |!...........................|!.
 |!...........................|!.
 #*...........................|!.
 |!...........................|!.
-|!...........................|!`
+|!...........................|+`
 |!...........................\,!
 |!............................|!
 |!............................|!
 |!............................|!
-|!--------`...................|!
+|+--------`...................|!
 \========,!...................|!
 .........|!...................|!
 .........|!...................|!
@@ -534,7 +535,7 @@ bool CMenu::HandleSelectTrackMenu()
 .........|!...................|!
 .........|!...................|!
 .........|!...................|!
-.........|!-------------------j!
+.........|+-------------------j!
 .........\=====================%
 )V0G0N";
 
@@ -547,7 +548,10 @@ bool CMenu::HandleSelectTrackMenu()
         for(int32_t x = 0; x < mapWidth; x++)
         {
             // Create map
-            char item = myTrack[y*mapWidth + x];
+            int32_t firstNewline = 1;
+            int32_t mapWidthAndNewline = mapWidth+1;
+            int invY = mapHeight - 1 - y; // mirror map vertically
+            char item = myTrack[invY*mapWidthAndNewline + x + firstNewline];
             //assert(item!=' ');
             int32_t i=0;
             for(; i<convTableLen; i++ )
@@ -557,6 +561,20 @@ bool CMenu::HandleSelectTrackMenu()
             blockMapRAM[y*mapWidth + x] = i;
         }
     }
+
+    // Verify!
+//    for(int32_t y = 0; y < mapHeight; y++)
+//    {
+//        for(int32_t x = 0; x < mapWidth; x++)
+//        {
+//            int32_t i = y*mapWidth + x;
+//            if(*(((uint8_t*)blockMapRAM)+i) != *(((uint8_t*)blockMapROM)+i) )
+//                break;
+//        }
+//    }
+
+    // Now pont to the map in RAM.
+    blockMap = blockMapRAM;
 
     return false;
 

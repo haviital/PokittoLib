@@ -341,7 +341,7 @@
 };
 
 // Map of blocks. Defines the whole game field!
-const uint8_t blockMap[mapWidth*mapHeight] = {
+const uint8_t blockMapROM[mapWidth*mapHeight] = {
 
 // I      0     I     1     I     2     I     3     I     4     I     5     I     6     I     7    I
    14,14,14,14,14,14, 6, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,10,14, // =

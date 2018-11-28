@@ -43,6 +43,10 @@ int32_t textureMode = 1;
 
 uint8_t* blockMapRAM = NULL;
 
+// Initially, point to the map in ROM.
+uint8_t* blockMap = (uint8_t*)blockMapROM;
+
+
 // Drawing order list
 const uint32_t g_drawListMaxCount = 100;
 CObject3d* g_drawList[g_drawListMaxCount] = {0};
