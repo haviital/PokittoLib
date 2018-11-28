@@ -86,6 +86,7 @@ extern Pokitto::Core mygame;
 extern Pokitto::Sound snd;
 extern fix16_t PerspectiveScaleY[];
 extern fix16_t PerspectiveScaleX[];
+extern uint8_t* blockMapRAM;
 extern const uint8_t blockMap[];
 extern const uint8_t blockData[][8*8];
 extern const uint8_t trackTraceLine[trackTraceLineCount];

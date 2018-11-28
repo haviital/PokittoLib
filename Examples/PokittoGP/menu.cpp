@@ -5,6 +5,8 @@
 #include "gfx_hdr/image_pilots2.h"
 #include "gfx_hdr/image_titlescreen.h"
 
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+
 CMenu::CMenu() :
     m_isOpen( false ),
     m_mode(enumNoMenu),
@@ -57,7 +59,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 Pokitto::Core::display.load565Palette(image_titlescreen_pal);
                 DrawBitmapOpaque8bit(0, 0, &(image_titlescreen[2]), image_titlescreen[0], image_titlescreen[1] );
 
-                m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Time trial", "Race", "Pilots", NULL);
+                m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Time trial", "Race", "Select track", "See pilots");
                 if( ! m_isOpen )
                 {
                     // Restore the original palette.
@@ -85,6 +87,12 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                     }
                     else if(m_cursorPos == 2)
                     {
+                        // Select track
+                        m_mode = enumSelectTrackMenu;
+                        m_isOpen = true;
+                    }
+                    else if(m_cursorPos == 3)
+                    {
                         // race
                         m_mode = enumPilotPictureMenu;
                         m_isOpen = true;
@@ -95,6 +103,20 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                }
            }
            break;
+
+        case enumSelectTrackMenu:
+            {
+                m_isOpen =  HandleSelectTrackMenu();
+                if( ! m_isOpen )
+                {
+                    m_mode = enumMainMenu;
+                    m_isOpen = true;
+
+                    // Menu closed
+                    m_cursorPos = 0;
+                }
+            }
+            break;
 
         case enumPilotPictureMenu:
             {
@@ -449,6 +471,116 @@ bool CMenu::HandlePilotPictureMenu()
     }
 }
 
+//
+bool CMenu::HandleSelectTrackMenu()
+{
+    // If the menu is not yet open, make sure that the A key is pressed down *after* the menu is opened.
+//    if( mygame.buttons.aBtn() )
+//    {
+//        if(! m_isOpen  )
+//            m_pressedAkeyDownOutsideMenu = true;
+//    }
+
+    // Setup track
+    const char asciiTrackConversionTable[19] = {
+        '|',  // The left edge.
+        '!',  // The right edge.
+        ' ',  // None.
+        ' ',  // None
+        '-',  // The top edge
+        '=',  // The bottom edge
+        '/',  // The outer corner of the 4th quarter.
+        'r',  // The inner corner of the 4th quarter.
+        '\\', // The outer corner of the 1st quarter.
+        '+',  // The inner corner of the 1st quarter.
+        '`',  // The outer corner of the 3rd quarter.
+        ',',  // The inner corner of the 3rd quarter.
+        '%',  // The outer corner of the 2nd quarter.
+        'j',  // The inner corner of the 2nd quarter.
+        '#',  // The starting grid, left side.
+        '*',  // The starting grid, right side.
+        'X',  // The halfway mark, left side.
+        'x',  // The halfway mark, right side.
+    };
+
+    const char* myTrack = R"V0G0N(
+....../-----------------------`.
+......|r=====================,!.
+......|!.....................|!.
+......|!.....................|!.
+......|!.....................|!.
+......|!.....................|!.
+......|!---`.................|!.
+......\===,!.................|!.
+/---------j!.................|!.
+|r=========%.................+x.
+|!...........................|!.
+|!...........................|!.
+|!...........................|!.
+|!...........................|!.
+#*...........................|!.
+|!...........................|!.
+|!...........................|!`
+|!...........................\,!
+|!............................|!
+|!............................|!
+|!............................|!
+|!--------`...................|!
+\========,!...................|!
+.........|!...................|!
+.........|!...................|!
+.........|!...................|!
+.........|!...................|!
+.........|!...................|!
+.........|!...................|!
+.........|!...................|!
+.........|!-------------------j!
+.........\=====================%
+)V0G0N";
+
+    // Map of blocks. Defines the whole game field!
+    if( blockMapRAM == NULL )
+        blockMapRAM = new uint8_t[mapWidth*mapHeight];
+    int32_t convTableLen = sizeof(asciiTrackConversionTable);
+    for(int32_t y = 0; y < mapHeight; y++)
+    {
+        for(int32_t x = 0; x < mapWidth; x++)
+        {
+            // Create map
+            char item = myTrack[y*mapWidth + x];
+            //assert(item!=' ');
+            int32_t i=0;
+            for(; i<convTableLen; i++ )
+                if(asciiTrackConversionTable[i]==item)
+                    break;
+
+            blockMapRAM[y*mapWidth + x] = i;
+        }
+    }
+
+    return false;
+
+//    if(Pokitto::Core::buttons.released(BTN_A))
+//    {
+//        if(! m_pressedAkeyDownOutsideMenu)
+//        {
+//            // Close the menu
+//            Pokitto::Core::display.load565Palette(palette_pal);
+//            return false;
+//        }
+//        else
+//        {
+//            // Do not close the menu
+//            m_pressedAkeyDownOutsideMenu = false;
+//            return true;
+//        }
+//    }
+//    else
+//    {
+//        // Do not close the menu
+//        return true;
+//    }
+}
 
 //
 

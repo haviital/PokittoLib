@@ -11,6 +11,7 @@ public:
         enumTimeTrialFinishedMenu = 4,
         enumRaceFinishedMenu = 5,
         enumPilotPictureMenu = 6,
+        enumSelectTrackMenu = 7,
     };
 
 public:
@@ -18,6 +19,7 @@ public:
     void HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMenuMode );
     bool HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4);
     bool HandlePilotPictureMenu();
+    bool HandleSelectTrackMenu();
 
 public:
     bool m_isOpen;

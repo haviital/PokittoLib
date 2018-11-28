@@ -41,14 +41,7 @@ bool g_isRace = true;
 //
 int32_t textureMode = 1;
 
-
-/*
-struct DrawListItem
-{
-    Object3d* obj;
-    fix16_t fxDistancePot;
-};
-*/
+uint8_t* blockMapRAM = NULL;
 
 // Drawing order list
 const uint32_t g_drawListMaxCount = 100;
