@@ -7,6 +7,9 @@
 
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
+void ShowCrashScreenAndWait( const char* texLine1, const char* texLine2, const char* texLine3, const char* texLine4, const char* texLine5 );
+
+
 CMenu::CMenu() :
     m_isOpen( false ),
     m_mode(enumNoMenu),
@@ -483,29 +486,28 @@ bool CMenu::HandleSelectTrackMenu()
 
     // Setup track
     const char asciiTrackConversionTable[20] = {
-        '|',  // The left edge.
-        '!',  // The right edge.
-        ' ',  // None.
-        ' ',  // None
-        '-',  // The top edge
-        '=',  // The bottom edge
-        '/',  // The outer corner of the 4th quarter.
-        'r',  // The inner corner of the 4th quarter.
-        '\\', // The outer corner of the 1st quarter.
-        '+',  // The inner corner of the 1st quarter.
-        '`',  // The outer corner of the 3rd quarter.
-        ',',  // The inner corner of the 3rd quarter.
-        '%',  // The outer corner of the 2nd quarter.
-        'j',  // The inner corner of the 2nd quarter.
-        '.',  // The surface.
-        '#',  // The starting grid, left side.
-        '*',  // The starting grid, right side.
-        'X',  // The halfway mark, left side.
-        'x',  // The halfway mark, right side.
+        '|',  // 0: The left edge.
+        '!',  // 1: The right edge.
+        ' ',  // 2: None.
+        ' ',  // 3: None
+        '=',  // 4: The top edge
+        '-',  // 5: The bottom edge
+        '\\', // 6: The outer corner of the 1st quarter.
+        '+',  // 7: The inner corner of the 1st quarter.
+        '/',  // 8: The outer corner of the 4th quarter.
+        'r',  // 9: The inner corner of the 4th quarter.
+        '%',  // 10: The outer corner of the 2nd quarter.
+        'j',  // 11: The inner corner of the 2nd quarter.
+        '`',  // 12: The outer corner of the 3rd quarter.
+        ',',  // 13: The inner corner of the 3rd quarter.
+        '.',  // 14: The surface.
+        '#',  // 15: The starting grid, left side.
+        '*',  // 16: The starting grid, right side.
+        'X',  // 17: The halfway mark, left side.
+        'x',  // 18: The halfway mark, right side.
     };
 
-const char* myTrack = R"V0G0N(
-....../-----------------------`.
+const char* myTrack = R"V0G0N(....../-----------------------`.
 ......|r=====================,!.
 ......|!.....................|!.
 ......|!.....................|!.
@@ -539,39 +541,91 @@ const char* myTrack = R"V0G0N(
 .........\=====================%
 )V0G0N";
 
-    // Map of blocks. Defines the whole game field!
-    if( blockMapRAM == NULL )
-        blockMapRAM = new uint8_t[mapWidth*mapHeight];
-    int32_t convTableLen = sizeof(asciiTrackConversionTable);
+//    {
+//        // Map of blocks. Defines the whole game field!
+//        if( blockMapRAM == NULL )
+//            blockMapRAM = new uint8_t[mapWidth*mapHeight];
+//        int32_t convTableLen = sizeof(asciiTrackConversionTable);
+//        for(int32_t y = 0; y < mapHeight; y++)
+//        {
+//            for(int32_t x = 0; x < mapWidth; x++)
+//            {
+//                // Create map
+//                int32_t firstNewline = 1;
+//                int32_t mapWidthAndNewline = mapWidth+1;
+//                int invY = mapHeight - 1 - y; // mirror map vertically
+//                char item = myTrack[invY*mapWidthAndNewline + x + firstNewline];
+//                //assert(item!=' ');
+//                int32_t i=0;
+//                for(; i<convTableLen; i++ )
+//                    if(asciiTrackConversionTable[i]==item)
+//                        break;
+//
+//                blockMapRAM[y*mapWidth + x] = i;
+//            }
+//        }
+//    }
+
+
+    // Read from SD
+    pokInitSD(); // Call init always.
+    char* filePathAndNamePFFS = "pgptrack.txt";
+    (void)fileOpen(filePathAndNamePFFS, FILE_MODE_READONLY);
+    const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
+    char myTrack2[totalSize];
+    uint8_t blockMapRAM2[mapWidth*mapHeight];
+    uint16_t len = fileReadBytes((uint8_t*)myTrack2, totalSize);
+    char text[64];
+    //if(len!=totalSize)
+    //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "LEN!=TOTALSIZE", itoa(len, text, 10));
+
+     // Verify!
     for(int32_t y = 0; y < mapHeight; y++)
     {
         for(int32_t x = 0; x < mapWidth; x++)
         {
-            // Create map
-            int32_t firstNewline = 1;
-            int32_t mapWidthAndNewline = mapWidth+1;
-            int invY = mapHeight - 1 - y; // mirror map vertically
-            char item = myTrack[invY*mapWidthAndNewline + x + firstNewline];
-            //assert(item!=' ');
-            int32_t i=0;
-            for(; i<convTableLen; i++ )
-                if(asciiTrackConversionTable[i]==item)
-                    break;
-
-            blockMapRAM[y*mapWidth + x] = i;
+            int32_t i = y*(mapWidth+1) + x;
+            if(*(((uint8_t*)myTrack2)+i) != *(((uint8_t*)myTrack)+i) )
+            {
+                char text2[64];
+                strcpy(text2, itoa(i, text, 10));
+                strcat(text2, ":");
+                strcat(text2, itoa( *(((char*)myTrack2) + i), text, 10));
+                strcat(text2, ":");
+                strcat(text2, itoa( *(((char*)myTrack) + i), text, 10));
+                ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "MYTRACK!=MYTRACK2", text2);
+            }
         }
     }
 
-    // Verify!
-//    for(int32_t y = 0; y < mapHeight; y++)
-//    {
-//        for(int32_t x = 0; x < mapWidth; x++)
-//        {
-//            int32_t i = y*mapWidth + x;
-//            if(*(((uint8_t*)blockMapRAM)+i) != *(((uint8_t*)blockMapROM)+i) )
-//                break;
-//        }
-//    }
+   {
+        // Map of blocks. Defines the whole game field!
+        if( blockMapRAM == NULL )
+            blockMapRAM = new uint8_t[mapWidth*mapHeight];
+        int32_t convTableLen = sizeof(asciiTrackConversionTable);
+        for(int32_t y = 0; y < mapHeight; y++)
+        {
+            for(int32_t x = 0; x < mapWidth; x++)
+            {
+                // Create map
+                int invY = mapHeight - 1 - y; // mirror map vertically
+                int32_t mapWidth2 = mapWidth+1; // added newline
+                char item = myTrack2[invY*mapWidth2 + x];
+                //assert(item!=' ');
+                int32_t i=0;
+                for(; i<convTableLen; i++ )
+                    if(asciiTrackConversionTable[i]==item)
+                        break;
+
+                if(i>=convTableLen || item==' ')
+                    break; // error
+                blockMapRAM[y*mapWidth + x] = i;
+            }
+        }
+    }
+
+    fileClose(); // close any open files
+
 
     // Now pont to the map in RAM.
     blockMap = blockMapRAM;
