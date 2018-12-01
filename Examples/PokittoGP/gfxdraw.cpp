@@ -5,7 +5,7 @@
 #include "playerShip.h"
 
 //
-void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
+void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fxRotateCenterX, fix16_t fxRotateCenterY, fix16_t* perspectiveScaleXArr, fix16_t* perspectiveScaleYArr)
 {
     uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH*mygame.display.width); // 8-bit screen buffer
     fix16_t fxStepX = fix16_one;
@@ -13,17 +13,15 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle)
     const fix16_t fxSin = fix16_sin(fxAngle);
 
     // Move caused by rotation.
-    const fix16_t fxReqRotateCenterX = g_playerShip.m_fxX;
-    const fix16_t fxReqRotateCenterY = g_playerShip.m_fxY;
-    const fix16_t fxRotatedRotateCenterX = fix16_mul(fxReqRotateCenterX, fxCos) - fix16_mul(fxReqRotateCenterY, fxSin);
-    const fix16_t fxRotatedRotateCenterY = fix16_mul(fxReqRotateCenterX, fxSin) + fix16_mul(fxReqRotateCenterY, fxCos);
-    const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fxReqRotateCenterX;
-    const fix16_t fxRotatedCenterDiffY = fxRotatedRotateCenterY - fxReqRotateCenterY;
+    const fix16_t fxRotatedRotateCenterX = fix16_mul(fxRotateCenterX, fxCos) - fix16_mul(fxRotateCenterY, fxSin);
+    const fix16_t fxRotatedRotateCenterY = fix16_mul(fxRotateCenterX, fxSin) + fix16_mul(fxRotateCenterY, fxCos);
+    const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fxRotateCenterX;
+    const fix16_t fxRotatedCenterDiffY = fxRotatedRotateCenterY - fxRotateCenterY;
 
     for( uint8_t y=0; y<screenH-sceneryH ; y++ ) {
 
-        fix16_t fxZ = PerspectiveScaleY[y];
-        fix16_t fxstepXFromY = PerspectiveScaleX[y];
+        fix16_t fxZ = perspectiveScaleYArr[y];
+        fix16_t fxstepXFromY = perspectiveScaleXArr[y];
         fix16_t fxFinalY =  fxZ + fix16_from_int(tile2PosY);
 
         // *** Step for scaling

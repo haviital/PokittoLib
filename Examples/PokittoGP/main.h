@@ -113,6 +113,7 @@ void ResetGame(bool isRace_);
 void SetupMusic(int32_t songNumber);
 
 //
+void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fxRotateCenterX, fix16_t fxRotateCenterY, fix16_t* perspectiveScaleXArr, fix16_t* perspectiveScaleYArr);
 void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor);
 void DrawBitmapOpaque8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );
 void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );

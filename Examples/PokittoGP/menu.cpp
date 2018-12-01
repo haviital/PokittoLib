@@ -15,7 +15,9 @@ CMenu::CMenu() :
     m_mode(enumNoMenu),
     m_cursorPos(0),
     m_pressedAkeyDownOutsideMenu(false),
-    m_pilotPicturePage(0)
+    m_pilotPicturePage(0),
+    m_hasTrackBeenLoaded(false),
+    m_fxCamAngle(0)
 {
 }
 
@@ -112,6 +114,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 m_isOpen =  HandleSelectTrackMenu();
                 if( ! m_isOpen )
                 {
+                    m_hasTrackBeenLoaded = false;
                     m_mode = enumMainMenu;
                     m_isOpen = true;
 
@@ -477,181 +480,141 @@ bool CMenu::HandlePilotPictureMenu()
 //
 bool CMenu::HandleSelectTrackMenu()
 {
-    // If the menu is not yet open, make sure that the A key is pressed down *after* the menu is opened.
-//    if( mygame.buttons.aBtn() )
-//    {
-//        if(! m_isOpen  )
-//            m_pressedAkeyDownOutsideMenu = true;
-//    }
-
-    // Setup track
-    const char asciiTrackConversionTable[20] = {
-        '|',  // 0: The left edge.
-        '!',  // 1: The right edge.
-        ' ',  // 2: None.
-        ' ',  // 3: None
-        '=',  // 4: The top edge
-        '-',  // 5: The bottom edge
-        '\\', // 6: The outer corner of the 1st quarter.
-        '+',  // 7: The inner corner of the 1st quarter.
-        '/',  // 8: The outer corner of the 4th quarter.
-        'r',  // 9: The inner corner of the 4th quarter.
-        '%',  // 10: The outer corner of the 2nd quarter.
-        'j',  // 11: The inner corner of the 2nd quarter.
-        '`',  // 12: The outer corner of the 3rd quarter.
-        ',',  // 13: The inner corner of the 3rd quarter.
-        '.',  // 14: The surface.
-        '#',  // 15: The starting grid, left side.
-        '*',  // 16: The starting grid, right side.
-        'X',  // 17: The halfway mark, left side.
-        'x',  // 18: The halfway mark, right side.
-    };
-
-const char* myTrack = R"V0G0N(....../-----------------------`.
-......|r=====================,!.
-......|!.....................|!.
-......|!.....................|!.
-......|!.....................|!.
-......|!.....................|!.
-......|+---`.................|!.
-......\===,!.................|!.
-/---------j!.................|!.
-|r=========%.................Xx.
-|!...........................|!.
-|!...........................|!.
-|!...........................|!.
-|!...........................|!.
-#*...........................|!.
-|!...........................|!.
-|!...........................|+`
-|!...........................\,!
-|!............................|!
-|!............................|!
-|!............................|!
-|+--------`...................|!
-\========,!...................|!
-.........|!...................|!
-.........|!...................|!
-.........|!...................|!
-.........|!...................|!
-.........|!...................|!
-.........|!...................|!
-.........|!...................|!
-.........|+-------------------j!
-.........\=====================%
-)V0G0N";
-
-//    {
-//        // Map of blocks. Defines the whole game field!
-//        if( blockMapRAM == NULL )
-//            blockMapRAM = new uint8_t[mapWidth*mapHeight];
-//        int32_t convTableLen = sizeof(asciiTrackConversionTable);
-//        for(int32_t y = 0; y < mapHeight; y++)
-//        {
-//            for(int32_t x = 0; x < mapWidth; x++)
-//            {
-//                // Create map
-//                int32_t firstNewline = 1;
-//                int32_t mapWidthAndNewline = mapWidth+1;
-//                int invY = mapHeight - 1 - y; // mirror map vertically
-//                char item = myTrack[invY*mapWidthAndNewline + x + firstNewline];
-//                //assert(item!=' ');
-//                int32_t i=0;
-//                for(; i<convTableLen; i++ )
-//                    if(asciiTrackConversionTable[i]==item)
-//                        break;
-//
-//                blockMapRAM[y*mapWidth + x] = i;
-//            }
-//        }
-//    }
-
-
-    // Read from SD
-    pokInitSD(); // Call init always.
-    char* filePathAndNamePFFS = "pgptrack.txt";
-    (void)fileOpen(filePathAndNamePFFS, FILE_MODE_READONLY);
-    const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
-    char myTrack2[totalSize];
-    uint8_t blockMapRAM2[mapWidth*mapHeight];
-    uint16_t len = fileReadBytes((uint8_t*)myTrack2, totalSize);
-    char text[64];
-    //if(len!=totalSize)
-    //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "LEN!=TOTALSIZE", itoa(len, text, 10));
-
-     // Verify!
-    for(int32_t y = 0; y < mapHeight; y++)
+    if(!m_hasTrackBeenLoaded)
     {
-        for(int32_t x = 0; x < mapWidth; x++)
-        {
-            int32_t i = y*(mapWidth+1) + x;
-            if(*(((uint8_t*)myTrack2)+i) != *(((uint8_t*)myTrack)+i) )
+        // Clear screen
+        mygame.display.setColor(1,1);
+        mygame.display.fillRect(0, 0, screenW-1, screenH-1);
+        mygame.display.print(5, 10, "Loading the track...");
+
+        // Setup track
+
+        //Example
+        //........
+        //./r==,`.
+        //.|!..|!.
+        //.|!..|!.
+        //.|+--j!.
+        //.\====%.
+        //........
+
+        // Conversion between the ascii char and the block index.
+        const char asciiTrackConversionTable[20] = {
+            '|',  // 0: The left edge.
+            '!',  // 1: The right edge.
+            ' ',  // 2: None.
+            ' ',  // 3: None
+            '=',  // 4: The top edge
+            '-',  // 5: The bottom edge
+            '\\', // 6: The outer corner of the 1st quarter.
+            '+',  // 7: The inner corner of the 1st quarter.
+            '/',  // 8: The outer corner of the 4th quarter.
+            'r',  // 9: The inner corner of the 4th quarter.
+            '%',  // 10: The outer corner of the 2nd quarter.
+            'j',  // 11: The inner corner of the 2nd quarter.
+            '`',  // 12: The outer corner of the 3rd quarter.
+            ',',  // 13: The inner corner of the 3rd quarter.
+            '.',  // 14: The surface.
+            '#',  // 15: The starting grid, left side.
+            '*',  // 16: The starting grid, right side.
+            'X',  // 17: The halfway mark, left side.
+            'x',  // 18: The halfway mark, right side.
+        };
+
+        // Read from SD
+        pokInitSD(); // Call init always.
+        char* filePathAndNamePFFS = "pgptrack.txt";
+        (void)fileOpen(filePathAndNamePFFS, FILE_MODE_READONLY);
+        const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
+        char myTrack2[totalSize];
+        uint8_t blockMapRAM2[mapWidth*mapHeight];
+        uint16_t len = fileReadBytes((uint8_t*)myTrack2, totalSize);
+        char text[64];
+        //if(len!=totalSize)
+        //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "LEN!=TOTALSIZE", itoa(len, text, 10));
+
+       {
+            // Map of blocks. Defines the whole game field!
+            if( blockMapRAM == NULL )
+                blockMapRAM = new uint8_t[mapWidth*mapHeight];
+            int32_t convTableLen = sizeof(asciiTrackConversionTable);
+            for(int32_t y = 0; y < mapHeight; y++)
             {
-                char text2[64];
-                strcpy(text2, itoa(i, text, 10));
-                strcat(text2, ":");
-                strcat(text2, itoa( *(((char*)myTrack2) + i), text, 10));
-                strcat(text2, ":");
-                strcat(text2, itoa( *(((char*)myTrack) + i), text, 10));
-                ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "MYTRACK!=MYTRACK2", text2);
+                for(int32_t x = 0; x < mapWidth; x++)
+                {
+                    // Create map
+                    int invY = mapHeight - 1 - y; // mirror map vertically
+                    int32_t mapWidth2 = mapWidth+1; // added newline
+                    char item = myTrack2[invY*mapWidth2 + x];
+                    //assert(item!=' ');
+                    int32_t i=0;
+                    for(; i<convTableLen; i++ )
+                        if(asciiTrackConversionTable[i]==item)
+                            break;
+
+                    if(i>=convTableLen || item==' ')
+                        break; // error
+                    blockMapRAM[y*mapWidth + x] = i;
+                }
             }
         }
-    }
 
-   {
-        // Map of blocks. Defines the whole game field!
-        if( blockMapRAM == NULL )
-            blockMapRAM = new uint8_t[mapWidth*mapHeight];
-        int32_t convTableLen = sizeof(asciiTrackConversionTable);
-        for(int32_t y = 0; y < mapHeight; y++)
-        {
-            for(int32_t x = 0; x < mapWidth; x++)
-            {
-                // Create map
-                int invY = mapHeight - 1 - y; // mirror map vertically
-                int32_t mapWidth2 = mapWidth+1; // added newline
-                char item = myTrack2[invY*mapWidth2 + x];
-                //assert(item!=' ');
-                int32_t i=0;
-                for(; i<convTableLen; i++ )
-                    if(asciiTrackConversionTable[i]==item)
-                        break;
+        fileClose(); // close any open files
 
-                if(i>=convTableLen || item==' ')
-                    break; // error
-                blockMapRAM[y*mapWidth + x] = i;
-            }
+
+        // Now pont to the map in RAM.
+        blockMap = blockMapRAM;
+
+        // Calc perspective
+        fix16_t fxPerspectiveFactor = fix16_from_int(350*screenH);
+        for( int32_t y = 0; y<screenH; y++) {
+
+            #if 1 // 3d
+             // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
+             // y = zk*yk /z -15
+             m_perspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*1.0)));
+             m_perspectiveScaleX[y] = m_perspectiveScaleY[y];
+            #else // 2d
+             m_perspectiveScaleY[y] = fix16_from_float(y*2.0);
+             m_perspectiveScaleX[y] = fix16_from_float(100*2.0);
+            #endif
         }
+        m_fxCamAngle = 0;
+
+        m_hasTrackBeenLoaded = true;
+    }
+    else
+    {
+        // Draw track
+
+        //
+        m_fxCamAngle -= fix16_pi >> 8;
+
+        // ** Draw the road and edges and terrain.
+        fix16_t fxCamX = fix16_from_int(1500);
+        fix16_t fxCamY = fix16_from_int(-500);
+        fix16_t fxRotateCenterX = fxCamX;
+        fix16_t fxRotateCenterY = fxCamY;
+        fxRotateCenterX += fix16_from_int(-400);
+        fxRotateCenterY += fix16_from_int(1500);
+        DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), m_fxCamAngle, fxRotateCenterX, fxRotateCenterY, m_perspectiveScaleX, m_perspectiveScaleY);
     }
 
-    fileClose(); // close any open files
+    // If the view is not yet open, make sure that the A key is pressed down *after* the view is opened.
+    if( mygame.buttons.aBtn() && ! m_isOpen  )
+            m_pressedAkeyDownOutsideMenu = true;
 
+    // If A button is pressed, return to the main menu.
+    if(Pokitto::Core::buttons.released(BTN_A))
+    {
+        if(! m_pressedAkeyDownOutsideMenu)
+             return false; // Close the view
+        else
+            m_pressedAkeyDownOutsideMenu = false; // Ready to close this view on next A button press.
+    }
 
-    // Now pont to the map in RAM.
-    blockMap = blockMapRAM;
-
-    return false;
-
-//    if(Pokitto::Core::buttons.released(BTN_A))
-//    {
-//        if(! m_pressedAkeyDownOutsideMenu)
-//        {
-//            // Close the menu
-//            Pokitto::Core::display.load565Palette(palette_pal);
-//            return false;
-//        }
-//        else
-//        {
-//            // Do not close the menu
-//            m_pressedAkeyDownOutsideMenu = false;
-//            return true;
-//        }
-//    }
-//    else
-//    {
-//        // Do not close the menu
-//        return true;
-//    }
+    // Do not close the view
+    return true;
 }
 
 //

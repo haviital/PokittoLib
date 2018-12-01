@@ -12,7 +12,6 @@ Pokitto::Sound snd;
 
 // Prototypes
 void InitGameObjectsForTrack1(bool isRace);
-void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle);
 uint8_t GetTileIndex(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, int32_t getX, int32_t getY);
 bool Draw3dObects(fix16_t fxPosX, fix16_t fxPosY, fix16_t fxAngle);
 void InitMusicPlayer();
@@ -144,7 +143,9 @@ int main () {
             fix16_t fxCamX = g_playerShip.m_fxX;
             fix16_t fxCamY = g_playerShip.m_fxY;
             fxCamY += -g_playerShip.m_fxCameraBehindPlayerCurrent;
-            DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle);
+            const fix16_t fxRotateCenterX = g_playerShip.m_fxX;
+            const fix16_t fxRotateCenterY = g_playerShip.m_fxY;
+            DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle, fxRotateCenterX, fxRotateCenterY, PerspectiveScaleX, PerspectiveScaleY);
 
             // Draw 3d objects and check collisions.
             g_playerShip.m_isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxCamAngle);

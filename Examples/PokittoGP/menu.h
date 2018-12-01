@@ -27,4 +27,8 @@ public:
     int32_t m_cursorPos;
     bool m_pressedAkeyDownOutsideMenu;
     int32_t m_pilotPicturePage;
+    bool m_hasTrackBeenLoaded;
+    fix16_t m_perspectiveScaleX[screenH];
+    fix16_t m_perspectiveScaleY[screenH];
+    fix16_t m_fxCamAngle;
 };
