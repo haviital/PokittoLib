@@ -17,7 +17,9 @@ CMenu::CMenu() :
     m_pressedAkeyDownOutsideMenu(false),
     m_pilotPicturePage(0),
     m_hasTrackBeenLoaded(false),
-    m_fxCamAngle(0)
+    m_fxCamAngle(0),
+    m_fxScaleFactor(0),
+    m_isFullScreenView(false)
 {
 }
 
@@ -115,6 +117,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 if( ! m_isOpen )
                 {
                     m_hasTrackBeenLoaded = false;
+                    m_isFullScreenView = false;
                     m_mode = enumMainMenu;
                     m_isOpen = true;
 
@@ -482,10 +485,15 @@ bool CMenu::HandleSelectTrackMenu()
 {
     if(!m_hasTrackBeenLoaded)
     {
+        // The track name
+        char* filePathAndNamePFFS = "pgptrack.txt";
+
         // Clear screen
         mygame.display.setColor(1,1);
-        mygame.display.fillRect(0, 0, screenW-1, screenH-1);
-        mygame.display.print(5, 10, "Loading the track...");
+        mygame.display.fillRect(0, 0, screenW, screenH);
+        mygame.display.setColor(2,1);
+        mygame.display.print(5, 5, filePathAndNamePFFS);
+        mygame.display.print(5, 30, "Loading the track...");
 
         // Setup track
 
@@ -523,7 +531,6 @@ bool CMenu::HandleSelectTrackMenu()
 
         // Read from SD
         pokInitSD(); // Call init always.
-        char* filePathAndNamePFFS = "pgptrack.txt";
         (void)fileOpen(filePathAndNamePFFS, FILE_MODE_READONLY);
         const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
         char myTrack2[totalSize];
@@ -569,34 +576,45 @@ bool CMenu::HandleSelectTrackMenu()
         fix16_t fxPerspectiveFactor = fix16_from_int(350*screenH);
         for( int32_t y = 0; y<screenH; y++) {
 
-            #if 1 // 3d
+            #if 0 // 3d
              // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
              // y = zk*yk /z -15
              m_perspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*1.0)));
              m_perspectiveScaleX[y] = m_perspectiveScaleY[y];
             #else // 2d
-             m_perspectiveScaleY[y] = fix16_from_float(y*2.0);
-             m_perspectiveScaleX[y] = fix16_from_float(100*2.0);
+             m_perspectiveScaleY[y] = fix16_from_float(y*40.0);
+             m_perspectiveScaleX[y] = fix16_from_float(100*40.0);
             #endif
         }
         m_fxCamAngle = 0;
+        m_fxScaleFactor = fix16_from_float(1);
 
         m_hasTrackBeenLoaded = true;
+        m_isFullScreenView = true;
     }
     else
     {
         // Draw track
 
-        //
-        m_fxCamAngle -= fix16_pi >> 8;
+        // Rotate
+        // m_fxCamAngle -= fix16_pi >> 8;
+
+        // Zoom
+        m_fxScaleFactor += fix16_from_float(0.2);
+        if(m_fxScaleFactor>fix16_from_float(30))
+            m_fxScaleFactor = fix16_from_float(30);
+        for( int32_t y = 0; y<screenH; y++) {
+            m_perspectiveScaleY[y] = y * m_fxScaleFactor;
+            m_perspectiveScaleX[y] = 100 * m_fxScaleFactor;
+        }
 
         // ** Draw the road and edges and terrain.
-        fix16_t fxCamX = fix16_from_int(1500);
-        fix16_t fxCamY = fix16_from_int(-500);
+        fix16_t fxCamX = fix16_from_int(1300);
+        fix16_t fxCamY = fix16_from_int(1200) - (m_fxScaleFactor*40);
         fix16_t fxRotateCenterX = fxCamX;
         fix16_t fxRotateCenterY = fxCamY;
-        fxRotateCenterX += fix16_from_int(-400);
-        fxRotateCenterY += fix16_from_int(1500);
+        //fxRotateCenterX += fix16_from_int(-400);
+        //fxRotateCenterY += fix16_from_int(1500);
         DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), m_fxCamAngle, fxRotateCenterX, fxRotateCenterY, m_perspectiveScaleX, m_perspectiveScaleY);
     }
 

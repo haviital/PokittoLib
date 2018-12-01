@@ -129,35 +129,41 @@ int main () {
 
         if (mygame.update()) {
 
-            fix16_t fxCamAngle = g_playerShip.m_fxAngle - (fix16_pi>>1);
+            // Disable drawing if a full screen menu it in use.
+            if(!menu.m_isOpen || !menu.m_isFullScreenView )
+            {
+                fix16_t fxCamAngle = g_playerShip.m_fxAngle - (fix16_pi>>1);
 
-            // Draw sky
-            fix16_t fxAnglePositive =  ((fxCamAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
-            int16_t skyX = ((fxAnglePositive>>9) % 22);
-            uint16_t skyW = image_sky_long[0];
-            uint16_t skyH = image_sky_long[1];
-            const uint8_t* skyBitmapPtr = &(image_sky_long[2]);
-            DrawBitmapOpaque8bit( skyX-22, 0, skyBitmapPtr, skyW, skyH );
+                // Draw sky
+                fix16_t fxAnglePositive =  ((fxCamAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
+                int16_t skyX = ((fxAnglePositive>>9) % 22);
+                uint16_t skyW = image_sky_long[0];
+                uint16_t skyH = image_sky_long[1];
+                const uint8_t* skyBitmapPtr = &(image_sky_long[2]);
+                DrawBitmapOpaque8bit( skyX-22, 0, skyBitmapPtr, skyW, skyH );
 
-            // ** Draw the road and edges and terrain.
-            fix16_t fxCamX = g_playerShip.m_fxX;
-            fix16_t fxCamY = g_playerShip.m_fxY;
-            fxCamY += -g_playerShip.m_fxCameraBehindPlayerCurrent;
-            const fix16_t fxRotateCenterX = g_playerShip.m_fxX;
-            const fix16_t fxRotateCenterY = g_playerShip.m_fxY;
-            DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle, fxRotateCenterX, fxRotateCenterY, PerspectiveScaleX, PerspectiveScaleY);
+                // ** Draw the road and edges and terrain.
+                fix16_t fxCamX = g_playerShip.m_fxX;
+                fix16_t fxCamY = g_playerShip.m_fxY;
+                fxCamY += -g_playerShip.m_fxCameraBehindPlayerCurrent;
+                const fix16_t fxRotateCenterX = g_playerShip.m_fxX;
+                const fix16_t fxRotateCenterY = g_playerShip.m_fxY;
+                DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle, fxRotateCenterX, fxRotateCenterY, PerspectiveScaleX, PerspectiveScaleY);
 
-            // Draw 3d objects and check collisions.
-            g_playerShip.m_isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxCamAngle);
+                // Draw 3d objects and check collisions.
+                g_playerShip.m_isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxCamAngle);
 
-            // Draw the current lap time
-            int32_t lapStartX = 110-5;  // 5 pixel margin
-            lapStartX -= 5*6; // 5 chars
-            DrawLapTime(g_playerShip.m_current_lap_time_ms, lapStartX, 1, fix16_one );
+                // Draw the current lap time
+                int32_t lapStartX = 110-5;  // 5 pixel margin
+                lapStartX -= 5*6; // 5 chars
+                DrawLapTime(g_playerShip.m_current_lap_time_ms, lapStartX, 1, fix16_one );
 
-            // Draw the current rank
-            if( g_isRace )
-                DrawRankNumber(1, 1);
+                // Draw the current rank
+                if( g_isRace )
+                    DrawRankNumber(1, 1);
+
+            }
+
 
             // Print coordinates on screen
             #if 0

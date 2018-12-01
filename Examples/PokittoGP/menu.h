@@ -31,4 +31,6 @@ public:
     fix16_t m_perspectiveScaleX[screenH];
     fix16_t m_perspectiveScaleY[screenH];
     fix16_t m_fxCamAngle;
+    fix16_t m_fxScaleFactor;
+    bool m_isFullScreenView;
 };

@@ -5061,9 +5061,9 @@
 1543185978 c:\git\pokittolib2\examples\pokittogp\ship.h
 	"main.h"
 
-1543619902 c:\git\pokittolib2\examples\pokittogp\menu.h
+1543661725 c:\git\pokittolib2\examples\pokittogp\menu.h
 
-1543618640 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
+1543661741 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -5361,7 +5361,7 @@
 1543185978 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\image_spot.h
 	<stdint.h>
 
-1543621247 source:c:\git\pokittolib2\examples\pokittogp\menu.cpp
+1543662295 source:c:\git\pokittolib2\examples\pokittogp\menu.cpp
 	"Pokitto.h"
 	"main.h"
 	"menu.h"
