@@ -33,4 +33,7 @@ public:
     fix16_t m_fxCamAngle;
     fix16_t m_fxScaleFactor;
     bool m_isFullScreenView;
+    int32_t m_previewX;
+    int32_t m_previewY;
+    int32_t m_previewPhase;
 };

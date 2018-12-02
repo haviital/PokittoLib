@@ -494,6 +494,7 @@ bool CMenu::HandleSelectTrackMenu()
         mygame.display.setColor(2,1);
         mygame.display.print(5, 5, filePathAndNamePFFS);
         mygame.display.print(5, 30, "Loading the track...");
+        while (!mygame.update()); // draw now
 
         // Setup track
 
@@ -573,18 +574,27 @@ bool CMenu::HandleSelectTrackMenu()
         blockMap = blockMapRAM;
 
         // Calc perspective
-        fix16_t fxPerspectiveFactor = fix16_from_int(350*screenH);
         for( int32_t y = 0; y<screenH; y++) {
 
-            #if 0 // 3d
+           #if 0 // 2d
+             //m_perspectiveScaleY[y] = fix16_from_float(y*40.0);
+             //m_perspectiveScaleX[y] = fix16_from_float(100*40.0);
+           #elif 1
+            const fix16_t fxPerspectiveFactor = fix16_from_int(200*screenH);
+            m_perspectiveScaleX[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*0.3)));
+            m_perspectiveScaleY[y] = fix16_mul(fix16_from_float(0.7), m_perspectiveScaleX[y]);
+
+            m_previewX = 150;
+            m_previewY = -600;
+            m_previewPhase = 1;
+
+           #else // 3d
+            const fix16_t fxPerspectiveFactor = fix16_from_int(350*screenH);
              // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
              // y = zk*yk /z -15
              m_perspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*1.0)));
              m_perspectiveScaleX[y] = m_perspectiveScaleY[y];
-            #else // 2d
-             m_perspectiveScaleY[y] = fix16_from_float(y*40.0);
-             m_perspectiveScaleX[y] = fix16_from_float(100*40.0);
-            #endif
+           #endif
         }
         m_fxCamAngle = 0;
         m_fxScaleFactor = fix16_from_float(1);
@@ -596,8 +606,7 @@ bool CMenu::HandleSelectTrackMenu()
     {
         // Draw track
 
-        // Rotate
-        // m_fxCamAngle -= fix16_pi >> 8;
+        #if  0 // 2d track preview
 
         // Zoom
         m_fxScaleFactor += fix16_from_float(0.2);
@@ -615,6 +624,68 @@ bool CMenu::HandleSelectTrackMenu()
         fix16_t fxRotateCenterY = fxCamY;
         //fxRotateCenterX += fix16_from_int(-400);
         //fxRotateCenterY += fix16_from_int(1500);
+
+        #elif 1
+
+        // Preview track movement
+        int32_t speed = 5;
+        switch( m_previewPhase )
+        {
+        // Move north.
+        case 0:
+            m_previewY+=speed;
+            if(m_previewY> 1600)
+               m_previewPhase++;
+            break;
+
+        // Move east.
+        case 1:
+            m_previewX+=speed;
+            if(m_previewX > 1900)
+               //m_previewPhase++;
+               m_previewPhase=3;
+            break;
+
+        // Move south.
+        case 2:
+            m_previewY-=speed;
+            if(m_previewY < -100)
+               m_previewPhase++;
+            break;
+
+        // Move west.
+        case 3:
+            m_previewX-=speed;
+            if(m_previewX< 150 )
+               //m_previewPhase = 0;
+               m_previewPhase = 1;
+            break;
+
+        }
+
+        // ** Draw the road and edges and terrain.
+        fix16_t fxCamX = fix16_from_int(m_previewX);
+        fix16_t fxCamY = fix16_from_int(m_previewY);
+        fix16_t fxRotateCenterX = fxCamX;
+        fix16_t fxRotateCenterY = fxCamY;
+        //fxRotateCenterX += fix16_from_int(-400);
+        //fxRotateCenterY += fix16_from_int(1500);
+
+        #else
+
+        // Rotate
+        m_fxCamAngle -= fix16_pi >> 8;
+
+        // ** Draw the road and edges and terrain.
+        fix16_t fxCamX = fix16_from_int(1500);
+        fix16_t fxCamY = fix16_from_int(-500);
+        fix16_t fxRotateCenterX = fxCamX;
+        fix16_t fxRotateCenterY = fxCamY;
+        fxRotateCenterX += fix16_from_int(-400);
+        fxRotateCenterY += fix16_from_int(1500);
+
+        #endif
+
         DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), m_fxCamAngle, fxRotateCenterX, fxRotateCenterY, m_perspectiveScaleX, m_perspectiveScaleY);
     }
 
