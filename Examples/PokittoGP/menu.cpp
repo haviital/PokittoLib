@@ -19,7 +19,9 @@ CMenu::CMenu() :
     m_hasTrackBeenLoaded(false),
     m_fxCamAngle(0),
     m_fxScaleFactor(0),
-    m_isFullScreenView(false)
+    m_isFullScreenView(false),
+    m_sceneryH(sceneryH),
+    m_trackNum(0)
 {
 }
 
@@ -66,7 +68,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 Pokitto::Core::display.load565Palette(image_titlescreen_pal);
                 DrawBitmapOpaque8bit(0, 0, &(image_titlescreen[2]), image_titlescreen[0], image_titlescreen[1] );
 
-                m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Time trial", "Race", "Select track", "See pilots");
+                m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos, "Time trial", "Race", "Select track", "See pilots");
                 if( ! m_isOpen )
                 {
                     // Restore the original palette.
@@ -483,16 +485,21 @@ bool CMenu::HandlePilotPictureMenu()
 //
 bool CMenu::HandleSelectTrackMenu()
 {
+    // The track names
+    char* filePathAndNameArr[] =
+    {
+        "track1.txt",
+        "track2.txt",
+    };
+    int32_t filePathAndNameArrLen = sizeof(filePathAndNameArr)/sizeof(filePathAndNameArr[0]);
+
     if(!m_hasTrackBeenLoaded)
     {
-        // The track name
-        char* filePathAndNamePFFS = "pgptrack.txt";
-
         // Clear screen
         mygame.display.setColor(1,1);
         mygame.display.fillRect(0, 0, screenW, screenH);
         mygame.display.setColor(2,1);
-        mygame.display.print(5, 5, filePathAndNamePFFS);
+        mygame.display.print(5, 5, filePathAndNameArr[m_trackNum]);
         mygame.display.print(5, 30, "Loading the track...");
         while (!mygame.update()); // draw now
 
@@ -532,7 +539,7 @@ bool CMenu::HandleSelectTrackMenu()
 
         // Read from SD
         pokInitSD(); // Call init always.
-        (void)fileOpen(filePathAndNamePFFS, FILE_MODE_READONLY);
+        (void)fileOpen(filePathAndNameArr[m_trackNum], FILE_MODE_READONLY);
         const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
         char myTrack2[totalSize];
         uint8_t blockMapRAM2[mapWidth*mapHeight];
@@ -573,6 +580,8 @@ bool CMenu::HandleSelectTrackMenu()
         // Now pont to the map in RAM.
         blockMap = blockMapRAM;
 
+        m_sceneryH = sceneryH;
+
         // Calc perspective
         for( int32_t y = 0; y<screenH; y++) {
 
@@ -581,12 +590,13 @@ bool CMenu::HandleSelectTrackMenu()
              //m_perspectiveScaleX[y] = fix16_from_float(100*40.0);
            #elif 1
             const fix16_t fxPerspectiveFactor = fix16_from_int(200*screenH);
-            m_perspectiveScaleX[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*0.3)));
+            m_perspectiveScaleX[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+15)*0.25)));
             m_perspectiveScaleY[y] = fix16_mul(fix16_from_float(0.7), m_perspectiveScaleX[y]);
 
-            m_previewX = 150;
+            m_previewX = 500;
             m_previewY = -600;
             m_previewPhase = 1;
+            //m_sceneryH = 0;
 
            #else // 3d
             const fix16_t fxPerspectiveFactor = fix16_from_int(350*screenH);
@@ -628,35 +638,35 @@ bool CMenu::HandleSelectTrackMenu()
         #elif 1
 
         // Preview track movement
-        int32_t speed = 5;
+        int32_t speed = 20;
         switch( m_previewPhase )
         {
         // Move north.
-        case 0:
-            m_previewY+=speed;
-            if(m_previewY> 1600)
-               m_previewPhase++;
-            break;
+//        case 0:
+//            m_previewY+=speed;
+//            if(m_previewY> 1600)
+//               m_previewPhase++;
+//            break;
 
         // Move east.
         case 1:
             m_previewX+=speed;
-            if(m_previewX > 1900)
+            if(m_previewX > 1770)
                //m_previewPhase++;
                m_previewPhase=3;
             break;
 
         // Move south.
-        case 2:
-            m_previewY-=speed;
-            if(m_previewY < -100)
-               m_previewPhase++;
-            break;
+//        case 2:
+//            m_previewY-=speed;
+//            if(m_previewY < -100)
+//               m_previewPhase++;
+//            break;
 
         // Move west.
         case 3:
             m_previewX-=speed;
-            if(m_previewX< 150 )
+            if(m_previewX< 500 )
                //m_previewPhase = 0;
                m_previewPhase = 1;
             break;
@@ -686,7 +696,7 @@ bool CMenu::HandleSelectTrackMenu()
 
         #endif
 
-        DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), m_fxCamAngle, fxRotateCenterX, fxRotateCenterY, m_perspectiveScaleX, m_perspectiveScaleY);
+        DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), m_fxCamAngle, fxRotateCenterX, fxRotateCenterY, m_perspectiveScaleX, m_perspectiveScaleY, m_sceneryH);
     }
 
     // If the view is not yet open, make sure that the A key is pressed down *after* the view is opened.
@@ -700,6 +710,26 @@ bool CMenu::HandleSelectTrackMenu()
              return false; // Close the view
         else
             m_pressedAkeyDownOutsideMenu = false; // Ready to close this view on next A button press.
+    }
+    else if(Pokitto::Core::buttons.released(BTN_UP))
+    {
+        // Change track
+        m_hasTrackBeenLoaded = false;
+        if(--m_trackNum < 0)
+            m_trackNum = filePathAndNameArrLen - 1;
+
+        // Do not close the menu
+        return true;
+    }
+    else if(Pokitto::Core::buttons.released(BTN_DOWN))
+    {
+        // Change track
+        m_hasTrackBeenLoaded = false;
+        if(--m_trackNum < 0)
+            m_trackNum = filePathAndNameArrLen - 1;
+
+        // Do not close the menu
+        return true;
     }
 
     // Do not close the view

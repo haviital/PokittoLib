@@ -5,9 +5,9 @@
 #include "playerShip.h"
 
 //
-void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fxRotateCenterX, fix16_t fxRotateCenterY, fix16_t* perspectiveScaleXArr, fix16_t* perspectiveScaleYArr)
+void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fxRotateCenterX, fix16_t fxRotateCenterY, fix16_t* perspectiveScaleXArr, fix16_t* perspectiveScaleYArr, uint16_t sceneryH2)
 {
-    uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH*mygame.display.width); // 8-bit screen buffer
+    uint8_t* scrptr = mygame.display.getBuffer() + (sceneryH2*mygame.display.width); // 8-bit screen buffer
     fix16_t fxStepX = fix16_one;
     const fix16_t fxCos = fix16_cos(fxAngle);
     const fix16_t fxSin = fix16_sin(fxAngle);
@@ -18,7 +18,7 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fx
     const fix16_t fxRotatedCenterDiffX = fxRotatedRotateCenterX - fxRotateCenterX;
     const fix16_t fxRotatedCenterDiffY = fxRotatedRotateCenterY - fxRotateCenterY;
 
-    for( uint8_t y=0; y<screenH-sceneryH ; y++ ) {
+    for( uint8_t y=0; y<screenH-sceneryH2 ; y++ ) {
 
         fix16_t fxZ = perspectiveScaleYArr[y];
         fix16_t fxstepXFromY = perspectiveScaleXArr[y];

@@ -148,7 +148,7 @@ int main () {
                 fxCamY += -g_playerShip.m_fxCameraBehindPlayerCurrent;
                 const fix16_t fxRotateCenterX = g_playerShip.m_fxX;
                 const fix16_t fxRotateCenterY = g_playerShip.m_fxY;
-                DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle, fxRotateCenterX, fxRotateCenterY, PerspectiveScaleX, PerspectiveScaleY);
+                DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), fxCamAngle, fxRotateCenterX, fxRotateCenterY, PerspectiveScaleX, PerspectiveScaleY, sceneryH);
 
                 // Draw 3d objects and check collisions.
                 g_playerShip.m_isCollidedToPlayerShip = Draw3dObects(fxCamX, fxCamY, fxCamAngle);
