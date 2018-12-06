@@ -3642,8 +3642,6 @@
 					<Add option="-include" />
 					<Add option="mbed_config.h" />
 					<Add directory="Examples\PokittoGP" />
-					<Add directory="Pokitto\POKITTO_LIBS\SDFileSystem" />
-					<Add directory="Pokitto\POKITTO_LIBS\SDFileSystem\FATFileSystem" />
 				</Compiler>
 				<Cpp>
 					<Add option="-fno-exceptions" />

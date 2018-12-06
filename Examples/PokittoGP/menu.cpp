@@ -5,14 +5,10 @@
 #include "gfx_hdr/image_pilots2.h"
 #include "gfx_hdr/image_titlescreen.h"
 
-#ifndef POK_SIM
-//#include "DirHandle.h"
-#endif
-
 #ifdef POK_SIM
-#include "io.h"
+//#include "io.h"
 #else
-#include "SDFileSystem.h"
+//#include "SDFileSystem.h"
 #endif
 
 #pragma GCC diagnostic ignored "-Wwrite-strings"
@@ -545,33 +541,39 @@ bool CMenu::HandleSelectTrackMenu()
         };
 
         // Read the file list from SD.
-        #ifdef POK_SIM
-        char* dirNameSDFS = "pgpdata/tracks";
-        strncpy(filePathAndNameArr[0], "pgpdata/tracks/track1.txt", filePathAndNameMaxLen);
-        filePathAndNameArr[0][filePathAndNameMaxLen-1] = '\0';
-        strncpy(filePathAndNameArr[1], "pgpdata/tracks/track2.txt", filePathAndNameMaxLen);
-        filePathAndNameArr[1][filePathAndNameMaxLen-1] = '\0';
-        m_trackCount = 2;
-        #else
-        SDFileSystem sd(/*MOSI*/P0_9, /*MISO*/P0_8, /*SCK*/P0_6, /*CS*/P0_7, /*Mountpoint*/"sd");
-        char* dirNameSDFS = "/sd/pgpdata/tracks";
-        DirHandle *dir = sdFs->opendir(dirNameSDFS);
-        int i = 0;
-        for (; i < filePathAndNameArrMaxLen; i++) {
 
-            // Read next entry
-            dirent *ent = dir->readdir();
-            if (ent == 0)
+        #if POK_SIM
+        char* dirName = "./pgpdata/tracks/";
+        getFirstFile("",dirName);
+        #else
+        char* dirName = "pgpdata/tracks/";
+        bool isFirstFile = true;
+        #endif
+        int i = 0;
+        char* fileName = NULL;
+        for (; i < filePathAndNameArrMaxLen; i++)
+        {
+            // read the file name from SD
+            #ifndef POK_SIM
+            if(isFirstFile)
+            {
+                fileName = getFirstFile("",dirName);
+                isFirstFile = false;
+            }
+            else
+                fileName = getNextFile("");
+            #elif
+            fileName = getNextFile("");
+            #endif
+
+           if(!fileName)
                 break; // No more files
 
             // Add the file to the array
-            char* fileName = ent->d_name;
             strncpy(filePathAndNameArr[i], fileName, filePathAndNameMaxLen);
             filePathAndNameArr[i][filePathAndNameMaxLen-1] = '\0';
         }
-        dir->closedir();
-        m_trackCount = Min(filePathAndNameArrMaxLen, i);
-        #endif
+        m_trackCount = (filePathAndNameArrMaxLen < i) ? filePathAndNameArrMaxLen : i; // min
 
         // Print the track name.
         mygame.display.setColor(2,1);
@@ -581,12 +583,21 @@ bool CMenu::HandleSelectTrackMenu()
         const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
         char myTrack2[totalSize] = {0};
         uint8_t blockMapRAM2[mapWidth*mapHeight];
-        FILE* filep = fopen(filePathAndNameArr[m_trackNum], "rb");
+        char filePathAndName[128] = {0};
+        strcat(filePathAndName, dirName);
+        #ifndef POK_SIM
+        //strcat(filePathAndName, "/");
+        #endif
+        //strcat(filePathAndName, filePathAndNameArr[m_trackNum]);
+        //strcat(filePathAndName, "track1.txt");
+        strcpy(filePathAndName, "track1.txt");
+        FILE* filep = fopen(filePathAndName, "rb");
         if(filep == NULL)
-            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndNameArr[m_trackNum]);
+            //ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", (filePathAndNameArr[m_trackNum]));
+            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndName);
         uint16_t len = fread((uint8_t*)myTrack2, sizeof(char), totalSize, filep);
         if (len > totalSize)
-            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "READ ERROR", filePathAndNameArr[m_trackNum]);
+            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "READ ERROR", (filePathAndNameArr[m_trackNum]));
         fclose(filep);
 
         char text[64];

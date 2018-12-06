@@ -71,6 +71,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "PokittoSound.h"
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #ifdef DISABLEAVRMIN
 #include <algorithm>
 using std::min;
@@ -2519,6 +2520,7 @@ char* itoa_hex(int num, char* dest, int destLen) {
 }
 
 // Draw the crash screen and wait forever
+#define STR_TO_UPPER(str_from, str_to) for( int32_t i=0; i <= strlen(str_from); i++ ) str_to[i] = toupper(str_from[i]);
 void ShowCrashScreenAndWait( const char* texLine1, const char* texLine2, const char* texLine3, const char* texLine4, const char* texLine5 ) {
 
     // draw screen red
@@ -2535,15 +2537,17 @@ void ShowCrashScreenAndWait( const char* texLine1, const char* texLine2, const c
     Display::fixedWidthFont = true; // Needed for the non-proportional C64 font (default value=false)
     Display::enableDirectPrinting(true);
 
+    char convertedStr[128] = {0};
+
     // Draw texts
     int  yOffsetInPixels = 5;
     Display::set_cursor(0, 9 + yOffsetInPixels);
-    Display::print("  ");    Display::println(texLine1);
-    Display::print("  ");    Display::println(texLine2);
-    Display::print("  ");    Display::println(texLine3);
+    Display::print("  ");    STR_TO_UPPER(texLine1, convertedStr); Display::println(convertedStr);
+    Display::print("  ");    STR_TO_UPPER(texLine2, convertedStr); Display::println(convertedStr);
+    Display::print("  ");    STR_TO_UPPER(texLine3, convertedStr); Display::println(convertedStr);
     Display::println();
-    Display::print("  *");   Display::println(texLine4);
-    Display::print("  *");   Display::println(texLine5);
+    Display::print("  *");   STR_TO_UPPER(texLine4, convertedStr); Display::println(convertedStr);
+    Display::print("  *");   STR_TO_UPPER(texLine5, convertedStr); Display::println(convertedStr);
 
     Display::set_cursor(0, 0 + yOffsetInPixels);
 

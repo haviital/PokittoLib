@@ -137,12 +137,13 @@ char* getNextFile() {
     return getNextFile((char*)"");
 }
 
-char* getFirstFile(char* ext) {
+char* getFirstFile(char* ext, char* path) {
     if (diropened) {
         tinydir_close(&tinydir);
         diropened=false;
     }
-    tinydir_open(&tinydir, "./");
+    //tinydir_open(&tinydir, "./");
+    tinydir_open(&tinydir, path);
     diropened = true;
     int b = tinydir_readfile(&tinydir, &tinyfile);
     if (b==-1) return 0;
@@ -156,6 +157,10 @@ char* getFirstFile(char* ext) {
         if (b==-1) break;
     }
     return 0;
+}
+
+char* getFirstFile(char* ext) {
+    return getFirstFile(ext,(char*)"./");
 }
 
 char* getFirstFile() {
