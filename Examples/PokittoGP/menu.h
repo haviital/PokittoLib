@@ -38,4 +38,5 @@ public:
     int32_t m_previewPhase;
     uint16_t m_sceneryH;
     int32_t m_trackNum;
+    int32_t m_trackCount;
 };

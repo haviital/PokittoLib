@@ -5,6 +5,16 @@
 #include "gfx_hdr/image_pilots2.h"
 #include "gfx_hdr/image_titlescreen.h"
 
+#ifndef POK_SIM
+//#include "DirHandle.h"
+#endif
+
+#ifdef POK_SIM
+#include "io.h"
+#else
+#include "SDFileSystem.h"
+#endif
+
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
 void ShowCrashScreenAndWait( const char* texLine1, const char* texLine2, const char* texLine3, const char* texLine4, const char* texLine5 );
@@ -21,7 +31,8 @@ CMenu::CMenu() :
     m_fxScaleFactor(0),
     m_isFullScreenView(false),
     m_sceneryH(sceneryH),
-    m_trackNum(0)
+    m_trackNum(0),
+    m_trackCount(0)
 {
 }
 
@@ -486,12 +497,9 @@ bool CMenu::HandlePilotPictureMenu()
 bool CMenu::HandleSelectTrackMenu()
 {
     // The track names
-    char* filePathAndNameArr[] =
-    {
-        "track1.txt",
-        "track2.txt",
-    };
-    int32_t filePathAndNameArrLen = sizeof(filePathAndNameArr)/sizeof(filePathAndNameArr[0]);
+    int32_t filePathAndNameArrMaxLen = 10;
+    int32_t filePathAndNameMaxLen = 30;
+    char filePathAndNameArr[filePathAndNameArrMaxLen][filePathAndNameMaxLen] = {0};
 
     if(!m_hasTrackBeenLoaded)
     {
@@ -499,7 +507,6 @@ bool CMenu::HandleSelectTrackMenu()
         mygame.display.setColor(1,1);
         mygame.display.fillRect(0, 0, screenW, screenH);
         mygame.display.setColor(2,1);
-        mygame.display.print(5, 5, filePathAndNameArr[m_trackNum]);
         mygame.display.print(5, 30, "Loading the track...");
         while (!mygame.update()); // draw now
 
@@ -537,18 +544,53 @@ bool CMenu::HandleSelectTrackMenu()
             'x',  // 18: The halfway mark, right side.
         };
 
-        // Read from SD
-        pokInitSD(); // Call init always.
-        (void)fileOpen(filePathAndNameArr[m_trackNum], FILE_MODE_READONLY);
-        const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
-        char myTrack2[totalSize];
-        uint8_t blockMapRAM2[mapWidth*mapHeight];
-        uint16_t len = fileReadBytes((uint8_t*)myTrack2, totalSize);
-        char text[64];
-        //if(len!=totalSize)
-        //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "LEN!=TOTALSIZE", itoa(len, text, 10));
+        // Read the file list from SD.
+        #ifdef POK_SIM
+        char* dirNameSDFS = "pgpdata/tracks";
+        strncpy(filePathAndNameArr[0], "pgpdata/tracks/track1.txt", filePathAndNameMaxLen);
+        filePathAndNameArr[0][filePathAndNameMaxLen-1] = '\0';
+        strncpy(filePathAndNameArr[1], "pgpdata/tracks/track2.txt", filePathAndNameMaxLen);
+        filePathAndNameArr[1][filePathAndNameMaxLen-1] = '\0';
+        m_trackCount = 2;
+        #else
+        SDFileSystem sd(/*MOSI*/P0_9, /*MISO*/P0_8, /*SCK*/P0_6, /*CS*/P0_7, /*Mountpoint*/"sd");
+        char* dirNameSDFS = "/sd/pgpdata/tracks";
+        DirHandle *dir = sdFs->opendir(dirNameSDFS);
+        int i = 0;
+        for (; i < filePathAndNameArrMaxLen; i++) {
 
-       {
+            // Read next entry
+            dirent *ent = dir->readdir();
+            if (ent == 0)
+                break; // No more files
+
+            // Add the file to the array
+            char* fileName = ent->d_name;
+            strncpy(filePathAndNameArr[i], fileName, filePathAndNameMaxLen);
+            filePathAndNameArr[i][filePathAndNameMaxLen-1] = '\0';
+        }
+        dir->closedir();
+        m_trackCount = Min(filePathAndNameArrMaxLen, i);
+        #endif
+
+        // Print the track name.
+        mygame.display.setColor(2,1);
+        mygame.display.print(5, 5, filePathAndNameArr[m_trackNum]);
+
+        // Read from SD
+        const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
+        char myTrack2[totalSize] = {0};
+        uint8_t blockMapRAM2[mapWidth*mapHeight];
+        FILE* filep = fopen(filePathAndNameArr[m_trackNum], "rb");
+        if(filep == NULL)
+            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndNameArr[m_trackNum]);
+        uint16_t len = fread((uint8_t*)myTrack2, sizeof(char), totalSize, filep);
+        if (len > totalSize)
+            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "READ ERROR", filePathAndNameArr[m_trackNum]);
+        fclose(filep);
+
+        char text[64];
+        {
             // Map of blocks. Defines the whole game field!
             if( blockMapRAM == NULL )
                 blockMapRAM = new uint8_t[mapWidth*mapHeight];
@@ -716,7 +758,7 @@ bool CMenu::HandleSelectTrackMenu()
         // Change track
         m_hasTrackBeenLoaded = false;
         if(--m_trackNum < 0)
-            m_trackNum = filePathAndNameArrLen - 1;
+            m_trackNum = m_trackCount - 1;
 
         // Do not close the menu
         return true;
@@ -725,8 +767,8 @@ bool CMenu::HandleSelectTrackMenu()
     {
         // Change track
         m_hasTrackBeenLoaded = false;
-        if(--m_trackNum < 0)
-            m_trackNum = filePathAndNameArrLen - 1;
+        if(++m_trackNum >= m_trackCount)
+            m_trackNum = 0;
 
         // Do not close the menu
         return true;
