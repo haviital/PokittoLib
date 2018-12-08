@@ -580,6 +580,7 @@ bool CMenu::HandleSelectTrackMenu()
         mygame.display.print(5, 5, filePathAndNameArr[m_trackNum]);
 
         // Read from SD
+        pokInitSD(); // Call init always.
         const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
         char myTrack2[totalSize] = {0};
         uint8_t blockMapRAM2[mapWidth*mapHeight];
@@ -600,11 +601,13 @@ bool CMenu::HandleSelectTrackMenu()
         //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndName);
         uint16_t len = fileReadBytes((uint8_t*)myTrack2, totalSize);
         //uint16_t len = fread((uint8_t*)myTrack2, sizeof(char), totalSize, filep);
-        if (len > totalSize || len==0)
-            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "READ ERROR", (filePathAndNameArr[m_trackNum]));
+        //if (len > totalSize || len==0)
+        //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "READ ERROR", (filePathAndNameArr[m_trackNum]));
+        char text[64];
+        //if(len!=totalSize)
+        //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "LEN!=TOTALSIZE", itoa(len, text, 10));
         fileClose(); // close any open files
 
-        char text[64];
         {
             // Map of blocks. Defines the whole game field!
             if( blockMapRAM == NULL )
