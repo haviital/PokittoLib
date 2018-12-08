@@ -541,7 +541,7 @@ bool CMenu::HandleSelectTrackMenu()
         };
 
         // Read the file list from SD.
-
+#if 0
         #if POK_SIM
         char* dirName = "./pgpdata/tracks/";
         getFirstFile("",dirName);
@@ -574,7 +574,7 @@ bool CMenu::HandleSelectTrackMenu()
             filePathAndNameArr[i][filePathAndNameMaxLen-1] = '\0';
         }
         m_trackCount = (filePathAndNameArrMaxLen < i) ? filePathAndNameArrMaxLen : i; // min
-
+#endif
         // Print the track name.
         mygame.display.setColor(2,1);
         mygame.display.print(5, 5, filePathAndNameArr[m_trackNum]);
@@ -584,21 +584,25 @@ bool CMenu::HandleSelectTrackMenu()
         char myTrack2[totalSize] = {0};
         uint8_t blockMapRAM2[mapWidth*mapHeight];
         char filePathAndName[128] = {0};
-        strcat(filePathAndName, dirName);
+        //strcat(filePathAndName, dirName);
         #ifndef POK_SIM
         //strcat(filePathAndName, "/");
         #endif
         //strcat(filePathAndName, filePathAndNameArr[m_trackNum]);
         //strcat(filePathAndName, "track1.txt");
         strcpy(filePathAndName, "track1.txt");
-        FILE* filep = fopen(filePathAndName, "rb");
-        if(filep == NULL)
+
+        uint8_t err = fileOpen(filePathAndName, FILE_MODE_READONLY);
+
+        //FILE* filep = fopen(filePathAndName, "rb");
+        //if(err)
             //ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", (filePathAndNameArr[m_trackNum]));
-            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndName);
-        uint16_t len = fread((uint8_t*)myTrack2, sizeof(char), totalSize, filep);
-        if (len > totalSize)
+        //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndName);
+        uint16_t len = fileReadBytes((uint8_t*)myTrack2, totalSize);
+        //uint16_t len = fread((uint8_t*)myTrack2, sizeof(char), totalSize, filep);
+        if (len > totalSize || len==0)
             ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "READ ERROR", (filePathAndNameArr[m_trackNum]));
-        fclose(filep);
+        fileClose(); // close any open files
 
         char text[64];
         {
@@ -626,8 +630,6 @@ bool CMenu::HandleSelectTrackMenu()
                 }
             }
         }
-
-        fileClose(); // close any open files
 
 
         // Now pont to the map in RAM.
