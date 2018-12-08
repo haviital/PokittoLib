@@ -541,12 +541,14 @@ bool CMenu::HandleSelectTrackMenu()
         };
 
         // Read the file list from SD.
-#if 0
+        pokInitSD(); // Call init always.
+
+#if 1
         #if POK_SIM
         char* dirName = "./pgpdata/tracks/";
         getFirstFile("",dirName);
         #else
-        char* dirName = "pgpdata/tracks/";
+        char* dirName = "pgpdata";
         bool isFirstFile = true;
         #endif
         int i = 0;
@@ -580,25 +582,24 @@ bool CMenu::HandleSelectTrackMenu()
         mygame.display.print(5, 5, filePathAndNameArr[m_trackNum]);
 
         // Read from SD
-        pokInitSD(); // Call init always.
         const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
         char myTrack2[totalSize] = {0};
         uint8_t blockMapRAM2[mapWidth*mapHeight];
         char filePathAndName[128] = {0};
-        //strcat(filePathAndName, dirName);
+        strcat(filePathAndName, dirName);
         #ifndef POK_SIM
-        //strcat(filePathAndName, "/");
+        strcat(filePathAndName, "/");
         #endif
-        //strcat(filePathAndName, filePathAndNameArr[m_trackNum]);
+        strcat(filePathAndName, filePathAndNameArr[m_trackNum]);
         //strcat(filePathAndName, "track1.txt");
-        strcpy(filePathAndName, "track1.txt");
+        //strcpy(filePathAndName, "track1.txt");
 
         uint8_t err = fileOpen(filePathAndName, FILE_MODE_READONLY);
 
         //FILE* filep = fopen(filePathAndName, "rb");
-        //if(err)
+        if(err)
             //ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", (filePathAndNameArr[m_trackNum]));
-        //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndName);
+            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndName);
         uint16_t len = fileReadBytes((uint8_t*)myTrack2, totalSize);
         //uint16_t len = fread((uint8_t*)myTrack2, sizeof(char), totalSize, filep);
         //if (len > totalSize || len==0)
