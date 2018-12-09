@@ -548,7 +548,7 @@ bool CMenu::HandleSelectTrackMenu()
         char* dirName = "./pgpdata/tracks/";
         getFirstFile("",dirName);
         #else
-        char* dirName = "pgpdata";
+        char* dirName = "pgpdata/tracks";
         bool isFirstFile = true;
         #endif
         int i = 0;
@@ -568,7 +568,7 @@ bool CMenu::HandleSelectTrackMenu()
             fileName = getNextFile("");
             #endif
 
-           if(!fileName)
+           if(!fileName || strlen(fileName)==0)
                 break; // No more files
 
             // Add the file to the array
@@ -578,8 +578,10 @@ bool CMenu::HandleSelectTrackMenu()
         m_trackCount = (filePathAndNameArrMaxLen < i) ? filePathAndNameArrMaxLen : i; // min
 #endif
         // Print the track name.
+        char text[64];
         mygame.display.setColor(2,1);
         mygame.display.print(5, 5, filePathAndNameArr[m_trackNum]);
+        //mygame.display.print(5, 5, itoa(strlen(filePathAndNameArr[2]), text, 10));
 
         // Read from SD
         const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
@@ -604,7 +606,6 @@ bool CMenu::HandleSelectTrackMenu()
         //uint16_t len = fread((uint8_t*)myTrack2, sizeof(char), totalSize, filep);
         //if (len > totalSize || len==0)
         //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "READ ERROR", (filePathAndNameArr[m_trackNum]));
-        char text[64];
         //if(len!=totalSize)
         //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "LEN!=TOTALSIZE", itoa(len, text, 10));
         fileClose(); // close any open files
