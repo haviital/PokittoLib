@@ -3689,7 +3689,8 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-O3" />
+			<Add option="-O0" />
+			<Add option="-g3" />
 			<Add symbol="TARGET_LPC11U68" />
 			<Add symbol="__MBED__=1" />
 			<Add symbol="DEVICE_I2CSLAVE=1" />
@@ -3746,7 +3747,8 @@
 			<Add directory="Pokitto\POKITTO_LIBS\FixMath" />
 		</Compiler>
 		<Cpp>
-			<Add option="-O3" />
+			<Add option="-O0" />
+			<Add option="-g3" />
 		</Cpp>
 		<Unit filename="Examples\101Starships_GB\101Starships.cpp">
 			<Option compilerVar="CC" />

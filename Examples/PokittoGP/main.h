@@ -101,7 +101,6 @@ extern CPlayerShip g_playerShip;
 extern const uint8_t image_numbers[];
 extern const uint16_t palette_pal[];
 
-extern mycookie highscore;
 extern uint32_t g_frameNum;
 extern bool g_isRace;
 extern uint32_t g_shipCount;
@@ -119,5 +118,6 @@ void DrawBitmapOpaque8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
 void DrawRankNumber(int32_t x, int32_t y);
+void SaveHighScore(uint32_t final_lap_time_ms);
 
 

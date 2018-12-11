@@ -113,13 +113,8 @@ void CPlayerShip::Update()
                 m_requestedMenuMode = CMenu::enumTimeTrialFinishedMenu;
             }
 
-
             // Save cookie if this is the best time
-            if( !g_isRace && (highscore.bestLap_ms == 0 || m_final_lap_time_ms < highscore.bestLap_ms))
-            {
-                highscore.bestLap_ms = m_final_lap_time_ms;
-                highscore.saveCookie();
-            }
+            SaveHighScore(m_final_lap_time_ms);
 
             m_activeLapNum++;
         }

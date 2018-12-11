@@ -20,6 +20,9 @@ public:
     bool HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4);
     bool HandlePilotPictureMenu();
     bool HandleSelectTrackMenu();
+    bool ReadAndValidateTrack(
+        char* trackPath, char* trackFileName,
+        /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName );
 
 public:
     bool m_isOpen;
@@ -39,4 +42,5 @@ public:
     uint16_t m_sceneryH;
     int32_t m_trackNum;
     int32_t m_trackCount;
+    bool m_isTrackOk;
 };

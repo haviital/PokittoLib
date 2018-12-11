@@ -15,6 +15,10 @@
 
 void ShowCrashScreenAndWait( const char* texLine1, const char* texLine2, const char* texLine3, const char* texLine4, const char* texLine5 );
 
+// Local constants.
+const int32_t maxTrackOrAuthorNameLen = 13;
+const int32_t mapTotalSizeinFile = (mapWidth+1)*mapHeight; // added newline
+
 
 CMenu::CMenu() :
     m_isOpen( false ),
@@ -28,7 +32,8 @@ CMenu::CMenu() :
     m_isFullScreenView(false),
     m_sceneryH(sceneryH),
     m_trackNum(0),
-    m_trackCount(0)
+    m_trackCount(0),
+    m_isTrackOk(false)
 {
 }
 
@@ -75,9 +80,15 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 Pokitto::Core::display.load565Palette(image_titlescreen_pal);
                 DrawBitmapOpaque8bit(0, 0, &(image_titlescreen[2]), image_titlescreen[0], image_titlescreen[1] );
 
-                m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos, "Time trial", "Race", "Select track", "See pilots");
+                bool isUserTrack = (m_trackNum != 0);
+                if(!isUserTrack)  // ROM track
+                    m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos, "Time trial", "Race", "Select track", "See pilots");
+                else  // User track
+                     m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos, "Time trial", "Select track", "See pilots", NULL);
+
                 if( ! m_isOpen )
                 {
+
                     // Restore the original palette.
                     Pokitto::Core::display.load565Palette(palette_pal);
 
@@ -85,6 +96,9 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                     playing = false;
                     setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
+
+                    int32_t menuItemNum = 0;
+                    //if(m_trackNum == 0)
                     if(m_cursorPos == 0)
                     {
                         // time trial
@@ -93,7 +107,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                          // Reset game
                         ResetGame( false );
                     }
-                    else if(m_cursorPos == 1)
+                    else if(!isUserTrack && m_cursorPos == 1)
                     {
                         // race
                         m_mode = enumContinueMenu;
@@ -101,13 +115,13 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                          // Reset game
                         ResetGame( true );
                     }
-                    else if(m_cursorPos == 2)
+                    else if((!isUserTrack && m_cursorPos == 2) || (isUserTrack && m_cursorPos == 1))
                     {
                         // Select track
                         m_mode = enumSelectTrackMenu;
                         m_isOpen = true;
                     }
-                    else if(m_cursorPos == 3)
+                    else if((!isUserTrack && m_cursorPos == 3) || (isUserTrack && m_cursorPos == 2))
                     {
                         // race
                         m_mode = enumPilotPictureMenu;
@@ -286,7 +300,8 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
     int32_t winH = 0;
 
     // Set window height
-    if(bestLap_ms>0)
+    if(m_trackNum==0 && // only for ROM track
+       bestLap_ms>0 )
     {
         winH += 15;
         winY -= 5;
@@ -321,7 +336,8 @@ bool CMenu::HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorP
         currY += 15;
     }
     // Print Best time
-    else if( bestLap_ms > 0 )
+    else if( m_trackNum==0  && // only for ROM track
+             bestLap_ms > 0 )
     {
         mygame.display.setColor(2,1);
         //currY += 4;
@@ -489,13 +505,45 @@ bool CMenu::HandlePilotPictureMenu()
     }
 }
 
+//Example
+//........
+//./r==,`.
+//.|!..|!.
+//.|!..|!.
+//.|+--j!.
+//.\====%.
+//........
+
+// Conversion between the ascii char and the block index.
+const char asciiTrackConversionTable[20] = {
+    '|',  // 0: The left edge.
+    '!',  // 1: The right edge.
+    ' ',  // 2: None.
+    ' ',  // 3: None
+    '=',  // 4: The top edge
+    '-',  // 5: The bottom edge
+    '\\', // 6: The outer corner of the 1st quarter.
+    '+',  // 7: The inner corner of the 1st quarter.
+    '/',  // 8: The outer corner of the 4th quarter.
+    'r',  // 9: The inner corner of the 4th quarter.
+    '%',  // 10: The outer corner of the 2nd quarter.
+    'j',  // 11: The inner corner of the 2nd quarter.
+    '`',  // 12: The outer corner of the 3rd quarter.
+    ',',  // 13: The inner corner of the 3rd quarter.
+    '.',  // 14: The surface.
+    '#',  // 15: The starting grid, left side.
+    '*',  // 16: The starting grid, right side.
+    'X',  // 17: The halfway mark, left side.
+    'x',  // 18: The halfway mark, right side.
+};
+
 //
 bool CMenu::HandleSelectTrackMenu()
 {
     // The track names
     int32_t filePathAndNameArrMaxLen = 10;
     int32_t filePathAndNameMaxLen = 30;
-    char filePathAndNameArr[filePathAndNameArrMaxLen][filePathAndNameMaxLen] = {0};
+    char fileNameArr[filePathAndNameArrMaxLen][filePathAndNameMaxLen] = {0};
 
     if(!m_hasTrackBeenLoaded)
     {
@@ -508,42 +556,9 @@ bool CMenu::HandleSelectTrackMenu()
 
         // Setup track
 
-        //Example
-        //........
-        //./r==,`.
-        //.|!..|!.
-        //.|!..|!.
-        //.|+--j!.
-        //.\====%.
-        //........
-
-        // Conversion between the ascii char and the block index.
-        const char asciiTrackConversionTable[20] = {
-            '|',  // 0: The left edge.
-            '!',  // 1: The right edge.
-            ' ',  // 2: None.
-            ' ',  // 3: None
-            '=',  // 4: The top edge
-            '-',  // 5: The bottom edge
-            '\\', // 6: The outer corner of the 1st quarter.
-            '+',  // 7: The inner corner of the 1st quarter.
-            '/',  // 8: The outer corner of the 4th quarter.
-            'r',  // 9: The inner corner of the 4th quarter.
-            '%',  // 10: The outer corner of the 2nd quarter.
-            'j',  // 11: The inner corner of the 2nd quarter.
-            '`',  // 12: The outer corner of the 3rd quarter.
-            ',',  // 13: The inner corner of the 3rd quarter.
-            '.',  // 14: The surface.
-            '#',  // 15: The starting grid, left side.
-            '*',  // 16: The starting grid, right side.
-            'X',  // 17: The halfway mark, left side.
-            'x',  // 18: The halfway mark, right side.
-        };
-
         // Read the file list from SD.
         pokInitSD(); // Call init always.
 
-#if 1
         #if POK_SIM
         char* dirName = "./pgpdata/tracks/";
         getFirstFile("",dirName);
@@ -564,7 +579,7 @@ bool CMenu::HandleSelectTrackMenu()
             }
             else
                 fileName = getNextFile("");
-            #elif
+            #else
             fileName = getNextFile("");
             #endif
 
@@ -572,142 +587,117 @@ bool CMenu::HandleSelectTrackMenu()
                 break; // No more files
 
             // Add the file to the array
-            strncpy(filePathAndNameArr[i], fileName, filePathAndNameMaxLen);
-            filePathAndNameArr[i][filePathAndNameMaxLen-1] = '\0';
+            strncpy(fileNameArr[i], fileName, filePathAndNameMaxLen);
+            fileNameArr[i][filePathAndNameMaxLen-1] = '\0';
         }
+        i++; // Add one for the ROM track (index 0)
         m_trackCount = (filePathAndNameArrMaxLen < i) ? filePathAndNameArrMaxLen : i; // min
-#endif
-        // Print the track name.
-        char text[64];
-        mygame.display.setColor(2,1);
-        mygame.display.print(5, 5, filePathAndNameArr[m_trackNum]);
-        //mygame.display.print(5, 5, itoa(strlen(filePathAndNameArr[2]), text, 10));
 
-        // Read from SD
-        const int32_t totalSize = (mapWidth+1)*mapHeight; // added newline
-        char myTrack2[totalSize] = {0};
-        uint8_t blockMapRAM2[mapWidth*mapHeight];
-        char filePathAndName[128] = {0};
-        strcat(filePathAndName, dirName);
-        #ifndef POK_SIM
-        strcat(filePathAndName, "/");
-        #endif
-        strcat(filePathAndName, filePathAndNameArr[m_trackNum]);
-        //strcat(filePathAndName, "track1.txt");
-        //strcpy(filePathAndName, "track1.txt");
-
-        uint8_t err = fileOpen(filePathAndName, FILE_MODE_READONLY);
-
-        //FILE* filep = fopen(filePathAndName, "rb");
-        if(err)
-            //ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", (filePathAndNameArr[m_trackNum]));
-            ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "CANT OPEN", filePathAndName);
-        uint16_t len = fileReadBytes((uint8_t*)myTrack2, totalSize);
-        //uint16_t len = fread((uint8_t*)myTrack2, sizeof(char), totalSize, filep);
-        //if (len > totalSize || len==0)
-        //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "READ ERROR", (filePathAndNameArr[m_trackNum]));
-        //if(len!=totalSize)
-        //    ShowCrashScreenAndWait("OOPS! PLEASE, RESTART", "POKITTO OR RELOAD", "SOFTWARE.", "LEN!=TOTALSIZE", itoa(len, text, 10));
-        fileClose(); // close any open files
-
-        {
-            // Map of blocks. Defines the whole game field!
-            if( blockMapRAM == NULL )
-                blockMapRAM = new uint8_t[mapWidth*mapHeight];
-            int32_t convTableLen = sizeof(asciiTrackConversionTable);
-            for(int32_t y = 0; y < mapHeight; y++)
-            {
-                for(int32_t x = 0; x < mapWidth; x++)
-                {
-                    // Create map
-                    int invY = mapHeight - 1 - y; // mirror map vertically
-                    int32_t mapWidth2 = mapWidth+1; // added newline
-                    char item = myTrack2[invY*mapWidth2 + x];
-                    //assert(item!=' ');
-                    int32_t i=0;
-                    for(; i<convTableLen; i++ )
-                        if(asciiTrackConversionTable[i]==item)
-                            break;
-
-                    if(i>=convTableLen || item==' ')
-                        break; // error
-                    blockMapRAM[y*mapWidth + x] = i;
-                }
-            }
-        }
-
-
-        // Now pont to the map in RAM.
-        blockMap = blockMapRAM;
-
-        m_sceneryH = sceneryH;
-
-        // Calc perspective
-        for( int32_t y = 0; y<screenH; y++) {
-
-           #if 0 // 2d
-             //m_perspectiveScaleY[y] = fix16_from_float(y*40.0);
-             //m_perspectiveScaleX[y] = fix16_from_float(100*40.0);
-           #elif 1
-            const fix16_t fxPerspectiveFactor = fix16_from_int(200*screenH);
-            m_perspectiveScaleX[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+15)*0.25)));
-            m_perspectiveScaleY[y] = fix16_mul(fix16_from_float(0.7), m_perspectiveScaleX[y]);
-
-            m_previewX = 500;
-            m_previewY = -600;
-            m_previewPhase = 1;
-            //m_sceneryH = 0;
-
-           #else // 3d
-            const fix16_t fxPerspectiveFactor = fix16_from_int(350*screenH);
-             // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
-             // y = zk*yk /z -15
-             m_perspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*1.0)));
-             m_perspectiveScaleX[y] = m_perspectiveScaleY[y];
-           #endif
-        }
-        m_fxCamAngle = 0;
-        m_fxScaleFactor = fix16_from_float(1);
-
+        //
         m_hasTrackBeenLoaded = true;
         m_isFullScreenView = true;
+
+        // If the track is not the rom track, load the file.
+        m_isTrackOk = true;
+        char trackName[maxTrackOrAuthorNameLen+2] = "Pokitto";
+        char authorName[maxTrackOrAuthorNameLen+2] = "Hanski";
+        char myTrack2[mapTotalSizeinFile] = {0};
+        if(m_trackNum != 0)
+        {
+             // Read and verify track
+            m_isTrackOk = ReadAndValidateTrack(
+                dirName, fileNameArr[m_trackNum-1],
+                /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
+        }
+
+        if(m_isTrackOk)
+        {
+            // Print the track name.
+            char text[64];
+            mygame.display.setColor(2,1);
+            mygame.display.print(5, 5, trackName);
+
+            // Store the map.
+            if(m_trackNum == 0)
+            {
+                // Now point to the map in ROM.
+                blockMap = (uint8_t*)blockMapROM;
+            }
+            else
+            {
+                uint8_t blockMapRAM2[mapWidth*mapHeight];
+                {
+                    // Map of blocks. Defines the whole game field!
+                    if( blockMapRAM == NULL )
+                        blockMapRAM = new uint8_t[mapWidth*mapHeight];
+                    int32_t convTableLen = sizeof(asciiTrackConversionTable);
+                    for(int32_t y = 0; y < mapHeight; y++)
+                    {
+                        for(int32_t x = 0; x < mapWidth; x++)
+                        {
+                            // Create map
+                            int invY = mapHeight - 1 - y; // mirror map vertically
+                            int32_t mapWidth2 = mapWidth+1; // added newline
+                            char item = myTrack2[invY*mapWidth2 + x];
+                            //assert(item!=' ');
+
+                            // Search the item from the conversion table
+                            int32_t i=0;
+                            for(; i<convTableLen; i++ )
+                                if(asciiTrackConversionTable[i]==item)
+                                    break;
+
+                            if(i>=convTableLen || item==' ')
+                                break; // error
+                            blockMapRAM[y*mapWidth + x] = i;
+                        }
+                    }
+                }
+
+                // Now point to the map in RAM.
+                blockMap = blockMapRAM;
+            }
+
+            m_sceneryH = sceneryH;
+
+            // Calc perspective
+            for( int32_t y = 0; y<screenH; y++) {
+
+               #if 0 // 2d
+                 //m_perspectiveScaleY[y] = fix16_from_float(y*40.0);
+                 //m_perspectiveScaleX[y] = fix16_from_float(100*40.0);
+               #elif 1
+                const fix16_t fxPerspectiveFactor = fix16_from_int(200*screenH);
+                m_perspectiveScaleX[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+15)*0.25)));
+                m_perspectiveScaleY[y] = fix16_mul(fix16_from_float(0.7), m_perspectiveScaleX[y]);
+
+                m_previewX = 500;
+                m_previewY = -600;
+                m_previewPhase = 1;
+                //m_sceneryH = 0;
+
+               #else // 3d
+                const fix16_t fxPerspectiveFactor = fix16_from_int(350*screenH);
+                 // s = k/(y+15) ==> y+15 = k/s ==> y = k/s -15;
+                 // y = zk*yk /z -15
+                 m_perspectiveScaleY[y] = fix16_div(fxPerspectiveFactor, fix16_from_float((float)((y+screenShiftY)*1.0)));
+                 m_perspectiveScaleX[y] = m_perspectiveScaleY[y];
+               #endif
+            }
+            m_fxCamAngle = 0;
+            m_fxScaleFactor = fix16_from_float(1);
+
+        }
     }
-    else
+    else if (m_isTrackOk)
     {
         // Draw track
 
-        #if  0 // 2d track preview
-
-        // Zoom
-        m_fxScaleFactor += fix16_from_float(0.2);
-        if(m_fxScaleFactor>fix16_from_float(30))
-            m_fxScaleFactor = fix16_from_float(30);
-        for( int32_t y = 0; y<screenH; y++) {
-            m_perspectiveScaleY[y] = y * m_fxScaleFactor;
-            m_perspectiveScaleX[y] = 100 * m_fxScaleFactor;
-        }
-
-        // ** Draw the road and edges and terrain.
-        fix16_t fxCamX = fix16_from_int(1300);
-        fix16_t fxCamY = fix16_from_int(1200) - (m_fxScaleFactor*40);
-        fix16_t fxRotateCenterX = fxCamX;
-        fix16_t fxRotateCenterY = fxCamY;
-        //fxRotateCenterX += fix16_from_int(-400);
-        //fxRotateCenterY += fix16_from_int(1500);
-
-        #elif 1
 
         // Preview track movement
         int32_t speed = 20;
         switch( m_previewPhase )
         {
-        // Move north.
-//        case 0:
-//            m_previewY+=speed;
-//            if(m_previewY> 1600)
-//               m_previewPhase++;
-//            break;
-
         // Move east.
         case 1:
             m_previewX+=speed;
@@ -716,13 +706,6 @@ bool CMenu::HandleSelectTrackMenu()
                m_previewPhase=3;
             break;
 
-        // Move south.
-//        case 2:
-//            m_previewY-=speed;
-//            if(m_previewY < -100)
-//               m_previewPhase++;
-//            break;
-
         // Move west.
         case 3:
             m_previewX-=speed;
@@ -730,7 +713,6 @@ bool CMenu::HandleSelectTrackMenu()
                //m_previewPhase = 0;
                m_previewPhase = 1;
             break;
-
         }
 
         // ** Draw the road and edges and terrain.
@@ -738,23 +720,6 @@ bool CMenu::HandleSelectTrackMenu()
         fix16_t fxCamY = fix16_from_int(m_previewY);
         fix16_t fxRotateCenterX = fxCamX;
         fix16_t fxRotateCenterY = fxCamY;
-        //fxRotateCenterX += fix16_from_int(-400);
-        //fxRotateCenterY += fix16_from_int(1500);
-
-        #else
-
-        // Rotate
-        m_fxCamAngle -= fix16_pi >> 8;
-
-        // ** Draw the road and edges and terrain.
-        fix16_t fxCamX = fix16_from_int(1500);
-        fix16_t fxCamY = fix16_from_int(-500);
-        fix16_t fxRotateCenterX = fxCamX;
-        fix16_t fxRotateCenterY = fxCamY;
-        fxRotateCenterX += fix16_from_int(-400);
-        fxRotateCenterY += fix16_from_int(1500);
-
-        #endif
 
         DrawMode7( fix16_to_int(fxCamX), fix16_to_int(fxCamY), m_fxCamAngle, fxRotateCenterX, fxRotateCenterY, m_perspectiveScaleX, m_perspectiveScaleY, m_sceneryH);
     }
@@ -797,4 +762,187 @@ bool CMenu::HandleSelectTrackMenu()
 }
 
 //
+//
+bool CMenu::ReadAndValidateTrack(
+    char* trackPath, char* trackFileName,
+    /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName )
+{
+    // Clear screen
+    mygame.display.setColor(1,1);
+    mygame.display.fillRect(0, 0, screenW, screenH);
+    mygame.display.setColor(2,1);
 
+    // Read the track ascii file from SD
+    char myTrack1[mapTotalSizeinFile*2] = {0};
+    //uint8_t blockMapRAM2[mapWidth*mapHeight];
+    char filePathAndName[128] = {0};
+    strcat(filePathAndName, trackPath);
+    #ifndef POK_SIM
+    strcat(filePathAndName, "/");
+    #endif
+    strcat(filePathAndName, trackFileName);
+    uint8_t err = fileOpen(filePathAndName, FILE_MODE_READONLY);
+    if(err)
+    {
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "File is not");
+        mygame.display.print(1, 50, "found!");
+        fileClose(); // close any open files
+        return false;
+    }
+    uint16_t len = fileReadBytes((uint8_t*)myTrack1, mapTotalSizeinFile*2);
+    fileClose(); // close any open files
+
+    // If a file contains only the decimal bytes 9–13, 32–126, it's probably a pure ASCII text file.
+    for(int32_t i=0; i<len; i++)
+    {
+        if(! ( (myTrack1[i]>=9 && myTrack1[i]<=13) || (myTrack1[i]>=32 && myTrack1[i]<=126) ) )
+        {
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 40, "Not an ascii");
+            mygame.display.print(1, 50, "file!");
+            return false;
+        }
+    }
+
+    // Read the track name
+    int32_t pos = 0;
+    const char lineFeed = 10, carriageReturn=13;
+    int32_t i=0;
+    for(;myTrack1[pos]!=lineFeed && myTrack1[pos]!=carriageReturn && i<=maxTrackOrAuthorNameLen;pos++, i++)
+        trackName[i] = myTrack1[pos];
+
+
+    // Check for error.
+    if(i > maxTrackOrAuthorNameLen-1)
+    {
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "Circuit name");
+        mygame.display.print(1, 50, "too long!");
+        return false;
+    }
+    trackName[i]='\0';
+
+    // Skip extra LF and CR chars
+    for(;myTrack1[pos]==lineFeed || myTrack1[pos]==carriageReturn;pos++);
+
+    // Read the author name
+    i=0;
+    for(;myTrack1[pos]!=lineFeed && myTrack1[pos]!=carriageReturn && i<=maxTrackOrAuthorNameLen;pos++,i++)
+        authorName[i] = myTrack1[pos];
+
+    // Check for error.
+    if(i > maxTrackOrAuthorNameLen-1)
+    {
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "Author name");
+        mygame.display.print(1, 50, "too long!");
+        return false;
+    }
+    authorName[i]='\0';
+
+    // Skip extra LF and CR chars
+    for(;myTrack1[pos]==lineFeed || myTrack1[pos]==carriageReturn;pos++);
+
+    // Copy the map to the output array.
+    int32_t currentPosInLine = 0;
+    int32_t currentLineNum = 0;
+    for(int32_t i=0; i<mapTotalSizeinFile && pos<len; i++, pos++)
+    {
+        char c = myTrack1[pos];
+
+        if(c==lineFeed || c==carriageReturn )
+        {
+
+            //
+            if(currentPosInLine<mapWidth)
+            {
+                // Too short line
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 40, "Line is too");
+                mygame.display.print(1, 50, "short!");
+                mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+                return false;
+            }
+
+            //
+            myTrack2[i] = lineFeed;
+            currentPosInLine = 0;
+            currentLineNum++;
+
+            // Skip extra LF and CR chars
+            pos++;
+            for(;pos<len && (myTrack1[pos]==lineFeed || myTrack1[pos]==carriageReturn);pos++);
+            pos--;
+
+
+
+        }
+        else if(currentPosInLine>=mapWidth)
+        {
+            // Too long line
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 40, "Line is too");
+            mygame.display.print(1, 50, "long!");
+            mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+            return false;
+        }
+
+        if(currentLineNum>=mapHeight )
+        {
+            // Too many lines
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 40, "Too many");
+            mygame.display.print(1, 50, "lines!");
+            mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+            return false;
+        }
+
+        // If this is not the last char on the line, copy it to the map.
+        if(myTrack2[i] != lineFeed)
+        {
+            // Check that the char is valid.
+            int32_t convTableLen = sizeof(asciiTrackConversionTable);
+            int32_t i=0;
+            for(; i<convTableLen; i++ )
+                if(asciiTrackConversionTable[i]==c)
+                    break;
+            if(i>=convTableLen || c==' ')
+            {
+                // Not a valid char.
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 40, "Invalid char");
+                mygame.display.print(1, 50, "\"");mygame.display.print(c);mygame.display.print("\"");
+                mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+                mygame.display.print(1, 70, "Row:");mygame.display.print(currentPosInLine+1);
+                return false;
+            }
+
+            // Store the char to the map.
+            myTrack2[i] = c;
+            currentPosInLine++;
+        }
+
+    }  // end for
+
+    // Check that we found enough lines.
+    if( currentLineNum<mapHeight-1 )
+    {
+        // Track file is too short
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "Too few lines");
+        mygame.display.print(1, 50, "at line:");mygame.display.print(currentLineNum+3);
+        return false;
+    }
+
+    // Check that the last line was not too short.
+    if(currentPosInLine<mapWidth)
+    {
+        // Too short line
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "Line is too");
+        mygame.display.print(1, 50, "short!");
+        mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+        return false;
+    }
+}

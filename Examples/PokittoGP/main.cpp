@@ -68,12 +68,14 @@ CShip* g_ships[ g_objects3dMaxCount ] = {0};
 // Create an instance of cookie.
 mycookie highscore;
 
+// The menu object.
+CMenu menu;
+
 // Main
 int main () {
 
     // Initialize variables.
     bool isStartup = true;
-    CMenu menu;
 
     // Load cookie
     // NOTE: This must be before Pokitto::core::begin(). Otherwise the audio interrupt do not work!
@@ -484,9 +486,11 @@ void InitGameObjectsForTrack1(bool isRace)
 {
     #if 1
     // Copy cactus and rock array pointers to the object list.
-    int32_t billboardObjectCount = 2*8;
+    int32_t billboardObjectCount = 2*8;  // race
     if( !g_isRace )
-        billboardObjectCount = 3*8;
+        billboardObjectCount = 3*8;  // time treial
+    if(menu.m_trackNum !=0)  // user track, no billboard objects
+        billboardObjectCount = 0;
 
     int32_t i = 0;
     for(; i < billboardObjectCount; i++ )
@@ -919,6 +923,20 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
     }  // end for
 
     return isCollidedToPlayerShip;
+}
+
+
+void SaveHighScore(uint32_t final_lap_time_ms)
+{
+    // Save cookie if this is the best time
+    if( !g_isRace && // only for the time trial
+       menu.m_trackNum == 0 && // only for the ROM track for now
+       (highscore.bestLap_ms == 0 || final_lap_time_ms < highscore.bestLap_ms)
+    )
+    {
+        highscore.bestLap_ms = final_lap_time_ms;
+        highscore.saveCookie();
+    }
 }
 
 
