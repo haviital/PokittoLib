@@ -505,37 +505,37 @@ bool CMenu::HandlePilotPictureMenu()
     }
 }
 
-//Example
-//........
-//./r==,`.
-//.|!..|!.
-//.|!..|!.
-//.|+--j!.
-//.\====%.
-//........
+        //Example
+        //........
+        //./r==,`.
+        //.|!..|!.
+        //.|!..|!.
+        //.|+--j!.
+        //.\====%.
+        //........
 
-// Conversion between the ascii char and the block index.
-const char asciiTrackConversionTable[20] = {
-    '|',  // 0: The left edge.
-    '!',  // 1: The right edge.
-    ' ',  // 2: None.
-    ' ',  // 3: None
-    '=',  // 4: The top edge
-    '-',  // 5: The bottom edge
-    '\\', // 6: The outer corner of the 1st quarter.
-    '+',  // 7: The inner corner of the 1st quarter.
-    '/',  // 8: The outer corner of the 4th quarter.
-    'r',  // 9: The inner corner of the 4th quarter.
-    '%',  // 10: The outer corner of the 2nd quarter.
-    'j',  // 11: The inner corner of the 2nd quarter.
-    '`',  // 12: The outer corner of the 3rd quarter.
-    ',',  // 13: The inner corner of the 3rd quarter.
-    '.',  // 14: The surface.
-    '#',  // 15: The starting grid, left side.
-    '*',  // 16: The starting grid, right side.
-    'X',  // 17: The halfway mark, left side.
-    'x',  // 18: The halfway mark, right side.
-};
+        // Conversion between the ascii char and the block index.
+        const char asciiTrackConversionTable[20] = {
+            '|',  // 0: The left edge.
+            '!',  // 1: The right edge.
+            ' ',  // 2: None.
+            ' ',  // 3: None
+            '=',  // 4: The top edge
+            '-',  // 5: The bottom edge
+            '\\', // 6: The outer corner of the 1st quarter.
+            '+',  // 7: The inner corner of the 1st quarter.
+            '/',  // 8: The outer corner of the 4th quarter.
+            'r',  // 9: The inner corner of the 4th quarter.
+            '%',  // 10: The outer corner of the 2nd quarter.
+            'j',  // 11: The inner corner of the 2nd quarter.
+            '`',  // 12: The outer corner of the 3rd quarter.
+            ',',  // 13: The inner corner of the 3rd quarter.
+            '.',  // 14: The surface.
+            '#',  // 15: The starting grid, left side.
+            '*',  // 16: The starting grid, right side.
+            'X',  // 17: The halfway mark, left side.
+            'x',  // 18: The halfway mark, right side.
+        };
 
 //
 bool CMenu::HandleSelectTrackMenu()
@@ -870,6 +870,10 @@ bool CMenu::ReadAndValidateTrack(
             currentPosInLine = 0;
             currentLineNum++;
 
+            //!! HV TEST
+            if(currentLineNum==31)
+                currentLineNum = 31;
+
             // Skip extra LF and CR chars
             pos++;
             for(;pos<len && (myTrack1[pos]==lineFeed || myTrack1[pos]==carriageReturn);pos++);
@@ -901,26 +905,10 @@ bool CMenu::ReadAndValidateTrack(
         // If this is not the last char on the line, copy it to the map.
         if(myTrack2[i] != lineFeed)
         {
-            // Check that the char is valid.
-            int32_t convTableLen = sizeof(asciiTrackConversionTable);
-            int32_t i=0;
-            for(; i<convTableLen; i++ )
-                if(asciiTrackConversionTable[i]==c)
-                    break;
-            if(i>=convTableLen || c==' ')
-            {
-                // Not a valid char.
-                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-                mygame.display.print(1, 40, "Invalid char");
-                mygame.display.print(1, 50, "\"");mygame.display.print(c);mygame.display.print("\"");
-                mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
-                mygame.display.print(1, 70, "Row:");mygame.display.print(currentPosInLine+1);
-                return false;
-            }
-
-            // Store the char to the map.
             myTrack2[i] = c;
             currentPosInLine++;
+            if(currentPosInLine==32)
+                currentPosInLine = 32; //!!HV
         }
 
     }  // end for
