@@ -972,7 +972,9 @@ bool CMenu::ReadAndValidateTrack(
 //
 bool CMenu::ReadAndValidateTextures(char* dirPath)
 {
-    int32_t texIndex = 5;
+    RestoreRomTextures();
+
+    int32_t texIndex = 1;
 
     //
     char filePathAndName[128] = {0};
@@ -980,7 +982,7 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
     #ifndef POK_SIM
     strcat(filePathAndName, "/");
     #endif
-    strcat(filePathAndName, "tex05.bmp");
+    strcat(filePathAndName, "tex01.bmp");
 
 
     // Read texture
@@ -992,19 +994,111 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
     //
     if(err == 0)
     {
-        // TODO Check dimensions
+        if(false)
+        {
+            //
+            // TODO Check dimensions
 
-        // TODO
-        // must free the previously allocated user textures!
-        //if(isUserTexture[texIndex])
-        //    free(current_texture_bitmaps[texIndex]-2);
+            // 8x8
+            current_texture_bitmaps[texIndex] = bitmap+2;
 
-        //
-        current_texture_bitmaps[texIndex] = bitmap+2;
+            //
+            current_texture_bitmaps_mm1[texIndex] =  current_texture_bitmaps[texIndex] + (8 * 8);
+            current_texture_bitmaps_mm2[texIndex] =  current_texture_bitmaps[texIndex] + (8 * 8) + 4;
+        }
+        else
+        {
+            // 16x24
+            //
+            uint8_t* tmpBitmap0 = (uint8_t *) malloc((8*8) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmap1 = (uint8_t *) malloc((8*8) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmap2 = (uint8_t *) malloc((8*8) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmap3 = (uint8_t *) malloc((8*8) + 2);  // header takes 2 bytes
+            tmpBitmap0[0] = 8; tmpBitmap0[1] = 8; // width & height
+            tmpBitmap1[0] = 8; tmpBitmap1[1] = 8; // width & height
+            tmpBitmap2[0] = 8; tmpBitmap2[1] = 8; // width & height
+            tmpBitmap3[0] = 8; tmpBitmap3[1] = 8; // width & height
+            uint8_t* tmpBitmapData0 = &(tmpBitmap0[2]);
+            uint8_t* tmpBitmapData1 = &(tmpBitmap1[2]);
+            uint8_t* tmpBitmapData2 = &(tmpBitmap2[2]);
+            uint8_t* tmpBitmapData3 = &(tmpBitmap3[2]);
+            uint8_t* readBitmapData = &(bitmap[2]);
+            for(int32_t x=0; x<8; x++)
+            {
+                for(int32_t y=0; y<8; y++)
+                {
+                    tmpBitmapData0[y*8+x] = readBitmapData[y*16+x];
+                    tmpBitmapData1[y*8+x] = readBitmapData[y*16+x+8];
+                    tmpBitmapData2[y*8+x] = readBitmapData[(y+8)*16+x];
+                    tmpBitmapData3[y*8+x] = readBitmapData[(y+8)*16+x+8];
+                }
+            }
+            current_texture_bitmaps[texIndex] = tmpBitmapData0;
+            current_texture_bitmaps[texIndex+1] = tmpBitmapData1;
+            current_texture_bitmaps[texIndex+2] = tmpBitmapData2;
+            current_texture_bitmaps[texIndex+3] = tmpBitmapData3;
 
-        //
-        current_texture_bitmaps_mm1[texIndex] =  current_texture_bitmaps[texIndex] + (texW * tileH);
-        current_texture_bitmaps_mm2[texIndex] =  current_texture_bitmaps[texIndex] + (texW * tileH) + (tileW>>1);
+            // MIPMAP 1 (4x4 pixels)
+            uint8_t* tmpBitmapMM0 = (uint8_t *) malloc((4*4) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmapMM1 = (uint8_t *) malloc((4*4) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmapMM2 = (uint8_t *) malloc((4*4) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmapMM3 = (uint8_t *) malloc((4*4) + 2);  // header takes 2 bytes
+            tmpBitmapMM0[0] = 4; tmpBitmapMM0[1] = 4; // width & height
+            tmpBitmapMM1[0] = 4; tmpBitmapMM1[1] = 4; // width & height
+            tmpBitmapMM2[0] = 4; tmpBitmapMM2[1] = 4; // width & height
+            tmpBitmapMM3[0] = 4; tmpBitmapMM3[1] = 4; // width & height
+            uint8_t* tmpBitmapDataMM0 = &(tmpBitmapMM0[2]);
+            uint8_t* tmpBitmapDataMM1 = &(tmpBitmapMM1[2]);
+            uint8_t* tmpBitmapDataMM2 = &(tmpBitmapMM2[2]);
+            uint8_t* tmpBitmapDataMM3 = &(tmpBitmapMM3[2]);
+            uint8_t* readBitmapDataMM = readBitmapData + (16*16);
+            for(int32_t x=0; x<4; x++)
+            {
+                for(int32_t y=0; y<4; y++)
+                {
+                    tmpBitmapDataMM0[y*4+x] = readBitmapDataMM[y*16     + x];
+                    tmpBitmapDataMM1[y*4+x] = readBitmapDataMM[y*16     + x+4];
+                    tmpBitmapDataMM2[y*4+x] = readBitmapDataMM[(y+4)*16 + x];
+                    tmpBitmapDataMM3[y*4+x] = readBitmapDataMM[(y+4)*16 + x+4];
+                }
+
+            }
+            current_texture_bitmaps_mm1[texIndex] = tmpBitmapDataMM0;
+            current_texture_bitmaps_mm1[texIndex+1] = tmpBitmapDataMM1;
+            current_texture_bitmaps_mm1[texIndex+2] = tmpBitmapDataMM2;
+            current_texture_bitmaps_mm1[texIndex+3] = tmpBitmapDataMM3;
+#if 1
+
+            // MIPMAP 2 (2x2 pixels)
+            uint8_t* tmpBitmapMMM0 = (uint8_t *) malloc((2*2) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmapMMM1 = (uint8_t *) malloc((2*2) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmapMMM2 = (uint8_t *) malloc((2*2) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmapMMM3 = (uint8_t *) malloc((2*2) + 2);  // header takes 2 bytes
+            tmpBitmapMMM0[0] = 2; tmpBitmapMMM0[1] = 2; // width & height
+            tmpBitmapMMM1[0] = 2; tmpBitmapMMM1[1] = 2; // width & height
+            tmpBitmapMMM2[0] = 2; tmpBitmapMMM2[1] = 2; // width & height
+            tmpBitmapMMM3[0] = 2; tmpBitmapMMM3[1] = 2; // width & height
+            uint8_t* tmpBitmapDataMMM0 = &(tmpBitmapMMM0[2]);
+            uint8_t* tmpBitmapDataMMM1 = &(tmpBitmapMMM1[2]);
+            uint8_t* tmpBitmapDataMMM2 = &(tmpBitmapMMM2[2]);
+            uint8_t* tmpBitmapDataMMM3 = &(tmpBitmapMMM3[2]);
+            uint8_t* readBitmapDataMMM = readBitmapDataMM + 8;
+            for(int32_t x=0; x<2; x++)
+            {
+                for(int32_t y=0; y<2; y++)
+                {
+                    tmpBitmapDataMMM0[y*2+x] = readBitmapDataMMM[y*16    + x];
+                    tmpBitmapDataMMM1[y*2+x] = readBitmapDataMMM[y*16    + x+2];
+                    tmpBitmapDataMMM2[y*2+x] = readBitmapDataMMM[(y+2)*16 + x];
+                    tmpBitmapDataMMM3[y*2+x] = readBitmapDataMMM[(y+2)*16 + x+2];
+                }
+            }
+            current_texture_bitmaps_mm2[texIndex] = tmpBitmapDataMMM0;
+            current_texture_bitmaps_mm2[texIndex+1] = tmpBitmapDataMMM1;
+            current_texture_bitmaps_mm2[texIndex+2] = tmpBitmapDataMMM2;
+            current_texture_bitmaps_mm2[texIndex+3] = tmpBitmapDataMMM3;
+#endif
+        }
     }
     else
     {

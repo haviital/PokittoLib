@@ -119,5 +119,6 @@ void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
 void DrawRankNumber(int32_t x, int32_t y);
 void SaveHighScore(uint32_t final_lap_time_ms);
+void RestoreRomTextures();
 
 

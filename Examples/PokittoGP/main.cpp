@@ -939,4 +939,36 @@ void SaveHighScore(uint32_t final_lap_time_ms)
     }
 }
 
+//
+void RestoreRomTextures()
+{
+    // Restore ROM textures first as a fallback
+   // TODO
+    // must free the previously allocated user textures!
+    //if(isUserTexture[texIndex])
+    //    free(current_texture_bitmaps[texIndex]-2);
+    current_texture_bitmaps[0] = NULL;
+    current_texture_bitmaps[1] = image_ball1_a+2;
+    current_texture_bitmaps[2] = image_ball1_b+2;
+    current_texture_bitmaps[3] = image_ball1_c+2;
+    current_texture_bitmaps[4] = image_ball1_d+2;
+    current_texture_bitmaps[5] = image_road1+2;
+    current_texture_bitmaps[6] = image_road2+2;
+    current_texture_bitmaps[7] = image_terrain_6_a+2;
+    current_texture_bitmaps[8] = image_terrain_6_b+2;
+    current_texture_bitmaps[9] = image_terrain_6_c+2;
+    current_texture_bitmaps[10] = image_terrain_6_d+2;
+    current_texture_bitmaps[11] = image_start_a+2;
+    current_texture_bitmaps[12] = image_start_b+2;
+    current_texture_bitmaps[13] = image_start_c+2;
+    current_texture_bitmaps[14] = image_start_d+2;
+    current_texture_bitmaps[15] = image_light+2;
+
+    // Restore mipmap pointers.
+    for( uint32_t ii=0; ii<current_texture_bitmaps_count; ii++)
+    {
+        current_texture_bitmaps_mm1[ii] =  current_texture_bitmaps[ii] + (texW * tileH);
+        current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
+    }
+}
 
