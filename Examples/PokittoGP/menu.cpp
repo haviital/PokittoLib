@@ -4,6 +4,7 @@
 #include "gfx_hdr/image_pilots1.h"
 #include "gfx_hdr/image_pilots2.h"
 #include "gfx_hdr/image_titlescreen.h"
+#include "imageformat.h"
 
 #ifdef POK_SIM
 //#include "io.h"
@@ -562,7 +563,7 @@ bool CMenu::HandleSelectTrackMenu()
 
         #if POK_SIM
         char* dirName = "./pgpdata/tracks/";
-        getFirstFile("",dirName);
+        getFirstFile("txt",dirName);
         #else
         char* dirName = "pgpdata/tracks";
         bool isFirstFile = true;
@@ -581,7 +582,7 @@ bool CMenu::HandleSelectTrackMenu()
             else
                 fileName = getNextFile("");
             #else
-            fileName = getNextFile("");
+            fileName = getNextFile("txt");
             #endif
 
            if(!fileName || strlen(fileName)==0)
@@ -609,6 +610,12 @@ bool CMenu::HandleSelectTrackMenu()
             m_isTrackOk = ReadAndValidateTrack(
                 dirName, fileNameArr[m_trackNum-1],
                 /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
+
+            // TODO: reset all textures to ROM textures
+
+            // Read and verify textures
+            if( m_isTrackOk )
+                m_isTrackOk = ReadAndValidateTextures(dirName);
         }
 
         if(m_isTrackOk)
@@ -695,8 +702,8 @@ bool CMenu::HandleSelectTrackMenu()
     {
         // Draw track
 
-        mygame.display.setColor(2,1);
-        mygame.display.print(5, 5, m_test); mygame.display.print("KB        ");
+        //mygame.display.setColor(2,1);
+        //mygame.display.print(5, 5, m_test); mygame.display.print("KB        ");
 
         // Preview track movement
         int32_t speed = 20;
@@ -760,17 +767,17 @@ bool CMenu::HandleSelectTrackMenu()
         // Do not close the menu
         return true;
     }
-    else if(Pokitto::Core::buttons.released(BTN_RIGHT))
-    {
-        // !!HV TEST
-        char* test = new char[1024];
-        if(test) m_test++;
-        mygame.display.setColor(1,1);
-        mygame.display.fillRect(0, 0, screenW, screenH);
-
-        // Do not close the menu
-        return true;
-    }
+    //else if(Pokitto::Core::buttons.released(BTN_RIGHT))
+    //{
+    //    // !!HV TEST
+    //    char* test = new char[1024];
+    //    if(test) m_test++;
+    //    mygame.display.setColor(1,1);
+    //    mygame.display.fillRect(0, 0, screenW, screenH);
+	//
+    //    // Do not close the menu
+    //    return true;
+    //}
 
     // Do not close the view
     return true;
@@ -960,4 +967,49 @@ bool CMenu::ReadAndValidateTrack(
         mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
         return false;
     }
+}
+
+//
+bool CMenu::ReadAndValidateTextures(char* dirPath)
+{
+    int32_t texIndex = 5;
+
+    //
+    char filePathAndName[128] = {0};
+    strcat(filePathAndName, dirPath);
+    #ifndef POK_SIM
+    strcat(filePathAndName, "/");
+    #endif
+    strcat(filePathAndName, "tex05.bmp");
+
+
+    // Read texture
+    uint16_t* palette = NULL; // Gets the ownership.
+    uint8_t* bitmap = NULL; // Gets the ownership.
+    int err = openImageFileFromSD(filePathAndName, /*OUT*/&palette, /*OUT*/&bitmap);
+    free(palette); palette = NULL;
+
+    //
+    if(err == 0)
+    {
+        // TODO Check dimensions
+
+        // TODO
+        // must free the previously allocated user textures!
+        //if(isUserTexture[texIndex])
+        //    free(current_texture_bitmaps[texIndex]-2);
+
+        //
+        current_texture_bitmaps[texIndex] = bitmap+2;
+
+        //
+        current_texture_bitmaps_mm1[texIndex] =  current_texture_bitmaps[texIndex] + (texW * tileH);
+        current_texture_bitmaps_mm2[texIndex] =  current_texture_bitmaps[texIndex] + (texW * tileH) + (tileW>>1);
+    }
+    else
+    {
+        // print error
+    }
+
+    return true;
 }

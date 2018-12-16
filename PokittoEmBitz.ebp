@@ -9417,6 +9417,16 @@
 		<Unit filename="Pokitto\POKITTO_LIBS\FixMath\uint32.h">
 			<Option target="PokittoGP" />
 		</Unit>
+		<Unit filename="Pokitto\POKITTO_LIBS\ImageFormat\BmpImage.cpp">
+			<Option compilerVar="CC" />
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="Pokitto\POKITTO_LIBS\ImageFormat\defines_linux_SIM.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="Pokitto\POKITTO_LIBS\ImageFormat\ImageFormat.h">
+			<Option target="PokittoGP" />
+		</Unit>
 		<Unit filename="Pokitto\POKITTO_LIBS\JoyHat\JoyHat.cpp">
 			<Option compilerVar="CC" />
 			<Option target="PokiSnake" />

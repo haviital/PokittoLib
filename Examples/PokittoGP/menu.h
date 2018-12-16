@@ -23,6 +23,7 @@ public:
     bool ReadAndValidateTrack(
         char* trackPath, char* trackFileName,
         /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName );
+    bool ReadAndValidateTextures(char* dirPath);
 
 public:
     bool m_isOpen;
