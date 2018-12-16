@@ -551,7 +551,8 @@ bool CMenu::HandleSelectTrackMenu()
         mygame.display.setColor(1,1);
         mygame.display.fillRect(0, 0, screenW, screenH);
         mygame.display.setColor(2,1);
-        mygame.display.print(5, 30, "Loading the track...");
+        mygame.display.print(1, 30, "Loading");
+        mygame.display.print(1, 40, "the track...");
         while (!mygame.update()); // draw now
 
         // Setup track
@@ -686,6 +687,7 @@ bool CMenu::HandleSelectTrackMenu()
             }
             m_fxCamAngle = 0;
             m_fxScaleFactor = fix16_from_float(1);
+            m_test = 0;
 
         }
     }
@@ -693,6 +695,8 @@ bool CMenu::HandleSelectTrackMenu()
     {
         // Draw track
 
+        mygame.display.setColor(2,1);
+        mygame.display.print(5, 5, m_test); mygame.display.print("KB        ");
 
         // Preview track movement
         int32_t speed = 20;
@@ -752,6 +756,17 @@ bool CMenu::HandleSelectTrackMenu()
         m_hasTrackBeenLoaded = false;
         if(++m_trackNum >= m_trackCount)
             m_trackNum = 0;
+
+        // Do not close the menu
+        return true;
+    }
+    else if(Pokitto::Core::buttons.released(BTN_RIGHT))
+    {
+        // !!HV TEST
+        char* test = new char[1024];
+        if(test) m_test++;
+        mygame.display.setColor(1,1);
+        mygame.display.fillRect(0, 0, screenW, screenH);
 
         // Do not close the menu
         return true;
@@ -865,14 +880,10 @@ bool CMenu::ReadAndValidateTrack(
                 return false;
             }
 
-            //
+            // Next line.
             myTrack2[i] = lineFeed;
             currentPosInLine = 0;
             currentLineNum++;
-
-            //!! HV TEST
-            if(currentLineNum==31)
-                currentLineNum = 31;
 
             // Skip extra LF and CR chars
             pos++;
@@ -905,10 +916,26 @@ bool CMenu::ReadAndValidateTrack(
         // If this is not the last char on the line, copy it to the map.
         if(myTrack2[i] != lineFeed)
         {
+            // Check that the char is valid.
+            int32_t convTableLen = sizeof(asciiTrackConversionTable);
+            int32_t tableIndex=0;
+            for(; tableIndex<convTableLen; tableIndex++ )
+                if(asciiTrackConversionTable[tableIndex]==c)
+                    break;
+            if(tableIndex>=convTableLen || c==' ')
+            {
+                // Not a valid char.
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 40, "Invalid");
+                mygame.display.print(1, 50, "char:\"");mygame.display.print(c);mygame.display.print("\"!");
+                mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+                mygame.display.print(1, 70, "Row:");mygame.display.print(currentPosInLine+1);
+                return false;
+            }
+
+            // Store the char to the map.
             myTrack2[i] = c;
             currentPosInLine++;
-            if(currentPosInLine==32)
-                currentPosInLine = 32; //!!HV
         }
 
     }  // end for

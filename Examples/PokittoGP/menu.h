@@ -43,4 +43,5 @@ public:
     int32_t m_trackNum;
     int32_t m_trackCount;
     bool m_isTrackOk;
+    int32_t m_test;
 };

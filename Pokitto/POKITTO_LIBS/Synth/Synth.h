@@ -72,7 +72,8 @@ extern mixFunction HWMarr []; // counts down
 #define ARPSTEPMAX 4 // was 5
 #define PATTERNLENGTH 64
 #define MAXPATTERNS 10
-#define MAXBLOCKS 30 // 10 *3
+//!!HV #define MAXBLOCKS 30 // 10 *3
+#define MAXBLOCKS 2*3
 
 #define VOLTICK POK_AUD_FREQ/8820 //was 5
 #define ARPTICK POK_AUD_FREQ/441 // 150 // was 200
