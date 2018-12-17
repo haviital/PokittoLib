@@ -158,7 +158,13 @@ int openImageFileFromSD(char* filepath, uint16_t **palette_out, uint8_t **bitmap
     bmi.bmiHeader.biClrUsed = c;
 
     /* Allocate memory for the output parameter */
-    if (numcol>bmi.bmiHeader.biClrUsed) numcol = bmi.bmiHeader.biClrUsed;
+    //if (numcol>bmi.bmiHeader.biClrUsed) numcol = bmi.bmiHeader.biClrUsed;
+  	if (numcol!=bmi.bmiHeader.biClrUsed)
+	{
+		POK_TRACE("The palette size do not mach to the color mode.\n");
+		free(*palette_out);
+		return(-1);
+	}
     *palette_out = (uint16_t*) malloc(numcol*2);
   	if (*palette_out == NULL)
 	{

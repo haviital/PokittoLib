@@ -91,7 +91,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 {
 
                     // Restore the original palette.
-                    Pokitto::Core::display.load565Palette(palette_pal);
+                    Pokitto::Core::display.load565Palette(g_gamePalette);
 
                     //
                     playing = false;
@@ -475,7 +475,7 @@ bool CMenu::HandlePilotPictureMenu()
         if(! m_pressedAkeyDownOutsideMenu)
         {
             // Close the menu
-            Pokitto::Core::display.load565Palette(palette_pal);
+            Pokitto::Core::display.load565Palette(g_gamePalette);
             return false;
         }
         else
@@ -628,6 +628,9 @@ bool CMenu::HandleSelectTrackMenu()
             // Store the map.
             if(m_trackNum == 0)
             {
+                // Restore ROM textures.
+                RestoreRomTextures();
+
                 // Now point to the map in ROM.
                 blockMap = (uint8_t*)blockMapROM;
             }
@@ -974,6 +977,25 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
 {
     RestoreRomTextures();
 
+    // Read palette
+    //
+    char filePathAndNamePal[128] = {0};
+    strcat(filePathAndNamePal, dirPath);
+    #ifndef POK_SIM
+    strcat(filePathAndNamePal, "/");
+    #endif
+    strcat(filePathAndNamePal, "palette.bmp");
+    uint16_t* palette = NULL; // Gets the ownership.
+    uint8_t* bitmap = NULL; // Gets the ownership.
+    int err = openImageFileFromSD(filePathAndNamePal, /*OUT*/&palette, /*OUT*/&bitmap);
+    free(bitmap); bitmap = NULL;
+    if(err == 0)
+    {
+        // Copy the default palette.
+        memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette, 256*2);
+        Pokitto::Core::display.load565Palette((const uint16_t*)g_gamePalette);
+    }
+
     int32_t texIndex = 1;
 
     //
@@ -986,9 +1008,9 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
 
 
     // Read texture
-    uint16_t* palette = NULL; // Gets the ownership.
-    uint8_t* bitmap = NULL; // Gets the ownership.
-    int err = openImageFileFromSD(filePathAndName, /*OUT*/&palette, /*OUT*/&bitmap);
+    palette = NULL; // Gets the ownership.
+    bitmap = NULL; // Gets the ownership.
+    err = openImageFileFromSD(filePathAndName, /*OUT*/&palette, /*OUT*/&bitmap);
     free(palette); palette = NULL;
 
     //
@@ -1005,19 +1027,22 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
             //
             current_texture_bitmaps_mm1[texIndex] =  current_texture_bitmaps[texIndex] + (8 * 8);
             current_texture_bitmaps_mm2[texIndex] =  current_texture_bitmaps[texIndex] + (8 * 8) + 4;
+
+            //
+            free(bitmap); bitmap = NULL;
         }
         else
         {
             // 16x24
             //
-            uint8_t* tmpBitmap0 = (uint8_t *) malloc((8*8) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmap1 = (uint8_t *) malloc((8*8) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmap2 = (uint8_t *) malloc((8*8) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmap3 = (uint8_t *) malloc((8*8) + 2);  // header takes 2 bytes
-            tmpBitmap0[0] = 8; tmpBitmap0[1] = 8; // width & height
-            tmpBitmap1[0] = 8; tmpBitmap1[1] = 8; // width & height
-            tmpBitmap2[0] = 8; tmpBitmap2[1] = 8; // width & height
-            tmpBitmap3[0] = 8; tmpBitmap3[1] = 8; // width & height
+            uint8_t* tmpBitmap0 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmap1 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmap2 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
+            uint8_t* tmpBitmap3 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
+            tmpBitmap0[0] = 8; tmpBitmap0[1] = 12; // width & height
+            tmpBitmap1[0] = 8; tmpBitmap1[1] = 12; // width & height
+            tmpBitmap2[0] = 8; tmpBitmap2[1] = 12; // width & height
+            tmpBitmap3[0] = 8; tmpBitmap3[1] = 12; // width & height
             uint8_t* tmpBitmapData0 = &(tmpBitmap0[2]);
             uint8_t* tmpBitmapData1 = &(tmpBitmap1[2]);
             uint8_t* tmpBitmapData2 = &(tmpBitmap2[2]);
@@ -1039,65 +1064,41 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
             current_texture_bitmaps[texIndex+3] = tmpBitmapData3;
 
             // MIPMAP 1 (4x4 pixels)
-            uint8_t* tmpBitmapMM0 = (uint8_t *) malloc((4*4) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmapMM1 = (uint8_t *) malloc((4*4) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmapMM2 = (uint8_t *) malloc((4*4) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmapMM3 = (uint8_t *) malloc((4*4) + 2);  // header takes 2 bytes
-            tmpBitmapMM0[0] = 4; tmpBitmapMM0[1] = 4; // width & height
-            tmpBitmapMM1[0] = 4; tmpBitmapMM1[1] = 4; // width & height
-            tmpBitmapMM2[0] = 4; tmpBitmapMM2[1] = 4; // width & height
-            tmpBitmapMM3[0] = 4; tmpBitmapMM3[1] = 4; // width & height
-            uint8_t* tmpBitmapDataMM0 = &(tmpBitmapMM0[2]);
-            uint8_t* tmpBitmapDataMM1 = &(tmpBitmapMM1[2]);
-            uint8_t* tmpBitmapDataMM2 = &(tmpBitmapMM2[2]);
-            uint8_t* tmpBitmapDataMM3 = &(tmpBitmapMM3[2]);
             uint8_t* readBitmapDataMM = readBitmapData + (16*16);
             for(int32_t x=0; x<4; x++)
             {
                 for(int32_t y=0; y<4; y++)
                 {
-                    tmpBitmapDataMM0[y*4+x] = readBitmapDataMM[y*16     + x];
-                    tmpBitmapDataMM1[y*4+x] = readBitmapDataMM[y*16     + x+4];
-                    tmpBitmapDataMM2[y*4+x] = readBitmapDataMM[(y+4)*16 + x];
-                    tmpBitmapDataMM3[y*4+x] = readBitmapDataMM[(y+4)*16 + x+4];
+                    tmpBitmapData0[(y+8)*8+x] = readBitmapDataMM[y*16     + x];
+                    tmpBitmapData1[(y+8)*8+x] = readBitmapDataMM[y*16     + x+4];
+                    tmpBitmapData2[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x];
+                    tmpBitmapData3[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x+4];
                 }
-
             }
-            current_texture_bitmaps_mm1[texIndex] = tmpBitmapDataMM0;
-            current_texture_bitmaps_mm1[texIndex+1] = tmpBitmapDataMM1;
-            current_texture_bitmaps_mm1[texIndex+2] = tmpBitmapDataMM2;
-            current_texture_bitmaps_mm1[texIndex+3] = tmpBitmapDataMM3;
-#if 1
+            current_texture_bitmaps_mm1[texIndex] = tmpBitmapData0 + (8 * 8);
+            current_texture_bitmaps_mm1[texIndex+1] = tmpBitmapData1 + (8 * 8);
+            current_texture_bitmaps_mm1[texIndex+2] = tmpBitmapData2 + (8 * 8);
+            current_texture_bitmaps_mm1[texIndex+3] = tmpBitmapData3 + (8 * 8);
 
             // MIPMAP 2 (2x2 pixels)
-            uint8_t* tmpBitmapMMM0 = (uint8_t *) malloc((2*2) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmapMMM1 = (uint8_t *) malloc((2*2) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmapMMM2 = (uint8_t *) malloc((2*2) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmapMMM3 = (uint8_t *) malloc((2*2) + 2);  // header takes 2 bytes
-            tmpBitmapMMM0[0] = 2; tmpBitmapMMM0[1] = 2; // width & height
-            tmpBitmapMMM1[0] = 2; tmpBitmapMMM1[1] = 2; // width & height
-            tmpBitmapMMM2[0] = 2; tmpBitmapMMM2[1] = 2; // width & height
-            tmpBitmapMMM3[0] = 2; tmpBitmapMMM3[1] = 2; // width & height
-            uint8_t* tmpBitmapDataMMM0 = &(tmpBitmapMMM0[2]);
-            uint8_t* tmpBitmapDataMMM1 = &(tmpBitmapMMM1[2]);
-            uint8_t* tmpBitmapDataMMM2 = &(tmpBitmapMMM2[2]);
-            uint8_t* tmpBitmapDataMMM3 = &(tmpBitmapMMM3[2]);
             uint8_t* readBitmapDataMMM = readBitmapDataMM + 8;
             for(int32_t x=0; x<2; x++)
             {
                 for(int32_t y=0; y<2; y++)
                 {
-                    tmpBitmapDataMMM0[y*2+x] = readBitmapDataMMM[y*16    + x];
-                    tmpBitmapDataMMM1[y*2+x] = readBitmapDataMMM[y*16    + x+2];
-                    tmpBitmapDataMMM2[y*2+x] = readBitmapDataMMM[(y+2)*16 + x];
-                    tmpBitmapDataMMM3[y*2+x] = readBitmapDataMMM[(y+2)*16 + x+2];
+                    tmpBitmapData0[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x];
+                    tmpBitmapData1[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x+2];
+                    tmpBitmapData2[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x];
+                    tmpBitmapData3[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x+2];
                 }
             }
-            current_texture_bitmaps_mm2[texIndex] = tmpBitmapDataMMM0;
-            current_texture_bitmaps_mm2[texIndex+1] = tmpBitmapDataMMM1;
-            current_texture_bitmaps_mm2[texIndex+2] = tmpBitmapDataMMM2;
-            current_texture_bitmaps_mm2[texIndex+3] = tmpBitmapDataMMM3;
-#endif
+            current_texture_bitmaps_mm2[texIndex] = tmpBitmapData0 + (8 * 8) + 4;
+            current_texture_bitmaps_mm2[texIndex+1] = tmpBitmapData1 + (8 * 8) + 4;
+            current_texture_bitmaps_mm2[texIndex+2] = tmpBitmapData2 + (8 * 8) + 4;
+            current_texture_bitmaps_mm2[texIndex+3] = tmpBitmapData3 + (8 * 8) + 4;
+
+            //
+            free(bitmap); bitmap = NULL;
         }
     }
     else

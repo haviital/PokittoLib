@@ -99,7 +99,8 @@ extern const uint32_t waypointCount;
 extern const CObject3d g_timeTrialBilboardObjects[];
 extern CPlayerShip g_playerShip;
 extern const uint8_t image_numbers[];
-extern const uint16_t palette_pal[];
+extern uint16_t g_gamePalette[256];
+extern const uint16_t palette_pal[256];
 
 extern uint32_t g_frameNum;
 extern bool g_isRace;

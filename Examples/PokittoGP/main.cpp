@@ -36,6 +36,7 @@ uint32_t shipBitmapH = *(activeShipBitmapData - 1);
 
 uint32_t g_frameNum = 0;
 bool g_isRace = true;
+uint16_t g_gamePalette[256];
 
 //
 int32_t textureMode = 1;
@@ -83,10 +84,13 @@ int main () {
     highscore.loadCookie();
     highscore.version = 1;
 
+    // Copy palette
+    memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette_pal, 256*2);
+
     // *** Setup PokittoLib
 
     mygame.begin();
-    mygame.display.load565Palette(palette_pal);
+    mygame.display.load565Palette(g_gamePalette);
     mygame.display.persistence = 1;
     #ifdef POK_SIM
     mygame.setFrameRate(60);
@@ -947,6 +951,10 @@ void RestoreRomTextures()
     // must free the previously allocated user textures!
     //if(isUserTexture[texIndex])
     //    free(current_texture_bitmaps[texIndex]-2);
+
+    // Copy the default palette.
+    memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette_pal, 256*2);
+
     current_texture_bitmaps[0] = NULL;
     current_texture_bitmaps[1] = image_ball1_a+2;
     current_texture_bitmaps[2] = image_ball1_b+2;
