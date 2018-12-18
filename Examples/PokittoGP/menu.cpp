@@ -984,127 +984,243 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
     #ifndef POK_SIM
     strcat(filePathAndNamePal, "/");
     #endif
-    strcat(filePathAndNamePal, "palette.bmp");
+    char fileNamePalette[] = "palette.bmp";
+    strcat(filePathAndNamePal, fileNamePalette);
     uint16_t* palette = NULL; // Gets the ownership.
     uint8_t* bitmap = NULL; // Gets the ownership.
     int err = openImageFileFromSD(filePathAndNamePal, /*OUT*/&palette, /*OUT*/&bitmap);
     free(bitmap); bitmap = NULL;
-    if(err == 0)
+
+    //
+    if(err == -1 || err == -2)
     {
+        // Cannot open
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, fileNamePalette);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "Cannot");
+        mygame.display.print(1, 50, "open image.");
+        return false;
+    }
+    else if(err == -10)
+    {
+        // Wrong palette size
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, fileNamePalette);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "Color count");
+        mygame.display.print(1, 50, "not 256.");
+        return false;
+    }
+    else if(err == -12)
+    {
+        // OOM
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, fileNamePalette);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "Out of");
+        mygame.display.print(1, 50, "memory.");
+        return false;
+    }
+    else if(err != 0)
+    {
+        // Other error
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, fileNamePalette);mygame.display.setColor(2,1);
+        mygame.display.print(1, 40, "Invalid");
+        mygame.display.print(1, 50, "image format");
+        return false;
+    }
+    else
+    {
+        // Image ok.
         // Copy the default palette.
         memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette, 256*2);
         Pokitto::Core::display.load565Palette((const uint16_t*)g_gamePalette);
     }
 
-    int32_t texIndex = 1;
-
-    //
-    char filePathAndName[128] = {0};
-    strcat(filePathAndName, dirPath);
-    #ifndef POK_SIM
-    strcat(filePathAndName, "/");
-    #endif
-    strcat(filePathAndName, "tex01.bmp");
-
-
-    // Read texture
-    palette = NULL; // Gets the ownership.
-    bitmap = NULL; // Gets the ownership.
-    err = openImageFileFromSD(filePathAndName, /*OUT*/&palette, /*OUT*/&bitmap);
-    free(palette); palette = NULL;
-
-    //
-    if(err == 0)
+    struct STextureFileParam
     {
-        if(false)
+        int32_t w,h;
+        int32_t numOfParts;
+    };
+
+    const STextureFileParam textureFileParamArr[] =
+    {
+        {0,0,0},
+        {16,24,4},  // 1: ball
+        {8,12,1},   // 2: road1
+        {8,12,1},   // 3: road2
+        {16,24,4},  // 4: terrain
+        {16,24,4},  // 5: start grid
+        {8,12,1},   // 6: waypoint light
+    };
+
+    // Try to read all textures.
+    char filePathAndName[128] = {0};
+    int32_t textureFileParamArrSize = sizeof(textureFileParamArr) / sizeof(textureFileParamArr[0]);
+    for(int32_t fileIndex=0, texIndex=0; fileIndex < textureFileParamArrSize; fileIndex++,texIndex++)
+    {
+
+        //
+        char fileName[] = "tex00.bmp";
+        int32_t tens = fileIndex / 10;
+        int32_t ones = fileIndex - (tens * 10);
+        fileName[3] = '0' + tens;
+        fileName[4] = '0' + ones;
+
+        strcpy(filePathAndName, dirPath);
+        #ifndef POK_SIM
+        strcat(filePathAndName, "/");
+        #endif
+        strcat(filePathAndName, fileName);
+
+        // Read texture file.
+        palette = NULL; // Gets the ownership.
+        bitmap = NULL; // Gets the ownership.
+        err = openImageFileFromSD(filePathAndName, /*OUT*/&palette, /*OUT*/&bitmap);
+        free(palette); palette = NULL;
+
+        //
+        if(err == -1 || err == -2)
         {
-            //
-            // TODO Check dimensions
-
-            // 8x8
-            current_texture_bitmaps[texIndex] = bitmap+2;
-
-            //
-            current_texture_bitmaps_mm1[texIndex] =  current_texture_bitmaps[texIndex] + (8 * 8);
-            current_texture_bitmaps_mm2[texIndex] =  current_texture_bitmaps[texIndex] + (8 * 8) + 4;
-
-            //
-            free(bitmap); bitmap = NULL;
+            if( textureFileParamArr[ fileIndex].numOfParts == 4 )
+                texIndex+=3;
+        }
+//        else if(err == -2)
+//        {
+//            // Cannot open
+//            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
+//            mygame.display.print(1, 40, "Cannot");
+//            mygame.display.print(1, 50, "open image.");
+//            return false;
+//        }
+        else if(err == -10)
+        {
+            // Wrong palette size
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 40, "Color count");
+            mygame.display.print(1, 50, "not 256.");
+            return false;
+        }
+        else if(err == -12)
+        {
+            // OOM
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 40, "Out of");
+            mygame.display.print(1, 50, "memory.");
+            return false;
+        }
+        else if(err != 0)
+        {
+            // Other error
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 40, "Invalid");
+            mygame.display.print(1, 50, "image format");
+            return false;
         }
         else
         {
-            // 16x24
-            //
-            uint8_t* tmpBitmap0 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmap1 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmap2 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
-            uint8_t* tmpBitmap3 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
-            tmpBitmap0[0] = 8; tmpBitmap0[1] = 12; // width & height
-            tmpBitmap1[0] = 8; tmpBitmap1[1] = 12; // width & height
-            tmpBitmap2[0] = 8; tmpBitmap2[1] = 12; // width & height
-            tmpBitmap3[0] = 8; tmpBitmap3[1] = 12; // width & height
-            uint8_t* tmpBitmapData0 = &(tmpBitmap0[2]);
-            uint8_t* tmpBitmapData1 = &(tmpBitmap1[2]);
-            uint8_t* tmpBitmapData2 = &(tmpBitmap2[2]);
-            uint8_t* tmpBitmapData3 = &(tmpBitmap3[2]);
-            uint8_t* readBitmapData = &(bitmap[2]);
-            for(int32_t x=0; x<8; x++)
-            {
-                for(int32_t y=0; y<8; y++)
-                {
-                    tmpBitmapData0[y*8+x] = readBitmapData[y*16+x];
-                    tmpBitmapData1[y*8+x] = readBitmapData[y*16+x+8];
-                    tmpBitmapData2[y*8+x] = readBitmapData[(y+8)*16+x];
-                    tmpBitmapData3[y*8+x] = readBitmapData[(y+8)*16+x+8];
-                }
-            }
-            current_texture_bitmaps[texIndex] = tmpBitmapData0;
-            current_texture_bitmaps[texIndex+1] = tmpBitmapData1;
-            current_texture_bitmaps[texIndex+2] = tmpBitmapData2;
-            current_texture_bitmaps[texIndex+3] = tmpBitmapData3;
+            // Image ok.
 
-            // MIPMAP 1 (4x4 pixels)
-            uint8_t* readBitmapDataMM = readBitmapData + (16*16);
-            for(int32_t x=0; x<4; x++)
-            {
-                for(int32_t y=0; y<4; y++)
-                {
-                    tmpBitmapData0[(y+8)*8+x] = readBitmapDataMM[y*16     + x];
-                    tmpBitmapData1[(y+8)*8+x] = readBitmapDataMM[y*16     + x+4];
-                    tmpBitmapData2[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x];
-                    tmpBitmapData3[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x+4];
-                }
-            }
-            current_texture_bitmaps_mm1[texIndex] = tmpBitmapData0 + (8 * 8);
-            current_texture_bitmaps_mm1[texIndex+1] = tmpBitmapData1 + (8 * 8);
-            current_texture_bitmaps_mm1[texIndex+2] = tmpBitmapData2 + (8 * 8);
-            current_texture_bitmaps_mm1[texIndex+3] = tmpBitmapData3 + (8 * 8);
+            int32_t w = bitmap[0];
+            int32_t h = bitmap[1];
 
-            // MIPMAP 2 (2x2 pixels)
-            uint8_t* readBitmapDataMMM = readBitmapDataMM + 8;
-            for(int32_t x=0; x<2; x++)
+            // Check size
+            if( textureFileParamArr[ fileIndex].w !=  w)
             {
-                for(int32_t y=0; y<2; y++)
-                {
-                    tmpBitmapData0[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x];
-                    tmpBitmapData1[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x+2];
-                    tmpBitmapData2[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x];
-                    tmpBitmapData3[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x+2];
-                }
+                // Wrong width
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 40, "Width should");
+                mygame.display.print(1, 50, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].w);
+                mygame.display.print(1, 60, "Is:");mygame.display.print(w);
+                free(bitmap);
+                return false;
             }
-            current_texture_bitmaps_mm2[texIndex] = tmpBitmapData0 + (8 * 8) + 4;
-            current_texture_bitmaps_mm2[texIndex+1] = tmpBitmapData1 + (8 * 8) + 4;
-            current_texture_bitmaps_mm2[texIndex+2] = tmpBitmapData2 + (8 * 8) + 4;
-            current_texture_bitmaps_mm2[texIndex+3] = tmpBitmapData3 + (8 * 8) + 4;
+            if( textureFileParamArr[ fileIndex].h !=  h)
+            {
+                // Wrong height
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 40, "Height should");
+                mygame.display.print(1, 50, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].h);
+                mygame.display.print(1, 60, "Is:");mygame.display.print(h);
+                free(bitmap);
+                return false;
+            }
 
-            //
-            free(bitmap); bitmap = NULL;
+            if( textureFileParamArr[ fileIndex].numOfParts == 1 )
+            {
+                current_texture_bitmaps[texIndex] = bitmap+2;
+                current_texture_bitmaps_mm1[texIndex] =  current_texture_bitmaps[texIndex] + (w * w);
+                current_texture_bitmaps_mm2[texIndex] =  current_texture_bitmaps[texIndex] + (w * w) + (w>>1);
+                bitmap = NULL;
+            }
+            else if( textureFileParamArr[ fileIndex].numOfParts == 4 )
+            {
+                // 16x24
+                //
+                uint8_t* tmpBitmap0 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
+                uint8_t* tmpBitmap1 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
+                uint8_t* tmpBitmap2 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
+                uint8_t* tmpBitmap3 = (uint8_t *) malloc((8*12) + 2);  // header takes 2 bytes
+                tmpBitmap0[0] = 8; tmpBitmap0[1] = 12; // width & height
+                tmpBitmap1[0] = 8; tmpBitmap1[1] = 12; // width & height
+                tmpBitmap2[0] = 8; tmpBitmap2[1] = 12; // width & height
+                tmpBitmap3[0] = 8; tmpBitmap3[1] = 12; // width & height
+                uint8_t* tmpBitmapData0 = &(tmpBitmap0[2]);
+                uint8_t* tmpBitmapData1 = &(tmpBitmap1[2]);
+                uint8_t* tmpBitmapData2 = &(tmpBitmap2[2]);
+                uint8_t* tmpBitmapData3 = &(tmpBitmap3[2]);
+                uint8_t* readBitmapData = &(bitmap[2]);
+                for(int32_t x=0; x<8; x++)
+                {
+                    for(int32_t y=0; y<8; y++)
+                    {
+                        tmpBitmapData0[y*8+x] = readBitmapData[y*16+x];
+                        tmpBitmapData1[y*8+x] = readBitmapData[y*16+x+8];
+                        tmpBitmapData2[y*8+x] = readBitmapData[(y+8)*16+x];
+                        tmpBitmapData3[y*8+x] = readBitmapData[(y+8)*16+x+8];
+                    }
+                }
+                current_texture_bitmaps[texIndex] = tmpBitmapData0;
+                current_texture_bitmaps[texIndex+1] = tmpBitmapData1;
+                current_texture_bitmaps[texIndex+2] = tmpBitmapData2;
+                current_texture_bitmaps[texIndex+3] = tmpBitmapData3;
+
+                // MIPMAP 1 (4x4 pixels)
+                uint8_t* readBitmapDataMM = readBitmapData + (16*16);
+                for(int32_t x=0; x<4; x++)
+                {
+                    for(int32_t y=0; y<4; y++)
+                    {
+                        tmpBitmapData0[(y+8)*8+x] = readBitmapDataMM[y*16     + x];
+                        tmpBitmapData1[(y+8)*8+x] = readBitmapDataMM[y*16     + x+4];
+                        tmpBitmapData2[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x];
+                        tmpBitmapData3[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x+4];
+                    }
+                }
+                current_texture_bitmaps_mm1[texIndex] = tmpBitmapData0 + (8 * 8);
+                current_texture_bitmaps_mm1[texIndex+1] = tmpBitmapData1 + (8 * 8);
+                current_texture_bitmaps_mm1[texIndex+2] = tmpBitmapData2 + (8 * 8);
+                current_texture_bitmaps_mm1[texIndex+3] = tmpBitmapData3 + (8 * 8);
+
+                // MIPMAP 2 (2x2 pixels)
+                uint8_t* readBitmapDataMMM = readBitmapDataMM + 8;
+                for(int32_t x=0; x<2; x++)
+                {
+                    for(int32_t y=0; y<2; y++)
+                    {
+                        tmpBitmapData0[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x];
+                        tmpBitmapData1[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x+2];
+                        tmpBitmapData2[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x];
+                        tmpBitmapData3[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x+2];
+                    }
+                }
+                current_texture_bitmaps_mm2[texIndex] = tmpBitmapData0 + (8 * 8) + 4;
+                current_texture_bitmaps_mm2[texIndex+1] = tmpBitmapData1 + (8 * 8) + 4;
+                current_texture_bitmaps_mm2[texIndex+2] = tmpBitmapData2 + (8 * 8) + 4;
+                current_texture_bitmaps_mm2[texIndex+3] = tmpBitmapData3 + (8 * 8) + 4;
+
+                texIndex+=3;
+
+                //
+                free(bitmap); bitmap = NULL;
+            }
         }
-    }
-    else
-    {
-        // print error
-    }
+    }  // end for
 
     return true;
 }

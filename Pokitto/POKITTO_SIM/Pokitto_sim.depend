@@ -5073,7 +5073,7 @@
 	"playerShip.h"
 	"menu.h"
 
-1544961783 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\gamedata.h
+1545165240 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\gamedata.h
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -5362,7 +5362,7 @@
 1543185978 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\image_spot.h
 	<stdint.h>
 
-1545081657 source:c:\git\pokittolib2\examples\pokittogp\menu.cpp
+1545164570 source:c:\git\pokittolib2\examples\pokittogp\menu.cpp
 	"Pokitto.h"
 	"main.h"
 	"menu.h"
@@ -5432,7 +5432,7 @@
 
 1509275042 c:\git\pokittolib2\pokitto\pokitto_libs\imageformat\imageformat.h
 
-1545082117 source:c:\git\pokittolib2\pokitto\pokitto_libs\imageformat\bmpimage.cpp
+1545112277 source:c:\git\pokittolib2\pokitto\pokitto_libs\imageformat\bmpimage.cpp
 	"defines_win_SIM.h"
 	"defines_linux_SIM.h"
 	"Pokitto.h"
