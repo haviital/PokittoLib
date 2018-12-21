@@ -10,3 +10,9 @@ C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\obj\Debug\genpalet
 C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\bin\Debug\genpalette.exe
 C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\bin\Debug\genpalette.pdb
 C:\hannu\projects\F-Zero-esque\GenPalette\ConsoleApplication1\obj\Debug\genpalette.csprojResolveAssemblyReference.cache
+C:\git\PokittoLib2\Examples\PokittoGP\tools\GenPalette\ConsoleApplication1\bin\Debug\genpalette.exe.config
+C:\git\PokittoLib2\Examples\PokittoGP\tools\GenPalette\ConsoleApplication1\obj\Debug\genpalette.exe
+C:\git\PokittoLib2\Examples\PokittoGP\tools\GenPalette\ConsoleApplication1\obj\Debug\genpalette.pdb
+C:\git\PokittoLib2\Examples\PokittoGP\tools\GenPalette\ConsoleApplication1\bin\Debug\genpalette.exe
+C:\git\PokittoLib2\Examples\PokittoGP\tools\GenPalette\ConsoleApplication1\bin\Debug\genpalette.pdb
+C:\git\PokittoLib2\Examples\PokittoGP\tools\GenPalette\ConsoleApplication1\obj\Debug\genpalette.csprojResolveAssemblyReference.cache

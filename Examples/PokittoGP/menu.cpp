@@ -1088,6 +1088,14 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
 //            mygame.display.print(1, 50, "open image.");
 //            return false;
 //        }
+        else if(err == -6)
+        {
+            // Wrong palette size
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 40, "Width should");
+            mygame.display.print(1, 50, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].w);
+            return false;
+        }
         else if(err == -10)
         {
             // Wrong palette size
@@ -1134,9 +1142,10 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
             {
                 // Wrong height
                 mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
-                mygame.display.print(1, 40, "Height should");
-                mygame.display.print(1, 50, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].h);
-                mygame.display.print(1, 60, "Is:");mygame.display.print(h);
+                mygame.display.print(1, 40, "Height");
+                mygame.display.print(1, 50, "should");
+                mygame.display.print(1, 60, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].h);
+                mygame.display.print(1, 70, "Is:");mygame.display.print(h);
                 free(bitmap);
                 return false;
             }

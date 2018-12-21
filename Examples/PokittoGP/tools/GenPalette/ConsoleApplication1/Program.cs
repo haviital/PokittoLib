@@ -14,6 +14,12 @@ namespace ConsoleApplication1
             List<Color> set = new List<Color>();
             set.Add(Color.FromArgb(255,0,255));
             set.Add(Color.FromArgb(0,0,0));
+            set.Add(Color.FromArgb(94,94,94));
+            set.Add(Color.FromArgb(56,104,144));
+            set.Add(Color.FromArgb(40,60,88));
+            set.Add(Color.FromArgb(50,50,50));
+            set.Add(Color.FromArgb(70,70,70));
+            set.Add(Color.FromArgb(90,90,90));
 
             foreach (var file in args)
                 using (var bitmap = new Bitmap(file))

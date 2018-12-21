@@ -3,7 +3,7 @@ C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** palette 
 
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>genpalette image_shadow.bmp image_ship.bmp image_cactus.bmp image_rock1.bmp image_spot.bmp image_ball1.bmp image_ball2.bmp image_ball3.bmp image_ball4.bmp image_ball5.bmp image_offroad1_a.bmp image_terrain_1.bmp image_terrain_2.bmp image_terrain_3.bmp image_terrain_4.bmp image_terrain_5.bmp image_terrain_6.bmp image_terrain_7.bmp image_terrain_8.bmp image_start.bmp image_road1.bmp image_road2.bmp image_sky.bmp image_numbers.bmp image_light.bmp 
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>genpalette image_numbers.bmp image_shadow.bmp image_ship.bmp image_sky.bmp image_cactus.bmp image_rock1.bmp image_spot.bmp image_ball1.bmp image_terrain_6.bmp image_start.bmp image_road1.bmp image_road2.bmp image_light.bmp 
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pngtopnm palette.png  1>tmp\palette256.ppm 
 
@@ -19,218 +19,218 @@ Pokitto BMP to Pokitto bitmap conversion utility
 File name: palette.bmp 
 Number of colours used: 256
 Bits per pixel: 8
-Size in pixels: 210 x 1
-Size in bytes: 210
+Size in pixels: 84 x 1
+Size in bytes: 84
 Colour: 0  r:255 g:0   b:255
 Colour: 1  r:0   g:0   b:0  
 Colour: 2  r:94  g:94  b:94 
 Colour: 3  r:56  g:104 b:144
 Colour: 4  r:40  g:60  b:88 
-Colour: 5  r:0   g:248 b:0  
-Colour: 6  r:248 g:232 b:0  
-Colour: 7  r:248 g:120 b:248
-Colour: 8  r:152 g:152 b:248
-Colour: 9  r:248 g:248 b:248
-Colour: 10 r:0   g:216 b:0  
-Colour: 11 r:216 g:200 b:0  
-Colour: 12 r:216 g:104 b:216
-Colour: 13 r:120 g:120 b:216
-Colour: 14 r:216 g:216 b:216
-Colour: 15 r:0   g:184 b:0  
-Colour: 16 r:184 g:168 b:0  
-Colour: 17 r:184 g:88  b:184
-Colour: 18 r:88  g:88  b:184
-Colour: 19 r:184 g:184 b:184
-Colour: 20 r:88  g:88  b:88 
-Colour: 21 r:224 g:252 b:248
-Colour: 22 r:0   g:152 b:0  
-Colour: 23 r:152 g:136 b:0  
-Colour: 24 r:152 g:72  b:152
-Colour: 25 r:56  g:56  b:152
-Colour: 26 r:152 g:152 b:152
-Colour: 27 r:233 g:0   b:0  
-Colour: 28 r:255 g:0   b:0  
-Colour: 29 r:255 g:255 b:255
-Colour: 30 r:183 g:0   b:0  
-Colour: 31 r:143 g:143 b:143
-Colour: 32 r:55  g:207 b:55 
-Colour: 33 r:39  g:59  b:87 
-Colour: 34 r:39  g:163 b:39 
-Colour: 35 r:207 g:163 b:0  
-Colour: 36 r:247 g:207 b:0  
-Colour: 37 r:133 g:133 b:133
-Colour: 38 r:137 g:129 b:137
-Colour: 39 r:100 g:169 b:97 
-Colour: 40 r:58  g:118 b:80 
-Colour: 41 r:89  g:120 b:98 
-Colour: 42 r:76  g:152 b:82 
-Colour: 43 r:54  g:72  b:87 
-Colour: 44 r:46  g:156 b:53 
-Colour: 45 r:77  g:153 b:47 
-Colour: 46 r:192 g:147 b:25 
-Colour: 47 r:206 g:175 b:25 
-Colour: 48 r:56  g:208 b:56 
-Colour: 49 r:40  g:164 b:40 
-Colour: 50 r:208 g:164 b:0  
-Colour: 51 r:248 g:208 b:0  
-Colour: 52 r:87  g:87  b:87 
-Colour: 53 r:151 g:151 b:151
-Colour: 54 r:223 g:223 b:223
-Colour: 55 r:176 g:180 b:176
-Colour: 56 r:224 g:224 b:224
-Colour: 57 r:76  g:76  b:76 
-Colour: 58 r:217 g:217 b:217
-Colour: 59 r:82  g:82  b:82 
-Colour: 60 r:179 g:179 b:179
-Colour: 61 r:89  g:89  b:89 
-Colour: 62 r:26  g:187 b:26 
-Colour: 63 r:211 g:199 b:26 
-Colour: 64 r:52  g:158 b:52 
-Colour: 65 r:174 g:166 b:52 
-Colour: 66 r:203 g:189 b:19 
-Colour: 67 r:228 g:213 b:21 
-Colour: 68 r:194 g:181 b:18 
-Colour: 69 r:213 g:199 b:20 
-Colour: 70 r:206 g:193 b:19 
-Colour: 71 r:244 g:236 b:137
-Colour: 72 r:227 g:150 b:190
-Colour: 73 r:219 g:138 b:190
-Colour: 74 r:136 g:168 b:190
-Colour: 75 r:149 g:177 b:190
-Colour: 76 r:213 g:126 b:190
-Colour: 77 r:124 g:159 b:190
-Colour: 78 r:206 g:111 b:190
-Colour: 79 r:110 g:148 b:190
-Colour: 80 r:199 g:95  b:190
-Colour: 81 r:91  g:137 b:190
-Colour: 82 r:193 g:80  b:190
-Colour: 83 r:74  g:128 b:190
-Colour: 84 r:187 g:56  b:190
-Colour: 85 r:52  g:116 b:190
-Colour: 86 r:184 g:186 b:255
-Colour: 87 r:168 g:171 b:255
-Colour: 88 r:149 g:151 b:255
-Colour: 89 r:124 g:129 b:255
-Colour: 90 r:102 g:109 b:255
-Colour: 91 r:72  g:77  b:255
-Colour: 92 r:167 g:163 b:211
-Colour: 93 r:175 g:173 b:211
-Colour: 94 r:183 g:181 b:211
-Colour: 95 r:194 g:191 b:211
-Colour: 96 r:203 g:201 b:211
-Colour: 97 r:212 g:209 b:211
-Colour: 98 r:201 g:202 b:255
-Colour: 99 r:221 g:219 b:211
-Colour: 100 r:225 g:147 b:190
-Colour: 101 r:222 g:141 b:190
-Colour: 102 r:218 g:135 b:190
-Colour: 103 r:215 g:130 b:190
-Colour: 104 r:127 g:161 b:190
-Colour: 105 r:130 g:163 b:190
-Colour: 106 r:135 g:167 b:190
-Colour: 107 r:141 g:171 b:190
-Colour: 108 r:214 g:128 b:190
-Colour: 109 r:211 g:120 b:190
-Colour: 110 r:120 g:155 b:190
-Colour: 111 r:222 g:142 b:190
-Colour: 112 r:217 g:134 b:190
-Colour: 113 r:212 g:123 b:190
-Colour: 114 r:208 g:115 b:190
-Colour: 115 r:110 g:150 b:190
-Colour: 116 r:116 g:153 b:190
-Colour: 117 r:126 g:160 b:190
-Colour: 118 r:133 g:166 b:190
-Colour: 119 r:207 g:113 b:190
-Colour: 120 r:113 g:152 b:190
-Colour: 121 r:139 g:170 b:190
-Colour: 122 r:204 g:108 b:190
-Colour: 123 r:199 g:96  b:190
-Colour: 124 r:89  g:136 b:190
-Colour: 125 r:98  g:141 b:190
-Colour: 126 r:112 g:150 b:190
-Colour: 127 r:125 g:159 b:190
-Colour: 128 r:156 g:159 b:255
-Colour: 129 r:200 g:198 b:211
-Colour: 130 r:217 g:214 b:211
-Colour: 131 r:216 g:130 b:190
-Colour: 132 r:194 g:80  b:190
-Colour: 133 r:73  g:127 b:190
-Colour: 134 r:83  g:132 b:190
-Colour: 135 r:100 g:142 b:190
-Colour: 136 r:116 g:154 b:190
-Colour: 137 r:191 g:193 b:255
-Colour: 138 r:189 g:191 b:255
-Colour: 139 r:217 g:215 b:211
-Colour: 140 r:229 g:228 b:211
-Colour: 141 r:171 g:174 b:255
-Colour: 142 r:150 g:154 b:255
-Colour: 143 r:122 g:127 b:255
-Colour: 144 r:100 g:105 b:255
-Colour: 145 r:173 g:170 b:211
-Colour: 146 r:177 g:175 b:211
-Colour: 147 r:187 g:185 b:211
-Colour: 148 r:197 g:195 b:211
-Colour: 149 r:174 g:176 b:255
-Colour: 150 r:157 g:160 b:255
-Colour: 151 r:133 g:137 b:255
-Colour: 152 r:113 g:117 b:255
-Colour: 153 r:178 g:175 b:211
-Colour: 154 r:183 g:180 b:211
-Colour: 155 r:192 g:190 b:211
-Colour: 156 r:201 g:199 b:211
-Colour: 157 r:178 g:180 b:255
-Colour: 158 r:167 g:170 b:255
-Colour: 159 r:151 g:154 b:255
-Colour: 160 r:138 g:142 b:255
-Colour: 161 r:189 g:187 b:211
-Colour: 162 r:195 g:193 b:211
-Colour: 163 r:210 g:208 b:211
-Colour: 164 r:179 g:181 b:255
-Colour: 165 r:172 g:174 b:255
-Colour: 166 r:164 g:167 b:255
-Colour: 167 r:206 g:204 b:211
-Colour: 168 r:213 g:211 b:211
-Colour: 169 r:220 g:217 b:211
-Colour: 170 r:225 g:222 b:211
-Colour: 171 r:189 g:189 b:219
-Colour: 172 r:181 g:182 b:219
-Colour: 173 r:177 g:178 b:219
-Colour: 174 r:174 g:176 b:219
-Colour: 175 r:174 g:174 b:185
-Colour: 176 r:169 g:170 b:185
-Colour: 177 r:165 g:166 b:219
-Colour: 178 r:152 g:154 b:219
-Colour: 179 r:158 g:159 b:185
-Colour: 180 r:146 g:149 b:219
-Colour: 181 r:125 g:128 b:219
-Colour: 182 r:115 g:118 b:219
-Colour: 183 r:157 g:157 b:157
-Colour: 184 r:17  g:10  b:246
-Colour: 185 r:139 g:139 b:139
-Colour: 186 r:184 g:184 b:202
-Colour: 187 r:159 g:159 b:201
-Colour: 188 r:108 g:108 b:108
-Colour: 189 r:113 g:113 b:131
-Colour: 190 r:48  g:43  b:197
-Colour: 191 r:103 g:103 b:131
-Colour: 192 r:121 g:121 b:127
-Colour: 193 r:87  g:86  b:131
-Colour: 194 r:110 g:110 b:110
-Colour: 195 r:116 g:116 b:128
-Colour: 196 r:190 g:190 b:190
-Colour: 197 r:127 g:127 b:199
-Colour: 198 r:159 g:159 b:159
-Colour: 199 r:149 g:149 b:149
-Colour: 200 r:136 g:184 b:200
-Colour: 201 r:240 g:240 b:240
-Colour: 202 r:152 g:200 b:216
-Colour: 203 r:232 g:232 b:232
-Colour: 204 r:168 g:216 b:232
-Colour: 205 r:184 g:232 b:248
-Colour: 206 r:144 g:144 b:144
-Colour: 207 r:136 g:136 b:136
-Colour: 208 r:128 g:128 b:128
-Colour: 209 r:205 g:205 b:205
+Colour: 5  r:50  g:50  b:50 
+Colour: 6  r:70  g:70  b:70 
+Colour: 7  r:90  g:90  b:90 
+Colour: 8  r:88  g:88  b:88 
+Colour: 9  r:255 g:255 b:255
+Colour: 10 r:205 g:205 b:205
+Colour: 11 r:0   g:248 b:0  
+Colour: 12 r:248 g:232 b:0  
+Colour: 13 r:248 g:120 b:248
+Colour: 14 r:152 g:152 b:248
+Colour: 15 r:248 g:248 b:248
+Colour: 16 r:0   g:216 b:0  
+Colour: 17 r:216 g:200 b:0  
+Colour: 18 r:216 g:104 b:216
+Colour: 19 r:120 g:120 b:216
+Colour: 20 r:216 g:216 b:216
+Colour: 21 r:0   g:184 b:0  
+Colour: 22 r:184 g:168 b:0  
+Colour: 23 r:184 g:88  b:184
+Colour: 24 r:88  g:88  b:184
+Colour: 25 r:184 g:184 b:184
+Colour: 26 r:224 g:252 b:248
+Colour: 27 r:0   g:152 b:0  
+Colour: 28 r:152 g:136 b:0  
+Colour: 29 r:152 g:72  b:152
+Colour: 30 r:56  g:56  b:152
+Colour: 31 r:152 g:152 b:152
+Colour: 32 r:136 g:184 b:200
+Colour: 33 r:240 g:240 b:240
+Colour: 34 r:152 g:200 b:216
+Colour: 35 r:232 g:232 b:232
+Colour: 36 r:168 g:216 b:232
+Colour: 37 r:184 g:232 b:248
+Colour: 38 r:144 g:144 b:144
+Colour: 39 r:136 g:136 b:136
+Colour: 40 r:128 g:128 b:128
+Colour: 41 r:233 g:0   b:0  
+Colour: 42 r:255 g:0   b:0  
+Colour: 43 r:183 g:0   b:0  
+Colour: 44 r:143 g:143 b:143
+Colour: 45 r:55  g:207 b:55 
+Colour: 46 r:39  g:59  b:87 
+Colour: 47 r:39  g:163 b:39 
+Colour: 48 r:207 g:163 b:0  
+Colour: 49 r:247 g:207 b:0  
+Colour: 50 r:133 g:133 b:133
+Colour: 51 r:137 g:129 b:137
+Colour: 52 r:100 g:169 b:97 
+Colour: 53 r:58  g:118 b:80 
+Colour: 54 r:89  g:120 b:98 
+Colour: 55 r:76  g:152 b:82 
+Colour: 56 r:54  g:72  b:87 
+Colour: 57 r:46  g:156 b:53 
+Colour: 58 r:77  g:153 b:47 
+Colour: 59 r:192 g:147 b:25 
+Colour: 60 r:206 g:175 b:25 
+Colour: 61 r:203 g:189 b:19 
+Colour: 62 r:228 g:213 b:21 
+Colour: 63 r:194 g:181 b:18 
+Colour: 64 r:213 g:199 b:20 
+Colour: 65 r:206 g:193 b:19 
+Colour: 66 r:244 g:236 b:137
+Colour: 67 r:157 g:157 b:157
+Colour: 68 r:17  g:10  b:246
+Colour: 69 r:139 g:139 b:139
+Colour: 70 r:184 g:184 b:202
+Colour: 71 r:159 g:159 b:201
+Colour: 72 r:108 g:108 b:108
+Colour: 73 r:113 g:113 b:131
+Colour: 74 r:48  g:43  b:197
+Colour: 75 r:103 g:103 b:131
+Colour: 76 r:121 g:121 b:127
+Colour: 77 r:87  g:86  b:131
+Colour: 78 r:110 g:110 b:110
+Colour: 79 r:116 g:116 b:128
+Colour: 80 r:190 g:190 b:190
+Colour: 81 r:127 g:127 b:199
+Colour: 82 r:159 g:159 b:159
+Colour: 83 r:149 g:149 b:149
+Colour: 84 r:0   g:0   b:0  
+Colour: 85 r:0   g:0   b:0  
+Colour: 86 r:0   g:0   b:0  
+Colour: 87 r:0   g:0   b:0  
+Colour: 88 r:0   g:0   b:0  
+Colour: 89 r:0   g:0   b:0  
+Colour: 90 r:0   g:0   b:0  
+Colour: 91 r:0   g:0   b:0  
+Colour: 92 r:0   g:0   b:0  
+Colour: 93 r:0   g:0   b:0  
+Colour: 94 r:0   g:0   b:0  
+Colour: 95 r:0   g:0   b:0  
+Colour: 96 r:0   g:0   b:0  
+Colour: 97 r:0   g:0   b:0  
+Colour: 98 r:0   g:0   b:0  
+Colour: 99 r:0   g:0   b:0  
+Colour: 100 r:0   g:0   b:0  
+Colour: 101 r:0   g:0   b:0  
+Colour: 102 r:0   g:0   b:0  
+Colour: 103 r:0   g:0   b:0  
+Colour: 104 r:0   g:0   b:0  
+Colour: 105 r:0   g:0   b:0  
+Colour: 106 r:0   g:0   b:0  
+Colour: 107 r:0   g:0   b:0  
+Colour: 108 r:0   g:0   b:0  
+Colour: 109 r:0   g:0   b:0  
+Colour: 110 r:0   g:0   b:0  
+Colour: 111 r:0   g:0   b:0  
+Colour: 112 r:0   g:0   b:0  
+Colour: 113 r:0   g:0   b:0  
+Colour: 114 r:0   g:0   b:0  
+Colour: 115 r:0   g:0   b:0  
+Colour: 116 r:0   g:0   b:0  
+Colour: 117 r:0   g:0   b:0  
+Colour: 118 r:0   g:0   b:0  
+Colour: 119 r:0   g:0   b:0  
+Colour: 120 r:0   g:0   b:0  
+Colour: 121 r:0   g:0   b:0  
+Colour: 122 r:0   g:0   b:0  
+Colour: 123 r:0   g:0   b:0  
+Colour: 124 r:0   g:0   b:0  
+Colour: 125 r:0   g:0   b:0  
+Colour: 126 r:0   g:0   b:0  
+Colour: 127 r:0   g:0   b:0  
+Colour: 128 r:0   g:0   b:0  
+Colour: 129 r:0   g:0   b:0  
+Colour: 130 r:0   g:0   b:0  
+Colour: 131 r:0   g:0   b:0  
+Colour: 132 r:0   g:0   b:0  
+Colour: 133 r:0   g:0   b:0  
+Colour: 134 r:0   g:0   b:0  
+Colour: 135 r:0   g:0   b:0  
+Colour: 136 r:0   g:0   b:0  
+Colour: 137 r:0   g:0   b:0  
+Colour: 138 r:0   g:0   b:0  
+Colour: 139 r:0   g:0   b:0  
+Colour: 140 r:0   g:0   b:0  
+Colour: 141 r:0   g:0   b:0  
+Colour: 142 r:0   g:0   b:0  
+Colour: 143 r:0   g:0   b:0  
+Colour: 144 r:0   g:0   b:0  
+Colour: 145 r:0   g:0   b:0  
+Colour: 146 r:0   g:0   b:0  
+Colour: 147 r:0   g:0   b:0  
+Colour: 148 r:0   g:0   b:0  
+Colour: 149 r:0   g:0   b:0  
+Colour: 150 r:0   g:0   b:0  
+Colour: 151 r:0   g:0   b:0  
+Colour: 152 r:0   g:0   b:0  
+Colour: 153 r:0   g:0   b:0  
+Colour: 154 r:0   g:0   b:0  
+Colour: 155 r:0   g:0   b:0  
+Colour: 156 r:0   g:0   b:0  
+Colour: 157 r:0   g:0   b:0  
+Colour: 158 r:0   g:0   b:0  
+Colour: 159 r:0   g:0   b:0  
+Colour: 160 r:0   g:0   b:0  
+Colour: 161 r:0   g:0   b:0  
+Colour: 162 r:0   g:0   b:0  
+Colour: 163 r:0   g:0   b:0  
+Colour: 164 r:0   g:0   b:0  
+Colour: 165 r:0   g:0   b:0  
+Colour: 166 r:0   g:0   b:0  
+Colour: 167 r:0   g:0   b:0  
+Colour: 168 r:0   g:0   b:0  
+Colour: 169 r:0   g:0   b:0  
+Colour: 170 r:0   g:0   b:0  
+Colour: 171 r:0   g:0   b:0  
+Colour: 172 r:0   g:0   b:0  
+Colour: 173 r:0   g:0   b:0  
+Colour: 174 r:0   g:0   b:0  
+Colour: 175 r:0   g:0   b:0  
+Colour: 176 r:0   g:0   b:0  
+Colour: 177 r:0   g:0   b:0  
+Colour: 178 r:0   g:0   b:0  
+Colour: 179 r:0   g:0   b:0  
+Colour: 180 r:0   g:0   b:0  
+Colour: 181 r:0   g:0   b:0  
+Colour: 182 r:0   g:0   b:0  
+Colour: 183 r:0   g:0   b:0  
+Colour: 184 r:0   g:0   b:0  
+Colour: 185 r:0   g:0   b:0  
+Colour: 186 r:0   g:0   b:0  
+Colour: 187 r:0   g:0   b:0  
+Colour: 188 r:0   g:0   b:0  
+Colour: 189 r:0   g:0   b:0  
+Colour: 190 r:0   g:0   b:0  
+Colour: 191 r:0   g:0   b:0  
+Colour: 192 r:0   g:0   b:0  
+Colour: 193 r:0   g:0   b:0  
+Colour: 194 r:0   g:0   b:0  
+Colour: 195 r:0   g:0   b:0  
+Colour: 196 r:0   g:0   b:0  
+Colour: 197 r:0   g:0   b:0  
+Colour: 198 r:0   g:0   b:0  
+Colour: 199 r:0   g:0   b:0  
+Colour: 200 r:0   g:0   b:0  
+Colour: 201 r:0   g:0   b:0  
+Colour: 202 r:0   g:0   b:0  
+Colour: 203 r:0   g:0   b:0  
+Colour: 204 r:0   g:0   b:0  
+Colour: 205 r:0   g:0   b:0  
+Colour: 206 r:0   g:0   b:0  
+Colour: 207 r:0   g:0   b:0  
+Colour: 208 r:0   g:0   b:0  
+Colour: 209 r:0   g:0   b:0  
 Colour: 210 r:0   g:0   b:0  
 Colour: 211 r:0   g:0   b:0  
 Colour: 212 r:0   g:0   b:0  
@@ -1252,456 +1252,6 @@ C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball1_d.c .
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
 
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_split4.cmd image_ball2 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>REM *** splits the 16x16 bmp to four 8x8 ppms and makes textures of them 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_ball2.bmp  1>tmp\image_ball2.ppm 
-bmptoppm: Windows BMP, 16x16x8
-bmptoppm: WRITING PPM IMAGE
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=8 tmp\image_ball2.ppm  1>tmp\image_ball2_a.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball2_a 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball2_a.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball2_a.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball2_a.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball2_a.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball2_a.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball2_a.c ..\..\..\gfx_hdr\image_ball2_a.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=8 -width=8 -height=8 tmp\image_ball2.ppm  1>tmp\image_ball2_b.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball2_b 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball2_b.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball2_b.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball2_b.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball2_b.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball2_b.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball2_b.c ..\..\..\gfx_hdr\image_ball2_b.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=0 -width=8 -height=8 tmp\image_ball2.ppm  1>tmp\image_ball2_c.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball2_c 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball2_c.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball2_c.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball2_c.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball2_c.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball2_c.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball2_c.c ..\..\..\gfx_hdr\image_ball2_c.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=8 -width=8 -height=8 tmp\image_ball2.ppm  1>tmp\image_ball2_d.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball2_d 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball2_d.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball2_d.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball2_d.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball2_d.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball2_d.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball2_d.c ..\..\..\gfx_hdr\image_ball2_d.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_split4.cmd image_ball3 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>REM *** splits the 16x16 bmp to four 8x8 ppms and makes textures of them 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_ball3.bmp  1>tmp\image_ball3.ppm 
-bmptoppm: Windows BMP, 16x16x8
-bmptoppm: WRITING PPM IMAGE
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=8 tmp\image_ball3.ppm  1>tmp\image_ball3_a.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball3_a 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball3_a.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball3_a.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball3_a.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball3_a.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball3_a.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball3_a.c ..\..\..\gfx_hdr\image_ball3_a.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=8 -width=8 -height=8 tmp\image_ball3.ppm  1>tmp\image_ball3_b.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball3_b 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball3_b.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball3_b.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball3_b.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball3_b.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball3_b.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball3_b.c ..\..\..\gfx_hdr\image_ball3_b.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=0 -width=8 -height=8 tmp\image_ball3.ppm  1>tmp\image_ball3_c.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball3_c 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball3_c.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball3_c.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball3_c.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball3_c.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball3_c.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball3_c.c ..\..\..\gfx_hdr\image_ball3_c.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=8 -width=8 -height=8 tmp\image_ball3.ppm  1>tmp\image_ball3_d.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball3_d 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball3_d.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball3_d.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball3_d.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball3_d.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball3_d.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball3_d.c ..\..\..\gfx_hdr\image_ball3_d.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_split4.cmd image_ball4 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>REM *** splits the 16x16 bmp to four 8x8 ppms and makes textures of them 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_ball4.bmp  1>tmp\image_ball4.ppm 
-bmptoppm: Windows BMP, 16x16x8
-bmptoppm: WRITING PPM IMAGE
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=8 tmp\image_ball4.ppm  1>tmp\image_ball4_a.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball4_a 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball4_a.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball4_a.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball4_a.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball4_a.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball4_a.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball4_a.c ..\..\..\gfx_hdr\image_ball4_a.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=8 -width=8 -height=8 tmp\image_ball4.ppm  1>tmp\image_ball4_b.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball4_b 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball4_b.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball4_b.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball4_b.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball4_b.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball4_b.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball4_b.c ..\..\..\gfx_hdr\image_ball4_b.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=0 -width=8 -height=8 tmp\image_ball4.ppm  1>tmp\image_ball4_c.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball4_c 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball4_c.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball4_c.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball4_c.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball4_c.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball4_c.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball4_c.c ..\..\..\gfx_hdr\image_ball4_c.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=8 -width=8 -height=8 tmp\image_ball4.ppm  1>tmp\image_ball4_d.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball4_d 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball4_d.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball4_d.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball4_d.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball4_d.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball4_d.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball4_d.c ..\..\..\gfx_hdr\image_ball4_d.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_split4.cmd image_ball5 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>REM *** splits the 16x16 bmp to four 8x8 ppms and makes textures of them 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_ball5.bmp  1>tmp\image_ball5.ppm 
-bmptoppm: Windows BMP, 16x16x8
-bmptoppm: WRITING PPM IMAGE
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=8 tmp\image_ball5.ppm  1>tmp\image_ball5_a.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball5_a 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball5_a.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball5_a.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball5_a.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball5_a.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball5_a.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball5_a.c ..\..\..\gfx_hdr\image_ball5_a.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=8 -width=8 -height=8 tmp\image_ball5.ppm  1>tmp\image_ball5_b.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball5_b 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball5_b.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball5_b.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball5_b.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball5_b.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball5_b.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball5_b.c ..\..\..\gfx_hdr\image_ball5_b.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=0 -width=8 -height=8 tmp\image_ball5.ppm  1>tmp\image_ball5_c.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball5_c 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball5_c.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball5_c.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball5_c.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball5_c.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball5_c.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball5_c.c ..\..\..\gfx_hdr\image_ball5_c.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=8 -width=8 -height=8 tmp\image_ball5.ppm  1>tmp\image_ball5_d.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_ball5_d 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ball5_d.ppm -mapfile=tmp\palette256.ppm  1>output\image_ball5_d.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ball5_d.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_ball5_d.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 8
-Size in bytes: 64
-Outputting c file: image_ball5_d.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ball5_d.c ..\..\..\gfx_hdr\image_ball5_d.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem call ./genhdr_split4_mipmap.cmd image_terrain_1 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem call ./genhdr_split4_mipmap.cmd image_terrain_2 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem call ./genhdr_split4_mipmap.cmd image_terrain_3 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem call ./genhdr_split4_mipmap.cmd image_terrain_4 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem call ./genhdr_split4_mipmap.cmd image_terrain_5 
-
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_split4_mipmap.cmd image_terrain_6 
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>REM *** splits the 16x16 bmp to four 8x8 ppms and makes textures of them 
@@ -1888,386 +1438,6 @@ Size in bytes: 96
 Outputting c file: image_terrain_6_d.c
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_6_d.c ..\..\..\gfx_hdr\image_terrain_6_d.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_split4_mipmap.cmd image_terrain_7 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>REM *** splits the 16x16 bmp to four 8x8 ppms and makes textures of them 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_terrain_7.bmp  1>tmp\image_terrain_7.ppm 
-bmptoppm: Windows BMP, 16x24x24
-bmptoppm: WRITING PPM IMAGE
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** A: top left 8x8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Get each mipmap as a separate image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=8 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_a_mm1.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=16 -left=0 -width=4 -height=4 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_a_mm2.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=16 -left=8 -width=2 -height=2 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_a_mm3.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Create 8x12 image of the 8x8 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=12 -pad tmp\image_terrain_7_a_mm1.ppm  1>tmp\image_terrain_7_a_mm1_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Paste the mipmaps on the 8x12 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_7_a_mm2.ppm 0 8 tmp\image_terrain_7_a_mm1_tmp.ppm  1>tmp\image_terrain_7_a_mm2_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_7_a_mm3.ppm 4 8 tmp\image_terrain_7_a_mm2_tmp.ppm  1>tmp\image_terrain_7_a.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Apply the palette and create the header file 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_terrain_7_a 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_terrain_7_a.ppm -mapfile=tmp\palette256.ppm  1>output\image_terrain_7_a.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_terrain_7_a.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_terrain_7_a.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 12
-Size in bytes: 96
-Outputting c file: image_terrain_7_a.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_7_a.c ..\..\..\gfx_hdr\image_terrain_7_a.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** B: top right 8x8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Get each mipmap as a separate image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=8 -width=8 -height=8 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_b_mm1.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=16 -left=4 -width=4 -height=4 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_b_mm2.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=16 -left=10 -width=2 -height=2 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_b_mm3.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Create 8x12 image of the 8x8 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=12 -pad tmp\image_terrain_7_b_mm1.ppm  1>tmp\image_terrain_7_b_mm1_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Paste the mipmaps on the 8x12 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_7_b_mm2.ppm 0 8 tmp\image_terrain_7_b_mm1_tmp.ppm  1>tmp\image_terrain_7_b_mm2_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_7_b_mm3.ppm 4 8 tmp\image_terrain_7_b_mm2_tmp.ppm  1>tmp\image_terrain_7_b.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Apply the palette and create the header file 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_terrain_7_b 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_terrain_7_b.ppm -mapfile=tmp\palette256.ppm  1>output\image_terrain_7_b.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_terrain_7_b.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_terrain_7_b.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 12
-Size in bytes: 96
-Outputting c file: image_terrain_7_b.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_7_b.c ..\..\..\gfx_hdr\image_terrain_7_b.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** C: bottom left 8x8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Get each mipmap as a separate image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=0 -width=8 -height=8 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_c_mm1.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=20 -left=0 -width=4 -height=4 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_c_mm2.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=18 -left=8 -width=2 -height=2 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_c_mm3.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Create 8x12 image of the 8x8 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=12 -pad tmp\image_terrain_7_c_mm1.ppm  1>tmp\image_terrain_7_c_mm1_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Paste the mipmaps on the 8x12 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_7_c_mm2.ppm 0 8 tmp\image_terrain_7_c_mm1_tmp.ppm  1>tmp\image_terrain_7_c_mm2_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_7_c_mm3.ppm 4 8 tmp\image_terrain_7_c_mm2_tmp.ppm  1>tmp\image_terrain_7_c.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Apply the palette and create the header file 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_terrain_7_c 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_terrain_7_c.ppm -mapfile=tmp\palette256.ppm  1>output\image_terrain_7_c.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_terrain_7_c.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_terrain_7_c.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 12
-Size in bytes: 96
-Outputting c file: image_terrain_7_c.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_7_c.c ..\..\..\gfx_hdr\image_terrain_7_c.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** D: bottom right 8x8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Get each mipmap as a separate image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=8 -width=8 -height=8 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_d_mm1.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=20 -left=4 -width=4 -height=4 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_d_mm2.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=18 -left=10 -width=2 -height=2 tmp\image_terrain_7.ppm  1>tmp\image_terrain_7_d_mm3.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Create 8x12 image of the 8x8 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=12 -pad tmp\image_terrain_7_d_mm1.ppm  1>tmp\image_terrain_7_d_mm1_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Paste the mipmaps on the 8x12 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_7_d_mm2.ppm 0 8 tmp\image_terrain_7_d_mm1_tmp.ppm  1>tmp\image_terrain_7_d_mm2_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_7_d_mm3.ppm 4 8 tmp\image_terrain_7_d_mm2_tmp.ppm  1>tmp\image_terrain_7_d.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Apply the palette and create the header file 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_terrain_7_d 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_terrain_7_d.ppm -mapfile=tmp\palette256.ppm  1>output\image_terrain_7_d.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_terrain_7_d.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_terrain_7_d.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 12
-Size in bytes: 96
-Outputting c file: image_terrain_7_d.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_7_d.c ..\..\..\gfx_hdr\image_terrain_7_d.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_split4_mipmap.cmd image_terrain_8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>REM *** splits the 16x16 bmp to four 8x8 ppms and makes textures of them 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_terrain_8.bmp  1>tmp\image_terrain_8.ppm 
-bmptoppm: Windows BMP, 16x24x24
-bmptoppm: WRITING PPM IMAGE
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** A: top left 8x8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Get each mipmap as a separate image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=8 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_a_mm1.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=16 -left=0 -width=4 -height=4 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_a_mm2.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=16 -left=8 -width=2 -height=2 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_a_mm3.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Create 8x12 image of the 8x8 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=12 -pad tmp\image_terrain_8_a_mm1.ppm  1>tmp\image_terrain_8_a_mm1_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Paste the mipmaps on the 8x12 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_8_a_mm2.ppm 0 8 tmp\image_terrain_8_a_mm1_tmp.ppm  1>tmp\image_terrain_8_a_mm2_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_8_a_mm3.ppm 4 8 tmp\image_terrain_8_a_mm2_tmp.ppm  1>tmp\image_terrain_8_a.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Apply the palette and create the header file 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_terrain_8_a 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_terrain_8_a.ppm -mapfile=tmp\palette256.ppm  1>output\image_terrain_8_a.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_terrain_8_a.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_terrain_8_a.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 12
-Size in bytes: 96
-Outputting c file: image_terrain_8_a.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_8_a.c ..\..\..\gfx_hdr\image_terrain_8_a.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** B: top right 8x8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Get each mipmap as a separate image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=8 -width=8 -height=8 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_b_mm1.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=16 -left=4 -width=4 -height=4 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_b_mm2.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=16 -left=10 -width=2 -height=2 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_b_mm3.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Create 8x12 image of the 8x8 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=12 -pad tmp\image_terrain_8_b_mm1.ppm  1>tmp\image_terrain_8_b_mm1_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Paste the mipmaps on the 8x12 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_8_b_mm2.ppm 0 8 tmp\image_terrain_8_b_mm1_tmp.ppm  1>tmp\image_terrain_8_b_mm2_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_8_b_mm3.ppm 4 8 tmp\image_terrain_8_b_mm2_tmp.ppm  1>tmp\image_terrain_8_b.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Apply the palette and create the header file 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_terrain_8_b 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_terrain_8_b.ppm -mapfile=tmp\palette256.ppm  1>output\image_terrain_8_b.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_terrain_8_b.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_terrain_8_b.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 12
-Size in bytes: 96
-Outputting c file: image_terrain_8_b.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_8_b.c ..\..\..\gfx_hdr\image_terrain_8_b.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** C: bottom left 8x8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Get each mipmap as a separate image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=0 -width=8 -height=8 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_c_mm1.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=20 -left=0 -width=4 -height=4 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_c_mm2.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=18 -left=8 -width=2 -height=2 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_c_mm3.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Create 8x12 image of the 8x8 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=12 -pad tmp\image_terrain_8_c_mm1.ppm  1>tmp\image_terrain_8_c_mm1_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Paste the mipmaps on the 8x12 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_8_c_mm2.ppm 0 8 tmp\image_terrain_8_c_mm1_tmp.ppm  1>tmp\image_terrain_8_c_mm2_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_8_c_mm3.ppm 4 8 tmp\image_terrain_8_c_mm2_tmp.ppm  1>tmp\image_terrain_8_c.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Apply the palette and create the header file 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_terrain_8_c 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_terrain_8_c.ppm -mapfile=tmp\palette256.ppm  1>output\image_terrain_8_c.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_terrain_8_c.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_terrain_8_c.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 12
-Size in bytes: 96
-Outputting c file: image_terrain_8_c.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_8_c.c ..\..\..\gfx_hdr\image_terrain_8_c.h 
-        1 file(s) copied.
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** D: bottom right 8x8 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Get each mipmap as a separate image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=8 -left=8 -width=8 -height=8 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_d_mm1.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=20 -left=4 -width=4 -height=4 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_d_mm2.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=18 -left=10 -width=2 -height=2 tmp\image_terrain_8.ppm  1>tmp\image_terrain_8_d_mm3.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Create 8x12 image of the 8x8 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pamcut -top=0 -left=0 -width=8 -height=12 -pad tmp\image_terrain_8_d_mm1.ppm  1>tmp\image_terrain_8_d_mm1_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Paste the mipmaps on the 8x12 image 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_8_d_mm2.ppm 0 8 tmp\image_terrain_8_d_mm1_tmp.ppm  1>tmp\image_terrain_8_d_mm2_tmp.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pnmpaste tmp\image_terrain_8_d_mm3.ppm 4 8 tmp\image_terrain_8_d_mm2_tmp.ppm  1>tmp\image_terrain_8_d.ppm 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem Apply the palette and create the header file 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr_ppm.cmd image_terrain_8_d 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_terrain_8_d.ppm -mapfile=tmp\palette256.ppm  1>output\image_terrain_8_d.bmp 
-ppmtobmp: Writing 8 bits per pixel with a color palette
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_terrain_8_d.bmp -8 -n 
-Pokitto BMP to Pokitto bitmap conversion utility
-File name: image_terrain_8_d.bmp 
-Number of colours used: 256
-Bits per pixel: 8
-Size in pixels: 8 x 12
-Size in bytes: 96
-Outputting c file: image_terrain_8_d.c
-
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_terrain_8_d.c ..\..\..\gfx_hdr\image_terrain_8_d.h 
         1 file(s) copied.
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 

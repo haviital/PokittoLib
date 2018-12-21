@@ -37,62 +37,16 @@
 #include "image_ship_5_c.h"
 #include "image_ship_5_d.h"
 #include "image_ship_5_e.h"
-//#include "image_ship6.h"
-//#include "image_pokitto.h"
 #include "image_cactus.h"
 #include "image_rock1.h"
 #include "image_ball1_a.h"
 #include "image_ball1_b.h"
 #include "image_ball1_c.h"
 #include "image_ball1_d.h"
-#include "image_ball2_a.h"
-#include "image_ball2_b.h"
-#include "image_ball2_c.h"
-#include "image_ball2_d.h"
-#include "image_ball3_a.h"
-#include "image_ball3_b.h"
-#include "image_ball3_c.h"
-#include "image_ball3_d.h"
-#include "image_ball4_a.h"
-#include "image_ball4_b.h"
-#include "image_ball4_c.h"
-#include "image_ball4_d.h"
-#include "image_ball5_a.h"
-#include "image_ball5_b.h"
-#include "image_ball5_c.h"
-#include "image_ball5_d.h"
-//#include "image_terrain_1_a.h"
-//#include "image_terrain_1_b.h"
-//#include "image_terrain_1_c.h"
-//#include "image_terrain_1_d.h"
-//#include "image_terrain_2_a.h"
-//#include "image_terrain_2_b.h"
-//#include "image_terrain_2_c.h"
-//#include "image_terrain_2_d.h"
-//#include "image_terrain_3_a.h"
-//#include "image_terrain_3_b.h"
-//#include "image_terrain_3_c.h"
-//#include "image_terrain_3_d.h"
-//#include "image_terrain_4_a.h"
-//#include "image_terrain_4_b.h"
-//#include "image_terrain_4_c.h"
-//#include "image_terrain_4_d.h"
-//#include "image_terrain_5_a.h"
-//#include "image_terrain_5_b.h"
-//#include "image_terrain_5_c.h"
-//#include "image_terrain_5_d.h"
 #include "image_terrain_6_a.h"
 #include "image_terrain_6_b.h"
 #include "image_terrain_6_c.h"
 #include "image_terrain_6_d.h"
-#include "image_terrain_7_a.h"
-#include "image_terrain_7_b.h"
-#include "image_terrain_7_c.h"
-#include "image_terrain_7_d.h"
-#include "image_terrain_8_a.h"
-#include "image_terrain_8_b.h"
-#include "image_terrain_8_c.h"
-#include "image_terrain_8_d.h"
 #include "image_start_a.h"
 #include "image_start_b.h"
 #include "image_start_c.h"
@@ -103,6 +57,13 @@
 #include "image_sky_long.h"
 #include "image_light.h"
 #include "image_spot.h"
+
+// Palette
+// UI colors ==> 0-7 colors
+// image_numbers.bmp ==> 0-10 colors
+// image_numbers.bmp image_shadow.bmp image_ship.bmp ==> 0-31 colors
+// image_numbers.bmp image_shadow.bmp image_ship.bmp image_sky.bmp ==> 0-40 colors
+// all: 0-83 colors
 
  // Defines blocks of 64 (8x8) tiles
  const uint8_t blockData[][8*8] = {
@@ -422,7 +383,7 @@ const uint8_t* billboard_object_bitmaps [billboard_object_bitmaps_count] = {
     image_spot+2,
 };
 
-const uint8_t terrain_bitmaps_count = 2*4;
+const uint8_t terrain_bitmaps_count = 1*4;
 const uint8_t* terrain_bitmaps [terrain_bitmaps_count] = {
 //    image_terrain_1_a+2,
 //    image_terrain_1_b+2,
@@ -452,10 +413,10 @@ const uint8_t* terrain_bitmaps [terrain_bitmaps_count] = {
 //    image_terrain_7_b+2,
 //    image_terrain_7_c+2,
 //    image_terrain_7_d+2,
-    image_terrain_8_a+2,
-    image_terrain_8_b+2,
-    image_terrain_8_c+2,
-    image_terrain_8_d+2,
+//    image_terrain_8_a+2,
+//    image_terrain_8_b+2,
+//    image_terrain_8_c+2,
+//    image_terrain_8_d+2,
 };
 
 //const uint8_t terrain_bitmaps_count = 8*4;

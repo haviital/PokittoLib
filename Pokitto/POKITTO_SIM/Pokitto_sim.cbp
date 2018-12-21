@@ -1139,6 +1139,15 @@
 		<Unit filename="../POKITTO_LIBS/FixMath/uint32.h">
 			<Option target="PokittoGP" />
 		</Unit>
+		<Unit filename="../POKITTO_LIBS/ImageFormat/BmpImage.cpp">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../POKITTO_LIBS/ImageFormat/ImageFormat.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../POKITTO_LIBS/ImageFormat/defines_win_SIM.h">
+			<Option target="PokittoGP" />
+		</Unit>
 		<Unit filename="../POKITTO_LIBS/MicroPython/My_settings.h">
 			<Option target="MicroPython" />
 		</Unit>
