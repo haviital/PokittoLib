@@ -977,61 +977,6 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
 {
     RestoreRomTextures();
 
-    // Read palette
-    //
-    char filePathAndNamePal[128] = {0};
-    strcat(filePathAndNamePal, dirPath);
-    #ifndef POK_SIM
-    strcat(filePathAndNamePal, "/");
-    #endif
-    char fileNamePalette[] = "palette.bmp";
-    strcat(filePathAndNamePal, fileNamePalette);
-    uint16_t* palette = NULL; // Gets the ownership.
-    uint8_t* bitmap = NULL; // Gets the ownership.
-    int err = openImageFileFromSD(filePathAndNamePal, /*OUT*/&palette, /*OUT*/&bitmap);
-    free(bitmap); bitmap = NULL;
-
-    //
-    if(err == -1 || err == -2)
-    {
-        // Cannot open
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, fileNamePalette);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "Cannot");
-        mygame.display.print(1, 50, "open image.");
-        return false;
-    }
-    else if(err == -10)
-    {
-        // Wrong palette size
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, fileNamePalette);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "Color count");
-        mygame.display.print(1, 50, "not 256.");
-        return false;
-    }
-    else if(err == -12)
-    {
-        // OOM
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, fileNamePalette);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "Out of");
-        mygame.display.print(1, 50, "memory.");
-        return false;
-    }
-    else if(err != 0)
-    {
-        // Other error
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, fileNamePalette);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "Invalid");
-        mygame.display.print(1, 50, "image format");
-        return false;
-    }
-    else
-    {
-        // Image ok.
-        // Copy the default palette.
-        memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette, 256*2);
-        Pokitto::Core::display.load565Palette((const uint16_t*)g_gamePalette);
-    }
-
     struct STextureFileParam
     {
         int32_t w,h;
@@ -1069,9 +1014,9 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
         strcat(filePathAndName, fileName);
 
         // Read texture file.
-        palette = NULL; // Gets the ownership.
-        bitmap = NULL; // Gets the ownership.
-        err = openImageFileFromSD(filePathAndName, /*OUT*/&palette, /*OUT*/&bitmap);
+        uint16_t* palette = NULL; // Gets the ownership.
+        uint8_t* bitmap = NULL; // Gets the ownership.
+        int err = openImageFileFromSD(filePathAndName, /*OUT*/&palette, /*OUT*/&bitmap);
         free(palette); palette = NULL;
 
         //
