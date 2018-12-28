@@ -23,7 +23,11 @@ public:
     bool ReadAndValidateTrack(
         char* trackPath, char* trackFileName,
         /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName );
-    bool ReadAndValidateTextures(char* dirPath);
+    bool ReadAndValidateTextures(char* trackDirPath, char* trackDirName);
+
+public:
+    static const int32_t dirPathAndNameArrMaxLen = 10;
+    static const int32_t dirPathAndNameMaxLen = 30;
 
 public:
     bool m_isOpen;
@@ -44,5 +48,6 @@ public:
     int32_t m_trackNum;
     int32_t m_trackCount;
     bool m_isTrackOk;
+    char m_dirNameArr[dirPathAndNameArrMaxLen][dirPathAndNameMaxLen];
     int32_t m_test;
 };

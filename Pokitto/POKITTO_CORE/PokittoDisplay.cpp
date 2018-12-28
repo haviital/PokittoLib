@@ -214,7 +214,7 @@ Display::Display() {
     #endif // POK_GAMEBUINO_SUPPORT
 
     // Reset sprites
-    m_tilecolorbuf = NULL; //!!HV
+    m_tilecolorbuf = NULL;
     for (uint8_t s = 0; s < SPRITE_COUNT; s++) m_sprites[s].bitmapData = NULL;
 }
 

@@ -83,12 +83,12 @@ void emptyFname() {
 
 /** PUBLIC FUNCTIONS **/
 
-char* getFirstDirEntry() {
+char* getFirstDirEntry(char* path) {
     res=0;
     if (!diropened) {
             pokInitSD();
     }
-    res = pf_opendir(&dir,"");
+    res = pf_opendir(&dir,path);
     emptyFname();
     res = pf_readdir(&dir,&fno); //returns 0 if everything is OK
     if (res) return 0;

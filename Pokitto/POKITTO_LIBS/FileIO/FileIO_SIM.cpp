@@ -117,6 +117,70 @@ char* getCurrentFileName (){
 }
 
 
+char* getFirstDirEntry(char* path) {
+    if (diropened) {
+        tinydir_close(&tinydir);
+        diropened=false;
+    }
+    //tinydir_open(&tinydir, "./");
+    tinydir_open(&tinydir, path);
+    diropened = true;
+    int err = tinydir_readfile(&tinydir, &tinyfile);
+    if (err==-1) return 0;
+    while (tinyfile.name || tinyfile.is_dir) {
+        if (tinyfile.is_dir) {
+            tinyfile.name[8]='.';
+            tinyfile.name[9]='D';
+            tinyfile.name[10]='I';
+            tinyfile.name[11]='R';
+            tinyfile.name[12]='\0';
+            return tinyfile.name;
+        }
+
+        tinydir_next(&tinydir);
+        err = tinydir_readfile(&tinydir, &tinyfile);
+        if (err==-1) break;
+    }
+    return 0;
+}
+
+char* getNextDirEntry (){
+
+    if (!diropened) pokInitSD();
+    tinydir_next(&tinydir);
+    int err = tinydir_readfile(&tinydir, &tinyfile);
+	if(err != -1) {
+
+        while(!tinyfile.is_dir && err != -1) {
+            tinydir_next(&tinydir);
+            err = tinydir_readfile(&tinydir, &tinyfile);
+        }
+        if (tinyfile.is_dir) {
+
+            // Change the dir name: "mydir" ==> "/mydir/"
+            int i=12;
+            while (i) {
+                    tinyfile.name[i] = tinyfile.name[i-1];
+                    i--;
+            }
+            if (tinyfile.name[0]) {
+                    tinyfile.name[0]='/';
+                    i=0;
+                    while (tinyfile.name[i]) i++;
+                    tinyfile.name[i++]='/';
+                    tinyfile.name[i++]='\0';
+            }
+            /*tinyfile.name[a++]='.';
+            tinyfile.name[a++]='D';
+            tinyfile.name[a++]='I';
+            tinyfile.name[a++]='R';
+            tinyfile.name[a]='\0';*/
+        }
+        return tinyfile.name;
+	}
+	return 0;
+}
+
 char* getNextFile (char* ext){
 
     if (!diropened) pokInitSD();

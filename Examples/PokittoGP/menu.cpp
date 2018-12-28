@@ -506,45 +506,42 @@ bool CMenu::HandlePilotPictureMenu()
     }
 }
 
-        //Example
-        //........
-        //./r==,`.
-        //.|!..|!.
-        //.|!..|!.
-        //.|+--j!.
-        //.\====%.
-        //........
+//Example
+//........
+//./r==,`.
+//.|!..|!.
+//.|!..|!.
+//.|+--j!.
+//.\====%.
+//........
 
-        // Conversion between the ascii char and the block index.
-        const char asciiTrackConversionTable[20] = {
-            '|',  // 0: The left edge.
-            '!',  // 1: The right edge.
-            ' ',  // 2: None.
-            ' ',  // 3: None
-            '=',  // 4: The top edge
-            '-',  // 5: The bottom edge
-            '\\', // 6: The outer corner of the 1st quarter.
-            '+',  // 7: The inner corner of the 1st quarter.
-            '/',  // 8: The outer corner of the 4th quarter.
-            'r',  // 9: The inner corner of the 4th quarter.
-            '%',  // 10: The outer corner of the 2nd quarter.
-            'j',  // 11: The inner corner of the 2nd quarter.
-            '`',  // 12: The outer corner of the 3rd quarter.
-            ',',  // 13: The inner corner of the 3rd quarter.
-            '.',  // 14: The surface.
-            '#',  // 15: The starting grid, left side.
-            '*',  // 16: The starting grid, right side.
-            'X',  // 17: The halfway mark, left side.
-            'x',  // 18: The halfway mark, right side.
-        };
+// Conversion between the ascii char and the block index.
+const char asciiTrackConversionTable[20] = {
+    '|',  // 0: The left edge.
+    '!',  // 1: The right edge.
+    ' ',  // 2: None.
+    ' ',  // 3: None
+    '=',  // 4: The top edge
+    '-',  // 5: The bottom edge
+    '\\', // 6: The outer corner of the 1st quarter.
+    '+',  // 7: The inner corner of the 1st quarter.
+    '/',  // 8: The outer corner of the 4th quarter.
+    'r',  // 9: The inner corner of the 4th quarter.
+    '%',  // 10: The outer corner of the 2nd quarter.
+    'j',  // 11: The inner corner of the 2nd quarter.
+    '`',  // 12: The outer corner of the 3rd quarter.
+    ',',  // 13: The inner corner of the 3rd quarter.
+    '.',  // 14: The surface.
+    '#',  // 15: The starting grid, left side.
+    '*',  // 16: The starting grid, right side.
+    'X',  // 17: The halfway mark, left side.
+    'x',  // 18: The halfway mark, right side.
+};
 
 //
 bool CMenu::HandleSelectTrackMenu()
 {
     // The track names
-    int32_t filePathAndNameArrMaxLen = 10;
-    int32_t filePathAndNameMaxLen = 30;
-    char fileNameArr[filePathAndNameArrMaxLen][filePathAndNameMaxLen] = {0};
 
     if(!m_hasTrackBeenLoaded)
     {
@@ -561,39 +558,46 @@ bool CMenu::HandleSelectTrackMenu()
         // Read the file list from SD.
         pokInitSD(); // Call init always.
 
+        char* currDirName = NULL;
         #if POK_SIM
-        char* dirName = "./pgpdata/tracks/";
-        getFirstFile("txt",dirName);
+        char* tracksDirName = "./pgpdata/tracks/";
+        getFirstDirEntry(tracksDirName); // This is always "." in Windows.
+        getNextDirEntry(); // This is always ".." in Windows.
+        //getFirstFile("txt",tracksDirName);
         #else
-        char* dirName = "pgpdata/tracks";
+        char* tracksDirName = "pgpdata/tracks";
         bool isFirstFile = true;
         #endif
         int i = 0;
-        char* fileName = NULL;
-        for (; i < filePathAndNameArrMaxLen; i++)
+        //char* fileName = NULL;
+        for (; i < dirPathAndNameArrMaxLen; i++)
         {
             // read the file name from SD
             #ifndef POK_SIM
             if(isFirstFile)
             {
-                fileName = getFirstFile("",dirName);
+                //fileName = getFirstFile("",tracksDirName);
+                currDirName = getFirstDirEntry("",tracksDirName);
                 isFirstFile = false;
             }
             else
-                fileName = getNextFile("");
+                //fileName = getNextFile("");
+                currDirName = getNextDirEntry();
             #else
-            fileName = getNextFile("txt");
+            currDirName = getNextDirEntry();
             #endif
 
-           if(!fileName || strlen(fileName)==0)
+           if(!currDirName || strlen(currDirName)==0)
                 break; // No more files
 
-            // Add the file to the array
-            strncpy(fileNameArr[i], fileName, filePathAndNameMaxLen);
-            fileNameArr[i][filePathAndNameMaxLen-1] = '\0';
+            // The currDirName is in the form: "/mydir/"
+            // Add the dir to the array
+            int32_t length = strlen(currDirName);
+            strncpy(m_dirNameArr[i], currDirName+1, length-2);
+            m_dirNameArr[i][length-2] = '\0'; // "mydir\0"
         }
         i++; // Add one for the ROM track (index 0)
-        m_trackCount = (filePathAndNameArrMaxLen < i) ? filePathAndNameArrMaxLen : i; // min
+        m_trackCount = (dirPathAndNameArrMaxLen < i) ? dirPathAndNameArrMaxLen : i; // min
 
         //
         m_hasTrackBeenLoaded = true;
@@ -608,14 +612,14 @@ bool CMenu::HandleSelectTrackMenu()
         {
              // Read and verify track
             m_isTrackOk = ReadAndValidateTrack(
-                dirName, fileNameArr[m_trackNum-1],
+                tracksDirName, m_dirNameArr[m_trackNum-1],
                 /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
 
             // TODO: reset all textures to ROM textures
-
             // Read and verify textures
             if( m_isTrackOk )
-                m_isTrackOk = ReadAndValidateTextures(dirName);
+
+                m_isTrackOk = ReadAndValidateTextures(tracksDirName, m_dirNameArr[m_trackNum-1]);
         }
 
         if(m_isTrackOk)
@@ -789,7 +793,7 @@ bool CMenu::HandleSelectTrackMenu()
 //
 //
 bool CMenu::ReadAndValidateTrack(
-    char* trackPath, char* trackFileName,
+    char* trackPath, char* trackDirName,
     /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName )
 {
     // Clear screen
@@ -801,17 +805,21 @@ bool CMenu::ReadAndValidateTrack(
     char myTrack1[mapTotalSizeinFile*2] = {0};
     //uint8_t blockMapRAM2[mapWidth*mapHeight];
     char filePathAndName[128] = {0};
-    strcat(filePathAndName, trackPath);
+    strcpy(filePathAndName, trackPath);
     #ifndef POK_SIM
     strcat(filePathAndName, "/");
     #endif
+    strcat(filePathAndName, trackDirName);
+    strcat(filePathAndName, "/");
+    char* trackFileName = "track.txt";
     strcat(filePathAndName, trackFileName);
     uint8_t err = fileOpen(filePathAndName, FILE_MODE_READONLY);
     if(err)
     {
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "File is not");
-        mygame.display.print(1, 50, "found!");
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+        mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 50, "File is not");
+        mygame.display.print(1, 60, "found!");
         fileClose(); // close any open files
         return false;
     }
@@ -823,9 +831,10 @@ bool CMenu::ReadAndValidateTrack(
     {
         if(! ( (myTrack1[i]>=9 && myTrack1[i]<=13) || (myTrack1[i]>=32 && myTrack1[i]<=126) ) )
         {
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 40, "Not an ascii");
-            mygame.display.print(1, 50, "file!");
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+            mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 50, "Not an ascii");
+            mygame.display.print(1, 60, "file!");
             return false;
         }
     }
@@ -841,9 +850,10 @@ bool CMenu::ReadAndValidateTrack(
     // Check for error.
     if(i > maxTrackOrAuthorNameLen-1)
     {
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "Circuit name");
-        mygame.display.print(1, 50, "too long!");
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+        mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 50, "Circuit name");
+        mygame.display.print(1, 60, "too long!");
         return false;
     }
     trackName[i]='\0';
@@ -859,9 +869,10 @@ bool CMenu::ReadAndValidateTrack(
     // Check for error.
     if(i > maxTrackOrAuthorNameLen-1)
     {
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "Author name");
-        mygame.display.print(1, 50, "too long!");
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+        mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 50, "Author name");
+        mygame.display.print(1, 60, "too long!");
         return false;
     }
     authorName[i]='\0';
@@ -883,10 +894,11 @@ bool CMenu::ReadAndValidateTrack(
             if(currentPosInLine<mapWidth)
             {
                 // Too short line
-                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-                mygame.display.print(1, 40, "Line is too");
-                mygame.display.print(1, 50, "short!");
-                mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+                mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 50, "Line is too");
+                mygame.display.print(1, 60, "short!");
+                mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
                 return false;
             }
 
@@ -906,20 +918,22 @@ bool CMenu::ReadAndValidateTrack(
         else if(currentPosInLine>=mapWidth)
         {
             // Too long line
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 40, "Line is too");
-            mygame.display.print(1, 50, "long!");
-            mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+            mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 50, "Line is too");
+            mygame.display.print(1, 60, "long!");
+            mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
             return false;
         }
 
         if(currentLineNum>=mapHeight )
         {
             // Too many lines
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 40, "Too many");
-            mygame.display.print(1, 50, "lines!");
-            mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+            mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 50, "Too many");
+            mygame.display.print(1, 60, "lines!");
+            mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
             return false;
         }
 
@@ -935,11 +949,12 @@ bool CMenu::ReadAndValidateTrack(
             if(tableIndex>=convTableLen || c==' ')
             {
                 // Not a valid char.
-                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-                mygame.display.print(1, 40, "Invalid");
-                mygame.display.print(1, 50, "char:\"");mygame.display.print(c);mygame.display.print("\"!");
-                mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
-                mygame.display.print(1, 70, "Row:");mygame.display.print(currentPosInLine+1);
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+                mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 50, "Invalid");
+                mygame.display.print(1, 60, "char:\"");mygame.display.print(c);mygame.display.print("\"!");
+                mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
+                mygame.display.print(1, 80, "Row:");mygame.display.print(currentPosInLine+1);
                 return false;
             }
 
@@ -954,9 +969,10 @@ bool CMenu::ReadAndValidateTrack(
     if( currentLineNum<mapHeight-1 )
     {
         // Track file is too short
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "Too few lines");
-        mygame.display.print(1, 50, "at line:");mygame.display.print(currentLineNum+3);
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+        mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 50, "Too few lines");
+        mygame.display.print(1, 60, "at line:");mygame.display.print(currentLineNum+3);
         return false;
     }
 
@@ -964,16 +980,17 @@ bool CMenu::ReadAndValidateTrack(
     if(currentPosInLine<mapWidth)
     {
         // Too short line
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackFileName);mygame.display.setColor(2,1);
-        mygame.display.print(1, 40, "Line is too");
-        mygame.display.print(1, 50, "short!");
-        mygame.display.print(1, 60, "Line:");mygame.display.print(currentLineNum+3);
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+        mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 50, "Line is too");
+        mygame.display.print(1, 60, "short!");
+        mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
         return false;
     }
 }
 
 //
-bool CMenu::ReadAndValidateTextures(char* dirPath)
+bool CMenu::ReadAndValidateTextures(char* trackDirPath, char* trackDirName)
 {
     RestoreRomTextures();
 
@@ -991,13 +1008,14 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
         {8,12,1},   // 3: road2
         {16,24,4},  // 4: terrain
         {16,24,4},  // 5: start grid
-        {8,12,1},   // 6: waypoint light
+        //{8,12,1},   // 6: waypoint light
     };
 
     // Try to read all textures.
     char filePathAndName[128] = {0};
     int32_t textureFileParamArrSize = sizeof(textureFileParamArr) / sizeof(textureFileParamArr[0]);
-    for(int32_t fileIndex=0, texIndex=0; fileIndex < textureFileParamArrSize; fileIndex++,texIndex++)
+    const int32_t startOfPaletteImportIndex = 41;
+    for(int32_t fileIndex=1, texIndex=1; fileIndex < textureFileParamArrSize; fileIndex++,texIndex++)
     {
 
         //
@@ -1007,17 +1025,29 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
         fileName[3] = '0' + tens;
         fileName[4] = '0' + ones;
 
-        strcpy(filePathAndName, dirPath);
+        strcpy(filePathAndName, trackDirPath);
         #ifndef POK_SIM
         strcat(filePathAndName, "/");
         #endif
+        strcat(filePathAndName, trackDirName);
+        strcat(filePathAndName, "/");
         strcat(filePathAndName, fileName);
 
         // Read texture file.
-        uint16_t* palette = NULL; // Gets the ownership.
+        uint16_t* palette2 = NULL; // Gets the ownership.
         uint8_t* bitmap = NULL; // Gets the ownership.
-        int err = openImageFileFromSD(filePathAndName, /*OUT*/&palette, /*OUT*/&bitmap);
-        free(palette); palette = NULL;
+        int err = openImageFileFromSD(filePathAndName, /*OUT*/&palette2, /*OUT*/&bitmap);
+        if(!err && fileIndex==1)
+        {
+            // Append the palette to the end of current palette.
+            for(int32_t c=startOfPaletteImportIndex, ii=0; c < 255; c++,ii++)
+                Pokitto::Display::palette[c] = palette2[ii];
+
+            // Copy the default palette.
+            memcpy((uint8_t*)g_gamePalette, (uint8_t*)Pokitto::Display::palette, 256*2);
+            //Pokitto::Core::display.load565Palette((const uint16_t*)g_gamePalette);
+        }
+        free(palette2); palette2 = NULL;
 
         //
         if(err == -1 || err == -2)
@@ -1036,33 +1066,37 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
         else if(err == -6)
         {
             // Wrong palette size
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 40, "Width should");
-            mygame.display.print(1, 50, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].w);
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+            mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 50, "Width should");
+            mygame.display.print(1, 60, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].w);
             return false;
         }
         else if(err == -10)
         {
             // Wrong palette size
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 40, "Color count");
-            mygame.display.print(1, 50, "not 256.");
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+            mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 50, "Color count");
+            mygame.display.print(1, 60, "not 256.");
             return false;
         }
         else if(err == -12)
         {
             // OOM
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 40, "Out of");
-            mygame.display.print(1, 50, "memory.");
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+            mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 50, "Out of");
+            mygame.display.print(1, 60, "memory.");
             return false;
         }
         else if(err != 0)
         {
             // Other error
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 40, "Invalid");
-            mygame.display.print(1, 50, "image format");
+            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+            mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
+            mygame.display.print(1, 50, "Invalid");
+            mygame.display.print(1, 60, "image format");
             return false;
         }
         else
@@ -1076,21 +1110,23 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
             if( textureFileParamArr[ fileIndex].w !=  w)
             {
                 // Wrong width
-                mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
-                mygame.display.print(1, 40, "Width should");
-                mygame.display.print(1, 50, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].w);
-                mygame.display.print(1, 60, "Is:");mygame.display.print(w);
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+                mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 50, "Width should");
+                mygame.display.print(1, 60, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].w);
+                mygame.display.print(1, 70, "Is:");mygame.display.print(w);
                 free(bitmap);
                 return false;
             }
             if( textureFileParamArr[ fileIndex].h !=  h)
             {
                 // Wrong height
-                mygame.display.setColor(3,1);mygame.display.print(1, 30, fileName);mygame.display.setColor(2,1);
-                mygame.display.print(1, 40, "Height");
-                mygame.display.print(1, 50, "should");
-                mygame.display.print(1, 60, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].h);
-                mygame.display.print(1, 70, "Is:");mygame.display.print(h);
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+                mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 50, "Height");
+                mygame.display.print(1, 60, "should");
+                mygame.display.print(1, 70, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].h);
+                mygame.display.print(1, 80, "Is:");mygame.display.print(h);
                 free(bitmap);
                 return false;
             }
@@ -1101,6 +1137,10 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
                 current_texture_bitmaps_mm1[texIndex] =  current_texture_bitmaps[texIndex] + (w * w);
                 current_texture_bitmaps_mm2[texIndex] =  current_texture_bitmaps[texIndex] + (w * w) + (w>>1);
                 bitmap = NULL;
+
+                // Convert indexes
+                for(int32_t ii=0; ii<w*h; ii++)
+                    *(((uint8_t*)(current_texture_bitmaps[texIndex]))+ii) = current_texture_bitmaps[texIndex][ii] + startOfPaletteImportIndex;
             }
             else if( textureFileParamArr[ fileIndex].numOfParts == 4 )
             {
@@ -1123,10 +1163,10 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
                 {
                     for(int32_t y=0; y<8; y++)
                     {
-                        tmpBitmapData0[y*8+x] = readBitmapData[y*16+x];
-                        tmpBitmapData1[y*8+x] = readBitmapData[y*16+x+8];
-                        tmpBitmapData2[y*8+x] = readBitmapData[(y+8)*16+x];
-                        tmpBitmapData3[y*8+x] = readBitmapData[(y+8)*16+x+8];
+                        tmpBitmapData0[y*8+x] = readBitmapData[y*16+x] + startOfPaletteImportIndex;
+                        tmpBitmapData1[y*8+x] = readBitmapData[y*16+x+8] + startOfPaletteImportIndex;
+                        tmpBitmapData2[y*8+x] = readBitmapData[(y+8)*16+x] + startOfPaletteImportIndex;
+                        tmpBitmapData3[y*8+x] = readBitmapData[(y+8)*16+x+8] + startOfPaletteImportIndex;
                     }
                 }
                 current_texture_bitmaps[texIndex] = tmpBitmapData0;
@@ -1140,10 +1180,10 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
                 {
                     for(int32_t y=0; y<4; y++)
                     {
-                        tmpBitmapData0[(y+8)*8+x] = readBitmapDataMM[y*16     + x];
-                        tmpBitmapData1[(y+8)*8+x] = readBitmapDataMM[y*16     + x+4];
-                        tmpBitmapData2[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x];
-                        tmpBitmapData3[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x+4];
+                        tmpBitmapData0[(y+8)*8+x] = readBitmapDataMM[y*16     + x] + startOfPaletteImportIndex;
+                        tmpBitmapData1[(y+8)*8+x] = readBitmapDataMM[y*16     + x+4] + startOfPaletteImportIndex;
+                        tmpBitmapData2[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x] + startOfPaletteImportIndex;
+                        tmpBitmapData3[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x+4] + startOfPaletteImportIndex;
                     }
                 }
                 current_texture_bitmaps_mm1[texIndex] = tmpBitmapData0 + (8 * 8);
@@ -1157,10 +1197,10 @@ bool CMenu::ReadAndValidateTextures(char* dirPath)
                 {
                     for(int32_t y=0; y<2; y++)
                     {
-                        tmpBitmapData0[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x];
-                        tmpBitmapData1[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x+2];
-                        tmpBitmapData2[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x];
-                        tmpBitmapData3[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x+2];
+                        tmpBitmapData0[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x] + startOfPaletteImportIndex;
+                        tmpBitmapData1[(y+8)*8+x+4] = readBitmapDataMMM[y*16     + x+2] + startOfPaletteImportIndex;
+                        tmpBitmapData2[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x] + startOfPaletteImportIndex;
+                        tmpBitmapData3[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x+2] + startOfPaletteImportIndex;
                     }
                 }
                 current_texture_bitmaps_mm2[texIndex] = tmpBitmapData0 + (8 * 8) + 4;

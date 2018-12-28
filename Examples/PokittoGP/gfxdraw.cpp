@@ -50,10 +50,11 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fx
             const uint8_t blockMapY = (blockDataY >> 3);
             uint8_t* tileBitmapPtr;
             uint8_t tileIndex = 0;
-            if(blockMapX < mapWidth && blockMapY < mapHeight) {
+            if(blockMapX < mapWidth && blockMapY < mapHeight)
+            {
                 const uint8_t blockDataIndex = blockMap[blockMapX+ (blockMapY*mapWidth)];
                 tileIndex = blockData[blockDataIndex][(blockDataX & 0x7) + ((blockDataY & 0x7)*8)];
-           }
+            }
             else
             {
                 // Terrain surface tiles
