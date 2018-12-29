@@ -4,8 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
 <body>
 <tt>
-Build started on: <u>16-12-2018 at 17:37.22</u><br />
-Build ended on: <u>16-12-2018 at 17:37.49</u><p />
+Build started on: <u>29-12-2018 at 19:32.02</u><br />
+Build ended on: <u>29-12-2018 at 19:32.23</u><p />
 <b>-------------- Build: PokittoGP in PokittoEmBitz ---------------</b><br />
 arm-none-eabi-g++.exe -mcpu=cortex-m0plus  -mthumb    -O3 -g1 -fno-exceptions -fno-rtti -std=gnu++11 -Wextra -Wall -fomit-frame-pointer -fdata-sections -ffunction-sections -g -funsigned-char -Wno-unused-parameter -Wno-missing-field-initializers -fmessage-length=0 -fno-builtin -fno-delete-null-pointer-checks -DMBED_RTOS_SINGLE_THREAD -Wvla -include mbed_config.h  -DTARGET_LPC11U68 -D__MBED__=1 -DDEVICE_I2CSLAVE=1 -DTARGET_LIKE_MBED -DTARGET_NXP -D__MBED_CMSIS_RTOS_CM -DDEVICE_RTC=1 -DTOOLCHAIN_object -D__CMSIS_RTOS -DTOOLCHAIN_GCC -DTARGET_CORTEX_M -DTARGET_M0P -DTARGET_UVISOR_UNSUPPORTED -DDEVICE_SERIAL=1 -DDEVICE_INTERRUPTIN=1 -DTARGET_LPCTarget -DTARGET_CORTEX -DDEVICE_I2C=1 -D__CORTEX_M0PLUS -DTARGET_FF_ARDUINO -DTARGET_RELEASE -DMBED_BUILD_TIMESTAMP=1507563655.72 -DARM_MATH_CM0PLUS -DTARGET_LPC11U6X -DDEVICE_SLEEP=1 -DTOOLCHAIN_GCC_ARM -DDEVICE_SPI=1 -DDEVICE_ANALOGIN=1 -DDEVICE_PWMOUT=1 -DTARGET_LIKE_CORTEX_M0  -c Examples\PokittoGP\menu.cpp -o .objs\examples\pokittogp\menu.o -MMD -I. -IPokitto -IPokitto\POKITTO_CORE -IPokitto\POKITTO_CORE\FONTS -IPokitto\POKITTO_CORE\PALETTES -IPokitto\POKITTO_HW -IPokitto\POKITTO_LIBS -IPokitto\POKITTO_LIBS\Synth -IPokitto\libpff -IPokitto\mbed-pokitto -IPokitto\mbed-pokitto\api -IPokitto\mbed-pokitto\common -IPokitto\mbed-pokitto\hal -IPokitto\mbed-pokitto\targets -IPokitto\mbed-pokitto\targets\cmsis -IPokitto\mbed-pokitto\targets\cmsis\TARGET_NXP -IPokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X -IPokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X\TOOLCHAIN_GCC_ARM -IPokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X\TOOLCHAIN_GCC_ARM\TARGET_LPC11U68 -IPokitto\mbed-pokitto\targets\cmsis\TOOLCHAIN_GCC -IPokitto\mbed-pokitto\targets\hal -IPokitto\mbed-pokitto\targets\hal\TARGET_NXP -IPokitto\mbed-pokitto\targets\hal\TARGET_NXP\TARGET_LPC11U6X -IPokitto\POKITTO_LIBS\FixMath -IExamples\PokittoGP -I.\Examples\PokittoGP\gfx_hdr -I.\Examples\PokittoGP -I.\Pokitto\libpff -I.\Pokitto\mbed-pokitto\api -I.\Pokitto\mbed-pokitto\hal -I.\Pokitto\mbed-pokitto\targets\cmsis -I.\Pokitto\mbed-pokitto\targets\cmsis\TARGET_NXP\TARGET_LPC11U6X -I.\Pokitto\mbed-pokitto\targets\hal\TARGET_NXP\TARGET_LPC11U6X -I.\Pokitto -I.\Pokitto\POKITTO_CORE -I.\Pokitto\POKITTO_HW -I.\Pokitto\POKITTO_LIBS\FixMath -I.\Pokitto\POKITTO_LIBS\ImageFormat -I.\Pokitto\POKITTO_LIBS\Synth -I"C:\Program Files (x86)\EmBitz\1.11\share\em_armgcc\bin\..\arm-none-eabi\include" -I"C:\Program Files (x86)\EmBitz\1.11\share\em_armgcc\bin\..\arm-none-eabi" -I"C:\Program Files (x86)\EmBitz\1.11\share\em_armgcc\bin\..\lib\cmsis\include"<br />
 In file included from Pokitto/Pokitto.h:40:0,<br />
@@ -16,6 +16,12 @@ In file included from Pokitto/Pokitto.h:40:0,<br />
 <font color="#818181"><i>Pokitto/Pokitto_settings.h:294:0: note: this is the location of the previous definition</i></font><br />
      #define POK_FPS 30<br />
  ^<br />
+In file included from Pokitto\POKITTO_CORE/PokittoCore.h:52:0,<br />
+                 from Pokitto/Pokitto.h:41,<br />
+                 from Examples\PokittoGP\menu.cpp:1:<br />
+<font color="#0000ff">Pokitto\POKITTO_CORE/PokittoDisk.h:110:46: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]</font><br />
+ extern char* getFirstDirEntry(char* path = "");<br />
+                                              ^<br />
 In file included from Pokitto/Pokitto.h:50:0,<br />
                  from Examples\PokittoGP\menu.cpp:1:<br />
 <font color="#0000ff">Pokitto\POKITTO_HW/PokittoEEPROM.h:42:30: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]</font><br />
@@ -126,18 +132,14 @@ Examples\PokittoGP\menu.cpp: In member function 'bool CMenu::HandleGenericMenu(u
      int32_t H = 0;<br />
              ^<br />
 Examples\PokittoGP\menu.cpp: In member function 'bool CMenu::HandleSelectTrackMenu()':<br />
-<font color="#0000ff">Examples\PokittoGP\menu.cpp:547:69: warning: variable length array 'fileNameArr' is used [-Wvla]</font><br />
-     char fileNameArr[filePathAndNameArrMaxLen][filePathAndNameMaxLen] = {0};<br />
-                                                                     ^<br />
-<font color="#0000ff">Examples\PokittoGP\menu.cpp:547:69: warning: variable length array 'fileNameArr' is used [-Wvla]</font><br />
-<font color="#0000ff">Examples\PokittoGP\menu.cpp:636:25: warning: unused variable 'blockMapRAM2' [-Wunused-variable]</font><br />
+<font color="#0000ff">Examples\PokittoGP\menu.cpp:651:25: warning: unused variable 'blockMapRAM2' [-Wunused-variable]</font><br />
                  uint8_t blockMapRAM2[mapWidth*mapHeight];<br />
                          ^<br />
-<font color="#0000ff">Examples\PokittoGP\menu.cpp:624:18: warning: unused variable 'text' [-Wunused-variable]</font><br />
+<font color="#0000ff">Examples\PokittoGP\menu.cpp:636:18: warning: unused variable 'text' [-Wunused-variable]</font><br />
              char text[64];<br />
                   ^<br />
 Examples\PokittoGP\menu.cpp: In member function 'bool CMenu::ReadAndValidateTrack(char*, char*, char*, char*, char*)':<br />
-<font color="#0000ff">Examples\PokittoGP\menu.cpp:970:1: warning: control reaches end of non-void function [-Wreturn-type]</font><br />
+<font color="#0000ff">Examples\PokittoGP\menu.cpp:998:1: warning: control reaches end of non-void function [-Wreturn-type]</font><br />
  }<br />
  ^<br />
 In file included from Pokitto/Pokitto.h:50:0,<br />
@@ -162,9 +164,9 @@ arm-none-eabi-gcc.exe -mcpu=cortex-m0plus  -mthumb    -O3 -g1 -fno-exceptions -s
 arm-none-eabi-objcopy.exe -O ihex .\build\PokitGP.elf .\build\PokitGP.hex<br />
 arm-none-eabi-objcopy.exe -I ihex .\build\PokitGP.hex -O binary .\build\PokitGP.bin<br />
 .\build\lpcrc .\build\PokitGP.bin<br />
-succesfully updated crc to: effed1d5<br />
-<font color="#0000ff">Process terminated with status 0 (0 minutes, 27 seconds)</font><br />
-<font color="#0000ff">0 errors, 43 warnings (0 minutes, 27 seconds)</font><br />
+succesfully updated crc to: effebbb5<br />
+<font color="#0000ff">Process terminated with status 0 (0 minutes, 21 seconds)</font><br />
+<font color="#0000ff">0 errors, 42 warnings (0 minutes, 21 seconds)</font><br />
 </tt>
 </body>
 </html>

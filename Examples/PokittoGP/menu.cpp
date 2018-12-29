@@ -563,7 +563,7 @@ bool CMenu::HandleSelectTrackMenu()
         char* tracksDirName = "./pgpdata/tracks/";
         getFirstDirEntry(tracksDirName); // This is always "." in Windows.
         getNextDirEntry(); // This is always ".." in Windows.
-        //getFirstFile("txt",tracksDirName);
+        bool isFirstFile = false;
         #else
         char* tracksDirName = "pgpdata/tracks";
         bool isFirstFile = true;
@@ -575,13 +575,8 @@ bool CMenu::HandleSelectTrackMenu()
             // read the file name from SD
             #ifndef POK_SIM
             if(isFirstFile)
-            {
-                //fileName = getFirstFile("",tracksDirName);
-                currDirName = getFirstDirEntry("",tracksDirName);
-                isFirstFile = false;
-            }
+                currDirName = getFirstDirEntry(tracksDirName);
             else
-                //fileName = getNextFile("");
                 currDirName = getNextDirEntry();
             #else
             currDirName = getNextDirEntry();
@@ -590,12 +585,25 @@ bool CMenu::HandleSelectTrackMenu()
            if(!currDirName || strlen(currDirName)==0)
                 break; // No more files
 
-            // The currDirName is in the form: "/mydir/"
-            // Add the dir to the array
-            int32_t length = strlen(currDirName);
-            strncpy(m_dirNameArr[i], currDirName+1, length-2);
-            m_dirNameArr[i][length-2] = '\0'; // "mydir\0"
-        }
+            if(!isFirstFile)
+            {
+                 // The currDirName is in the form: "/mydir/"
+                // Add the dir to the array
+                int32_t length = strlen(currDirName);
+                strncpy(m_dirNameArr[i], currDirName+1, length-2);
+                m_dirNameArr[i][length-2] = '\0'; // "mydir\0"
+            }
+            else
+            {
+                int32_t length = strlen(currDirName);
+                strncpy(m_dirNameArr[i], currDirName, length);
+                m_dirNameArr[i][length] = '\0'; // "mydir\0"
+            }
+
+           isFirstFile = false;
+
+        }  // end for
+
         i++; // Add one for the ROM track (index 0)
         m_trackCount = (dirPathAndNameArrMaxLen < i) ? dirPathAndNameArrMaxLen : i; // min
 
@@ -998,17 +1006,21 @@ bool CMenu::ReadAndValidateTextures(char* trackDirPath, char* trackDirName)
     {
         int32_t w,h;
         int32_t numOfParts;
+        char filename[16];
     };
 
+    const int32_t startOfSpritesIndex = 6;
     const STextureFileParam textureFileParamArr[] =
     {
-        {0,0,0},
-        {16,24,4},  // 1: ball
-        {8,12,1},   // 2: road1
-        {8,12,1},   // 3: road2
-        {16,24,4},  // 4: terrain
-        {16,24,4},  // 5: start grid
-        //{8,12,1},   // 6: waypoint light
+        {0,0,0,""},
+        {16,24,4,"tex01.bmp"},  // 1: ball
+        {8,12,1,"tex02.bmp"},   // 2: road1
+        {8,12,1,"tex03.bmp"},   // 3: road2
+        {16,24,4,"tex04.bmp"},  // 4: terrain
+        {16,24,4,"tex05.bmp"},  // 5: start grid
+
+        {-1,-1,1,"sprite01.bmp"},  // Cactus
+        {-1,-1,1,"sprite02.bmp"},  // Stone
     };
 
     // Try to read all textures.
@@ -1019,12 +1031,8 @@ bool CMenu::ReadAndValidateTextures(char* trackDirPath, char* trackDirName)
     {
 
         //
-        char fileName[] = "tex00.bmp";
-        int32_t tens = fileIndex / 10;
-        int32_t ones = fileIndex - (tens * 10);
-        fileName[3] = '0' + tens;
-        fileName[4] = '0' + ones;
-
+        char fileName[16];
+        strcpy(fileName, textureFileParamArr[fileIndex].filename);
         strcpy(filePathAndName, trackDirPath);
         #ifndef POK_SIM
         strcat(filePathAndName, "/");
@@ -1052,6 +1060,7 @@ bool CMenu::ReadAndValidateTextures(char* trackDirPath, char* trackDirName)
         //
         if(err == -1 || err == -2)
         {
+            // Not found, skip texture.
             if( textureFileParamArr[ fileIndex].numOfParts == 4 )
                 texIndex+=3;
         }
@@ -1065,11 +1074,23 @@ bool CMenu::ReadAndValidateTextures(char* trackDirPath, char* trackDirName)
 //        }
         else if(err == -6)
         {
-            // Wrong palette size
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
-            mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 50, "Width should");
-            mygame.display.print(1, 60, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].w);
+            // Wrong width
+            if (textureFileParamArr[fileIndex].w == -1 && textureFileParamArr[fileIndex].h == -1) // sprite
+            {
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+                mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 50, "Width not");
+                mygame.display.print(1, 60, "divisible");
+                mygame.display.print(1, 60, "by 4");
+            }
+            else
+            {
+                mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+                mygame.display.print(1, 40, fileName);mygame.display.setColor(2,1);
+                mygame.display.print(1, 50, "Width should");
+                mygame.display.print(1, 60, "be: ");mygame.display.print(textureFileParamArr[ fileIndex].w);
+            }
+
             return false;
         }
         else if(err == -10)
@@ -1099,9 +1120,30 @@ bool CMenu::ReadAndValidateTextures(char* trackDirPath, char* trackDirName)
             mygame.display.print(1, 60, "image format");
             return false;
         }
+        else if (textureFileParamArr[fileIndex].w == -1 && textureFileParamArr[fileIndex].h == -1) // sprite
+        {
+            // Billboard sprite ok.
+
+            // Convert indexes
+            int32_t w = bitmap[0];
+            int32_t h = bitmap[1];
+            uint8_t* bitmapData = &(bitmap[2]);
+            for(int32_t ii=0; ii<w*h; ii++)
+            {
+                uint8_t colorIndex = bitmapData[ii];
+                if(Pokitto::Display::palette[0] == Pokitto::Display::palette[colorIndex+startOfPaletteImportIndex])
+                    colorIndex = 0;  // Transparent color
+                else
+                    colorIndex += startOfPaletteImportIndex;  // Convert to the imported color area.
+
+                *(bitmapData+ii) = colorIndex;
+            }
+            g_spriteBitmaps[fileIndex-startOfSpritesIndex] = bitmap;
+            bitmap = NULL;
+        }
         else
         {
-            // Image ok.
+            // Texture ok.
 
             int32_t w = bitmap[0];
             int32_t h = bitmap[1];

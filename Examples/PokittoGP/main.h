@@ -94,6 +94,7 @@ extern const uint8_t trackTraceLine[trackTraceLineCount];
 extern const uint8_t* current_texture_bitmaps[];
 extern const uint8_t* current_texture_bitmaps_mm1[];
 extern const uint8_t* current_texture_bitmaps_mm2[];
+extern uint8_t* g_spriteBitmaps[];
 extern const CWaypoint waypoints[];
 extern const uint32_t waypointCount;
 extern const CObject3d g_timeTrialBilboardObjects[];

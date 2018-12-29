@@ -57,6 +57,7 @@ uint32_t g_objects3dCount = 0;
 CObject3d* g_objects3d[ g_objects3dMaxCount ] = {0};
 
 // Reserve space for objects in RAM.
+uint8_t* g_spriteBitmaps[2] = {0};
 CObject3d g_BillboardObjectArray[3*8];
 CShip g_ShipObjectArray[1*8];
 CPlayerShip g_playerShip;
@@ -493,8 +494,8 @@ void InitGameObjectsForTrack1(bool isRace)
     int32_t billboardObjectCount = 2*8;  // race
     if( !g_isRace )
         billboardObjectCount = 3*8;  // time treial
-    if(menu.m_trackNum !=0)  // user track, no billboard objects
-        billboardObjectCount = 0;
+    //if(menu.m_trackNum !=0)  // user track, no billboard objects
+    //    billboardObjectCount = 0;
 
     int32_t i = 0;
     for(; i < billboardObjectCount; i++ )
@@ -507,6 +508,38 @@ void InitGameObjectsForTrack1(bool isRace)
         g_objects3d[i]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapH;
         g_objects3d[i]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledWidth;
         g_objects3d[i]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledHeight;
+
+        // If this is a use track, replace the sprites.
+        if(menu.m_trackNum !=0 )  // user track
+        {
+            const uint8_t* cactus_bm = billboard_object_bitmaps[25];
+            if(g_objects3d[i]->m_bitmap==cactus_bm && g_spriteBitmaps[0]!=NULL)
+            {
+                const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
+                const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+                const int16_t spriteBmW  = *(sprite_bm - 2);
+                const int16_t spriteBmH  = *(sprite_bm - 1);
+                g_objects3d[i]->m_bitmap = sprite_bm;
+                g_objects3d[i]->m_bitmapW = spriteBmW;
+                g_objects3d[i]->m_bitmapH = spriteBmH;
+                g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+            }
+
+            const uint8_t* rock_bm = billboard_object_bitmaps[26];
+            if(g_objects3d[i]->m_bitmap==rock_bm && g_spriteBitmaps[1]!=NULL)
+            {
+                const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
+                const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+                const int16_t spriteBmW  = *(sprite_bm - 2);
+                const int16_t spriteBmH  = *(sprite_bm - 1);
+                g_objects3d[i]->m_bitmap = sprite_bm;
+                g_objects3d[i]->m_bitmapW = spriteBmW;
+                g_objects3d[i]->m_bitmapH = spriteBmH;
+                g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+            }
+        }
     }
     #else
     // Copy waypoints
@@ -955,28 +988,45 @@ void RestoreRomTextures()
     // Copy the default palette.
     memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette_pal, 256*2);
 
-    current_texture_bitmaps[0] = NULL;
-    current_texture_bitmaps[1] = image_ball1_a+2;
-    current_texture_bitmaps[2] = image_ball1_b+2;
-    current_texture_bitmaps[3] = image_ball1_c+2;
-    current_texture_bitmaps[4] = image_ball1_d+2;
-    current_texture_bitmaps[5] = image_road1+2;
-    current_texture_bitmaps[6] = image_road2+2;
-    current_texture_bitmaps[7] = image_terrain_6_a+2;
-    current_texture_bitmaps[8] = image_terrain_6_b+2;
-    current_texture_bitmaps[9] = image_terrain_6_c+2;
-    current_texture_bitmaps[10] = image_terrain_6_d+2;
-    current_texture_bitmaps[11] = image_start_a+2;
-    current_texture_bitmaps[12] = image_start_b+2;
-    current_texture_bitmaps[13] = image_start_c+2;
-    current_texture_bitmaps[14] = image_start_d+2;
-    current_texture_bitmaps[15] = image_light+2;
-
-    // Restore mipmap pointers.
-    for( uint32_t ii=0; ii<current_texture_bitmaps_count; ii++)
+    // Free resources.
+    const uint8_t* default_rom_bitmaps[current_texture_bitmaps_count] =
     {
-        current_texture_bitmaps_mm1[ii] =  current_texture_bitmaps[ii] + (texW * tileH);
-        current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
+        NULL,
+        image_ball1_a+2,        /*index: 1*/
+        image_ball1_b+2,        /*index: 2*/
+        image_ball1_c+2,        /*index: 3*/
+        image_ball1_d+2,        /*index: 4*/
+        image_road1+2,          /*index: 5*/
+        image_road2+2,          /*index: 6*/
+        image_terrain_6_a+2,    /*index: 7*/
+        image_terrain_6_b+2,    /*index: 8*/
+        image_terrain_6_c+2,    /*index: 9*/
+        image_terrain_6_d+2,    /*index: 10*/
+        image_start_a+2,        /*index: 11*/
+        image_start_b+2,        /*index: 12*/
+        image_start_c+2,        /*index: 13*/
+        image_start_d+2,        /*index: 14*/
+        image_light+2,          /*index: 15*/
+    };
+
+    for( int32_t i=1; i < current_texture_bitmaps_count-1; i++ )
+    {
+        // Free the RAM bitmap.
+        if(current_texture_bitmaps[++i] != default_rom_bitmaps[i])
+            free((uint8_t*)(current_texture_bitmaps[i]-2));
+
+        // Restore the default ROM bitmap.
+        current_texture_bitmaps[i] = default_rom_bitmaps[i];
+        current_texture_bitmaps_mm1[i] =  current_texture_bitmaps[i] + (texW * tileH);
+        current_texture_bitmaps_mm2[i] =  current_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
+   }
+
+    // Reset sprite bitmap pointers.
+    for( uint32_t ii=0; ii<2; ii++)
+    {
+        // Free the RAM bitmap.
+        free(g_spriteBitmaps[ii]);
+        g_spriteBitmaps[ii] = NULL;
     }
 }
 
