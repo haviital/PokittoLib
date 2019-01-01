@@ -321,7 +321,7 @@ void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32
             }
 
             // Draw the rest of the pixels.
-            while( int8_t(clippedStartU + clippedWidth - finalU) >= 0) {
+            while( int8_t(clippedStartU + clippedWidth - finalU) > 0) {
 
                 // Draw pixel.
                 uint8_t color = *(bitmapScanlinePtr + finalU++);

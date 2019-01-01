@@ -63,6 +63,30 @@ cd output
 copy image_titlescreen.c ..\..\..\gfx_hdr\image_titlescreen.h
 cd ..
 
+rem button ui images
+copy image_ui_button_up.bmp output\image_ui_button_up.bmp
+copy image_ui_button_down.bmp output\image_ui_button_down.bmp
+copy image_ui_button_left.bmp output\image_ui_button_left.bmp
+copy image_ui_button_right.bmp output\image_ui_button_right.bmp
+copy image_ui_button_a.bmp output\image_ui_button_a.bmp
+copy image_ui_button_b.bmp output\image_ui_button_b.bmp
+copy image_ui_button_c.bmp output\image_ui_button_c.bmp
+cd output
+..\bmp2pok image_ui_button_up.bmp -8 -n
+..\bmp2pok image_ui_button_down.bmp -8 -n
+..\bmp2pok image_ui_button_left.bmp -8 -n
+..\bmp2pok image_ui_button_right.bmp -8 -n
+..\bmp2pok image_ui_button_a.bmp -8 -n
+..\bmp2pok image_ui_button_b.bmp -8 -n
+..\bmp2pok image_ui_button_c.bmp -8 -n
+copy image_ui_button_up.c ..\..\..\gfx_hdr\image_ui_button_up.h
+copy image_ui_button_down.c ..\..\..\gfx_hdr\image_ui_button_down.h
+copy image_ui_button_left.c ..\..\..\gfx_hdr\image_ui_button_left.h
+copy image_ui_button_right.c ..\..\..\gfx_hdr\image_ui_button_right.h
+copy image_ui_button_a.c ..\..\..\gfx_hdr\image_ui_button_a.h
+copy image_ui_button_b.c ..\..\..\gfx_hdr\image_ui_button_b.h
+copy image_ui_button_c.c ..\..\..\gfx_hdr\image_ui_button_c.h
+cd ..
 
 
 

@@ -45,6 +45,7 @@ uint8_t* blockMapRAM = NULL;
 
 // Initially, point to the map in ROM.
 uint8_t* blockMap = (uint8_t*)blockMapROM;
+int32_t g_billboardObjectInRamCount = 0;
 
 
 // Drawing order list
@@ -58,7 +59,7 @@ CObject3d* g_objects3d[ g_objects3dMaxCount ] = {0};
 
 // Reserve space for objects in RAM.
 uint8_t* g_spriteBitmaps[2] = {0};
-CObject3d g_BillboardObjectArray[3*8];
+CObject3d g_BillboardObjectArray[g_BillboardObjectArrayMaxCount];
 CShip g_ShipObjectArray[1*8];
 CPlayerShip g_playerShip;
 
@@ -72,6 +73,11 @@ mycookie highscore;
 
 // The menu object.
 CMenu menu;
+
+// Animated values.
+CAnimValue g_animValueArray[g_animValueArrayCount];
+
+uint32_t g_currentFrameTimeInMs = 0;
 
 // Main
 int main () {
@@ -135,6 +141,9 @@ int main () {
     while (mygame.isRunning()) {
 
         if (mygame.update()) {
+
+            g_currentFrameTimeInMs = mygame.getTime();
+            CAnimValue::RunAll();
 
             // Disable drawing if a full screen menu it in use.
             if(!menu.m_isOpen || !menu.m_isFullScreenView )
@@ -490,58 +499,72 @@ void DrawRankNumber(int32_t x, int32_t y)
 void InitGameObjectsForTrack1(bool isRace)
 {
     #if 1
-    // Copy cactus and rock array pointers to the object list.
-    int32_t billboardObjectCount = 2*8;  // race
-    if( !g_isRace )
-        billboardObjectCount = 3*8;  // time treial
-    //if(menu.m_trackNum !=0)  // user track, no billboard objects
-    //    billboardObjectCount = 0;
+
+    int32_t billboardObjectCount = g_BillboardObjectArrayMaxCount - 8;  // race
 
     int32_t i = 0;
-    for(; i < billboardObjectCount; i++ )
+    if(menu.m_trackNum !=0 )  // user track
     {
-        g_objects3d[i] = &g_BillboardObjectArray[i];
-        g_objects3d[i]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[i].m_fxX;
-        g_objects3d[i]->m_fxY = g_timeTrialBilboardObjectsInRom_track1[i].m_fxY;
-        g_objects3d[i]->m_bitmap = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmap;
-        g_objects3d[i]->m_bitmapW = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapW;
-        g_objects3d[i]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapH;
-        g_objects3d[i]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledWidth;
-        g_objects3d[i]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledHeight;
-
-        // If this is a use track, replace the sprites.
-        if(menu.m_trackNum !=0 )  // user track
-        {
-            const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-            if(g_objects3d[i]->m_bitmap==cactus_bm && g_spriteBitmaps[0]!=NULL)
-            {
-                const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
-                const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
-                const int16_t spriteBmW  = *(sprite_bm - 2);
-                const int16_t spriteBmH  = *(sprite_bm - 1);
-                g_objects3d[i]->m_bitmap = sprite_bm;
-                g_objects3d[i]->m_bitmapW = spriteBmW;
-                g_objects3d[i]->m_bitmapH = spriteBmH;
-                g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-            }
-
-            const uint8_t* rock_bm = billboard_object_bitmaps[26];
-            if(g_objects3d[i]->m_bitmap==rock_bm && g_spriteBitmaps[1]!=NULL)
-            {
-                const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
-                const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
-                const int16_t spriteBmW  = *(sprite_bm - 2);
-                const int16_t spriteBmH  = *(sprite_bm - 1);
-                g_objects3d[i]->m_bitmap = sprite_bm;
-                g_objects3d[i]->m_bitmapW = spriteBmW;
-                g_objects3d[i]->m_bitmapH = spriteBmH;
-                g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-            }
-        }
+        for(; i < g_billboardObjectInRamCount && i < billboardObjectCount; i++ )
+            g_objects3d[i] = &g_BillboardObjectArray[i];
     }
+    else
+    {
+        // Copy cactus and rock array pointers to the object list.
+        if( !g_isRace )
+            billboardObjectCount = g_BillboardObjectArrayMaxCount;  // time treial
+        //if(menu.m_trackNum !=0)  // user track, no billboard objects
+        //    billboardObjectCount = 0;
+
+        for(; i < billboardObjectCount; i++ )
+        {
+            g_objects3d[i] = &g_BillboardObjectArray[i];
+            g_objects3d[i]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[i].m_fxX;
+            g_objects3d[i]->m_fxY = g_timeTrialBilboardObjectsInRom_track1[i].m_fxY;
+            g_objects3d[i]->m_bitmap = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmap;
+            g_objects3d[i]->m_bitmapW = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapW;
+            g_objects3d[i]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapH;
+            g_objects3d[i]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledWidth;
+            g_objects3d[i]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledHeight;
+
+            // If this is a use track, replace the sprites.
+            if(menu.m_trackNum !=0 )  // user track
+            {
+                const uint8_t* cactus_bm = billboard_object_bitmaps[25];
+                if(g_objects3d[i]->m_bitmap==cactus_bm && g_spriteBitmaps[0]!=NULL)
+                {
+                    const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
+                    const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+                    const int16_t spriteBmW  = *(sprite_bm - 2);
+                    const int16_t spriteBmH  = *(sprite_bm - 1);
+                    g_objects3d[i]->m_bitmap = sprite_bm;
+                    g_objects3d[i]->m_bitmapW = spriteBmW;
+                    g_objects3d[i]->m_bitmapH = spriteBmH;
+                    g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                    g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                }
+
+                const uint8_t* rock_bm = billboard_object_bitmaps[26];
+                if(g_objects3d[i]->m_bitmap==rock_bm && g_spriteBitmaps[1]!=NULL)
+                {
+                    const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
+                    const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+                    const int16_t spriteBmW  = *(sprite_bm - 2);
+                    const int16_t spriteBmH  = *(sprite_bm - 1);
+                    g_objects3d[i]->m_bitmap = sprite_bm;
+                    g_objects3d[i]->m_bitmapW = spriteBmW;
+                    g_objects3d[i]->m_bitmapH = spriteBmH;
+                    g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                    g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                }
+            }
+
+        } // end for
+
+    } // end if
+
     #else
+
     // Copy waypoints
     const uint8_t* spot_bm = billboard_object_bitmaps[27];
     const int16_t spotBmW  = *(spot_bm - 2);
@@ -1029,4 +1052,5 @@ void RestoreRomTextures()
         g_spriteBitmaps[ii] = NULL;
     }
 }
+
 

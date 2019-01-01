@@ -4,6 +4,8 @@
 #include "gfx_hdr/image_pilots1.h"
 #include "gfx_hdr/image_pilots2.h"
 #include "gfx_hdr/image_titlescreen.h"
+#include "gfx_hdr/image_ui_button_up.h"
+#include "gfx_hdr/image_ui_button_down.h"
 #include "imageformat.h"
 
 #ifdef POK_SIM
@@ -279,8 +281,14 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
         default:
             break;
-        }
-    }
+
+        }  // end switch
+
+        // Draw button hints, if any.
+        m_animUpButtonHint.Draw();
+        m_animDownButtonHint.Draw();
+
+    }  // end if
 }
 
 //
@@ -516,7 +524,8 @@ bool CMenu::HandlePilotPictureMenu()
 //........
 
 // Conversion between the ascii char and the block index.
-const char asciiTrackConversionTable[20] = {
+const int32_t asciiTrackConversionTableCount = 21;
+const char asciiTrackConversionTable[asciiTrackConversionTableCount] = {
     '|',  // 0: The left edge.
     '!',  // 1: The right edge.
     ' ',  // 2: None.
@@ -536,6 +545,8 @@ const char asciiTrackConversionTable[20] = {
     '*',  // 16: The starting grid, right side.
     'X',  // 17: The halfway mark, left side.
     'x',  // 18: The halfway mark, right side.
+    'C',  // 19: The cactus billboard.
+    'R',  // 20: The rock billboard.
 };
 
 //
@@ -654,6 +665,7 @@ bool CMenu::HandleSelectTrackMenu()
                     if( blockMapRAM == NULL )
                         blockMapRAM = new uint8_t[mapWidth*mapHeight];
                     int32_t convTableLen = sizeof(asciiTrackConversionTable);
+                    g_billboardObjectInRamCount = 0;
                     for(int32_t y = 0; y < mapHeight; y++)
                     {
                         for(int32_t x = 0; x < mapWidth; x++)
@@ -672,9 +684,39 @@ bool CMenu::HandleSelectTrackMenu()
 
                             if(i>=convTableLen || item==' ')
                                 break; // error
+
+                            // Check for billboard objects
+                            if( i==19 || i==20)
+                            {
+                                if( g_billboardObjectInRamCount <= g_BillboardObjectArrayMaxCount - 8 )
+                                {
+                                    int32_t bbIndex = g_billboardObjectInRamCount;
+                                    g_billboardObjectInRamCount++;
+
+                                    const uint8_t* sprite_bm = &(g_spriteBitmaps[ i-19 ][ 2 ]);  // "Cactus" or "Rock"
+                                    const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+                                    const int16_t spriteBmW  = *(sprite_bm - 2);
+                                    const int16_t spriteBmH  = *(sprite_bm - 1);
+
+                                    // Init a billboard object.
+                                    g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int(x * 64);
+                                    g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int(y * 64);
+                                    g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
+                                    g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
+                                    g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
+                                    g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                                    g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                                }
+
+                                i = 14; // Convert the map item to terrain/surface item
+
+                            }  // end if
+
                             blockMapRAM[y*mapWidth + x] = i;
-                        }
-                    }
+
+                        }  // end for
+
+                    }  // end for
                 }
 
                 // Now point to the map in RAM.
@@ -710,6 +752,14 @@ bool CMenu::HandleSelectTrackMenu()
             m_fxCamAngle = 0;
             m_fxScaleFactor = fix16_from_float(1);
             m_test = 0;
+
+            //if()
+            {
+                int32_t buttonX = (screenW/2) - image_ui_button_down[0];
+                int32_t buttonY = screenH - image_ui_button_down[1]-1;
+                m_animUpButtonHint.Start( 2*1000, buttonX, buttonY, buttonX, buttonY, (uint8_t*)image_ui_button_down,
+                        this, (int32_t)ButtonAnimState::enumShow );
+            }
 
         }
     }
@@ -897,7 +947,6 @@ bool CMenu::ReadAndValidateTrack(
 
         if(c==lineFeed || c==carriageReturn )
         {
-
             //
             if(currentPosInLine<mapWidth)
             {
@@ -1260,3 +1309,22 @@ bool CMenu::ReadAndValidateTextures(char* trackDirPath, char* trackDirName)
 
     return true;
 }
+
+// Animation finished.
+void CMenu::Finished( int32_t par )
+{
+    ButtonAnimState bas = (ButtonAnimState)par;
+    if( bas == ButtonAnimState::enumShow )
+    {
+//        int32_t buttonX = (screenW/2) - image_ui_button_down[0];
+//        int32_t buttonY = screenH - image_ui_button_down[1]-1;
+//        m_animUpButtonHint.Start( 2*1000, buttonX, buttonY, buttonX, screenH, (uint8_t*)image_ui_button_down,
+//                this, (int32_t)ButtonAnimState::enumDisappear );
+    }
+    else
+    {
+        // Inactivate animation
+    }
+}
+
+
