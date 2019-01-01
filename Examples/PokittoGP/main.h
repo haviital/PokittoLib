@@ -3,6 +3,7 @@
 
 #include "fix16.h"
 #include "PokittoCookie.h"
+#include "animation.h"
 
 class CShip;
 class CPlayerShip;
@@ -44,7 +45,6 @@ const uint32_t g_BillboardObjectArrayMaxCount = 3*8;
 const int32_t g_animValueArrayCount = 10;
 
 extern uint32_t g_currentFrameTimeInMs;
-class CAnimValue;
 extern CAnimValue g_animValueArray[g_animValueArrayCount];
 
 enum LapTimingState {
@@ -86,95 +86,6 @@ class mycookie : public Pokitto::Cookie
 public:
     uint32_t bestLap_ms = 0;
     uint32_t version = 1;
-};
-
-class CAnimValueCallback
-{
-public:
-
-    // When this is called the CAnimValue is finished and will be used for other tasks. The caller should either
-    // set a pointer to the CAnimValue object to NULL, or start another animation on the object.
-    // The parameter can be used e.g. for chained animations to indicate the state.
-    virtual void Finished( int32_t par ) = 0;
-};
-
-class CAnimValue
-{
-public:
-    CAnimValue() { Reset(); }
-
-    void Reset()
-    {
-        m_isActive = false;
-        m_startTimeInMs = 0;
-        m_endTimeInMs = 0;
-        m_fxStartValue = 0;
-        m_fxEndValue = 0;
-        m_fxValue = 0;
-        m_pfinishedCB = NULL;
-        m_finishedCBParam = 0;
-    }
-
-    void Start( uint32_t durationInMs,  fix16_t fxStartValue, fix16_t fxEndValue, CAnimValueCallback* cb = NULL, int32_t callbackParam = 0)
-    {
-        m_isActive = true;
-        m_startTimeInMs = g_currentFrameTimeInMs;
-        m_endTimeInMs = m_startTimeInMs + durationInMs;
-        m_fxStartValue = fxStartValue;
-        m_fxEndValue = fxEndValue;
-        m_fxValue = fxStartValue;
-        m_pfinishedCB = cb;
-        m_finishedCBParam  = callbackParam;
-    }
-
-    void Run()
-    {
-        if( g_currentFrameTimeInMs > m_endTimeInMs )
-        {
-            m_isActive = false;
-            if( m_pfinishedCB )
-                m_pfinishedCB->Finished( m_finishedCBParam );
-
-            // Note: the m_isActive can be set to true in the Finished() callback if a new animation is started.
-            if( ! m_isActive )
-                Reset();
-        }
-        else
-        {
-            uint32_t deltaTimeInMs = m_endTimeInMs - m_startTimeInMs;
-            uint32_t currentDeltaTimeInMs = g_currentFrameTimeInMs - m_startTimeInMs;
-            fix16_t fxFactor = 0;
-            if( deltaTimeInMs != 0 )
-                fxFactor = fix16_div( currentDeltaTimeInMs, deltaTimeInMs );
-            fix16_t fxDeltaValue = m_fxEndValue - m_fxStartValue;
-            m_fxValue = m_fxStartValue + fix16_mul( fxFactor, fxDeltaValue );
-        }
-    }
-
-    static CAnimValue* GetFreeElement()
-    {
-        for( int32_t i=0; i<g_animValueArrayCount; i++)
-            if( g_animValueArray[i].m_isActive == false )
-                return &( g_animValueArray[ i ] );
-        return NULL;
-    }
-
-    static void RunAll()
-    {
-        for( int32_t i=0; i<g_animValueArrayCount; i++)
-            if( g_animValueArray[i].m_isActive == true )
-                g_animValueArray[ i ].Run();
-    }
-
-public:
-    bool m_isActive;
-    uint32_t m_startTimeInMs;
-    uint32_t m_endTimeInMs;
-    fix16_t m_fxStartValue;
-    fix16_t m_fxEndValue;
-    fix16_t m_fxValue; // Current value
-    CAnimValueCallback* m_pfinishedCB;
-    int32_t m_finishedCBParam;
 };
 
 // extern
