@@ -518,52 +518,8 @@ void TrackImporter::ConvertAsciiToMapElements( char* myTrack2 )
                     const int16_t spriteBmH  = *(sprite_bm - 1);
 
                     // Init a billboard object.
-                    g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int(x * 64);
-                    g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int(y * 64);
-                    g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
-                    g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
-                    g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
-                    g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                    g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-                }
-
-                i = 14; // Convert the map item to terrain/surface item
-
-            }  // end if
-
-            blockMapRAM[y*mapWidth + x] = i;
-
-        }  // end for
-
-    }  // end for
-}
-
-void TrackImporter::UpdateBBObjects()
-{
-    g_billboardObjectInRamCount = 0;
-    for(int32_t y = 0; y < mapHeight; y++)
-    {
-        for(int32_t x = 0; x < mapWidth; x++)
-        {
-            //
-            int32_t i = blockMapRAM[y*mapWidth + x];
-
-            // Check for billboard objects
-            if( i==19 || i==20)
-            {
-                if( g_billboardObjectInRamCount <= g_BillboardObjectArrayMaxCount - 8 )
-                {
-                    int32_t bbIndex = g_billboardObjectInRamCount;
-                    g_billboardObjectInRamCount++;
-
-                    const uint8_t* sprite_bm = &(g_spriteBitmaps[ i-19 ][ 2 ]);  // "Cactus" or "Rock"
-                    const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
-                    const int16_t spriteBmW  = *(sprite_bm - 2);
-                    const int16_t spriteBmH  = *(sprite_bm - 1);
-
-                    // Init a billboard object.
-                    g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int(x * 64);
-                    g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int(y * 64);
+                    g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int( x * 64 + 32 );
+                    g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int( y * 64 + 32 );
                     g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
                     g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
                     g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;

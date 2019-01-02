@@ -1044,6 +1044,7 @@ void RestoreRomTextures()
 
     // Copy the default palette.
     memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette_pal, 256*2);
+    Pokitto::Core::display.load565Palette(g_gamePalette);
 
     // Free resources.
     const uint8_t* default_rom_bitmaps[current_texture_bitmaps_count] =

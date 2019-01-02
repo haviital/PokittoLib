@@ -499,7 +499,7 @@ bool CMenu::HandlePilotPictureMenu()
         if(! m_pressedAkeyDownOutsideMenu)
         {
             // Close the menu
-            Pokitto::Core::display.load565Palette(g_gamePalette);
+            //Pokitto::Core::display.load565Palette(g_gamePalette);
             return false;
         }
         else
@@ -629,12 +629,12 @@ bool CMenu::HandleSelectTrackMenu()
             strcpy( m_trackName, trackName );
             strcpy( m_authorName, authorName );
 
+            // Restore ROM textures.
+            RestoreRomTextures();
+
             // Store the map.
             if(m_trackNum == 0)
             {
-                // Restore ROM textures.
-                RestoreRomTextures();
-
                 // Now point to the map in ROM.
                 blockMap = (uint8_t*)blockMapROM;
             }
@@ -764,11 +764,16 @@ bool CMenu::HandleSelectTrackMenu()
         {
             if(m_trackNum != 0)
             {
+                // Clear screen
+                mygame.display.setColor(1,1);
+                mygame.display.fillRect(0, 0, screenW, screenH);
+                mygame.display.setColor(2,1);
+                mygame.display.print(1, 30, "Loading");
+                mygame.display.print(1, 40, "graphics...");
+                while (!mygame.update()); // draw now
+
                 // Read textures.
                 (void)TrackImporter::ReadAndValidateTextures( tracksDirName, m_dirNameArr[m_trackNum-1] );
-
-                // Update billboard objects.
-                //TrackImporter::UpdateBBObjects();
             }
             return false; // Close the view
         }

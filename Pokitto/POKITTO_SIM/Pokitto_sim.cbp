@@ -705,6 +705,12 @@
 		<Unit filename="../../Examples/PokittoGP/My_settings.h">
 			<Option target="PokittoGP" />
 		</Unit>
+		<Unit filename="../../Examples/PokittoGP/animation.cpp">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/animation.h">
+			<Option target="PokittoGP" />
+		</Unit>
 		<Unit filename="../../Examples/PokittoGP/gfx_hdr/GameData.h">
 			<Option target="PokittoGP" />
 		</Unit>
@@ -955,6 +961,12 @@
 			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../../Examples/PokittoGP/ship.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/trackImporter.cpp">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/trackImporter.h">
 			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../../Examples/SFXeditor/My_settings.h">
