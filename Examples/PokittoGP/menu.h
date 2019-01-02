@@ -23,6 +23,10 @@ public:
         enumNone = 0,
         enumShow = 1,
         enumDisappear = 2,
+        enumShowTitleText = 3,
+        enumScrollToAuthorText = 4,
+        enumShowAuthorText = 5,
+        enumScrollToTitleText = 6,
     };
 
 public:
@@ -64,4 +68,7 @@ public:
     int32_t m_test;
     CAnimBitmap m_animUpButtonHint;
     CAnimBitmap m_animDownButtonHint;
+    CAnimValue* m_textYPosAnimValue;
+    char m_trackName[16];
+    char m_authorName[16];
 };

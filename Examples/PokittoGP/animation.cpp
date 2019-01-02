@@ -100,6 +100,13 @@ void CAnimBitmap::Start( uint32_t durationInMs, int32_t x1, int32_t y1, int32_t 
     m_y2 = y2;
 }
 
+void CAnimBitmap::Stop()
+{
+    if( m_animValue )
+        m_animValue->Reset();
+    m_animValue = NULL; // Must be done!
+}
+
 void CAnimBitmap::Draw()
 {
     if( m_animValue )
@@ -124,7 +131,7 @@ void CAnimBitmap::Finished( int32_t par )
     if( m_pfinishedCB )
         m_pfinishedCB->Finished( par );
 
-    if( !m_animValue->m_isActive )
+    if( m_animValue && ! m_animValue->m_isActive )
         m_animValue = NULL; // Must be done!
 }
 

@@ -506,7 +506,37 @@ void InitGameObjectsForTrack1(bool isRace)
     if(menu.m_trackNum !=0 )  // user track
     {
         for(; i < g_billboardObjectInRamCount && i < billboardObjectCount; i++ )
+        {
             g_objects3d[i] = &g_BillboardObjectArray[i];
+
+            const uint8_t* cactus_bm = billboard_object_bitmaps[25];
+            if(g_objects3d[i]->m_bitmap==cactus_bm && g_spriteBitmaps[0] != NULL)
+            {
+                const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
+                const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+                const int16_t spriteBmW  = *(sprite_bm - 2);
+                const int16_t spriteBmH  = *(sprite_bm - 1);
+                g_objects3d[i]->m_bitmap = sprite_bm;
+                g_objects3d[i]->m_bitmapW = spriteBmW;
+                g_objects3d[i]->m_bitmapH = spriteBmH;
+                g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+            }
+
+            const uint8_t* rock_bm = billboard_object_bitmaps[26];
+            if(g_objects3d[i]->m_bitmap==rock_bm && g_spriteBitmaps[1] != NULL)
+            {
+                const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
+                const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+                const int16_t spriteBmW  = *(sprite_bm - 2);
+                const int16_t spriteBmH  = *(sprite_bm - 1);
+                g_objects3d[i]->m_bitmap = sprite_bm;
+                g_objects3d[i]->m_bitmapW = spriteBmW;
+                g_objects3d[i]->m_bitmapH = spriteBmH;
+                g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+            }
+        }
     }
     else
     {
@@ -526,6 +556,8 @@ void InitGameObjectsForTrack1(bool isRace)
             g_objects3d[i]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapH;
             g_objects3d[i]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledWidth;
             g_objects3d[i]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledHeight;
+
+            #if 0
 
             // If this is a use track, replace the sprites.
             if(menu.m_trackNum !=0 )  // user track
@@ -558,6 +590,8 @@ void InitGameObjectsForTrack1(bool isRace)
                     g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
                 }
             }
+
+            #endif
 
         } // end for
 
@@ -1035,7 +1069,7 @@ void RestoreRomTextures()
     for( int32_t i=1; i < current_texture_bitmaps_count-1; i++ )
     {
         // Free the RAM bitmap.
-        if(current_texture_bitmaps[++i] != default_rom_bitmaps[i])
+        if(current_texture_bitmaps[i] != default_rom_bitmaps[i])
             free((uint8_t*)(current_texture_bitmaps[i]-2));
 
         // Restore the default ROM bitmap.

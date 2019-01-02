@@ -111,6 +111,8 @@ extern uint16_t g_gamePalette[256];
 extern const uint16_t palette_pal[256];
 extern int32_t g_billboardObjectInRamCount;
 extern CObject3d g_BillboardObjectArray[g_BillboardObjectArrayMaxCount];
+extern const uint8_t billboard_object_bitmaps_count;
+extern const uint8_t* billboard_object_bitmaps [];
 
 extern uint32_t g_frameNum;
 extern bool g_isRace;

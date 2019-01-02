@@ -49,4 +49,7 @@ namespace TrackImporter
 
     bool ReadAndValidateTextures(char* trackDirPath, char* trackDirName);
 
+    void ConvertAsciiToMapElements( char* myTrack2 );
+
+    void UpdateBBObjects();
 }

@@ -466,3 +466,118 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
     return true;
 }
 
+void TrackImporter::ConvertAsciiToMapElements( char* myTrack2 )
+{
+    uint8_t blockMapRAM2[mapWidth*mapHeight];
+
+    // Map of blocks. Defines the whole game field!
+    if( blockMapRAM == NULL )
+        blockMapRAM = new uint8_t[mapWidth*mapHeight];
+    int32_t convTableLen = sizeof(TrackImporter::asciiTrackConversionTable);
+    g_billboardObjectInRamCount = 0;
+    for(int32_t y = 0; y < mapHeight; y++)
+    {
+        for(int32_t x = 0; x < mapWidth; x++)
+        {
+            // Create map
+            int invY = mapHeight - 1 - y; // mirror map vertically
+            int32_t mapWidth2 = mapWidth+1; // added newline
+            char item = myTrack2[invY*mapWidth2 + x];
+            //assert(item!=' ');
+
+            // Search the item from the conversion table
+            int32_t i=0;
+            for(; i<convTableLen; i++ )
+                if(TrackImporter::asciiTrackConversionTable[i]==item)
+                    break;
+
+            if(i>=convTableLen || item==' ')
+                break; // error
+
+            // Check for billboard objects
+            if( i==19 || i==20)
+            {
+                if( g_billboardObjectInRamCount <= g_BillboardObjectArrayMaxCount - 8 )
+                {
+                    int32_t bbIndex = g_billboardObjectInRamCount;
+                    g_billboardObjectInRamCount++;
+
+                    // "Cactus" or "Rock"
+                    const fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
+                    const uint8_t* cactus_bm = billboard_object_bitmaps[25];
+                    const fix16_t fxStoneScaledSizeFactor = fix16_from_float(1.0);
+                    const uint8_t* stone_bm = billboard_object_bitmaps[26];
+                    uint8_t* sprite_bm = (uint8_t*)cactus_bm;
+                    fix16_t fxSpriteScaledSizeFactor = fxCactusScaledSizeFactor;
+                    if( i==20 )
+                    {
+                        sprite_bm = (uint8_t*)stone_bm;
+                        fxSpriteScaledSizeFactor = fxStoneScaledSizeFactor;
+                    }
+                    const int16_t spriteBmW  = *(sprite_bm - 2);
+                    const int16_t spriteBmH  = *(sprite_bm - 1);
+
+                    // Init a billboard object.
+                    g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int(x * 64);
+                    g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int(y * 64);
+                    g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
+                    g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
+                    g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
+                    g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                    g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                }
+
+                i = 14; // Convert the map item to terrain/surface item
+
+            }  // end if
+
+            blockMapRAM[y*mapWidth + x] = i;
+
+        }  // end for
+
+    }  // end for
+}
+
+void TrackImporter::UpdateBBObjects()
+{
+    g_billboardObjectInRamCount = 0;
+    for(int32_t y = 0; y < mapHeight; y++)
+    {
+        for(int32_t x = 0; x < mapWidth; x++)
+        {
+            //
+            int32_t i = blockMapRAM[y*mapWidth + x];
+
+            // Check for billboard objects
+            if( i==19 || i==20)
+            {
+                if( g_billboardObjectInRamCount <= g_BillboardObjectArrayMaxCount - 8 )
+                {
+                    int32_t bbIndex = g_billboardObjectInRamCount;
+                    g_billboardObjectInRamCount++;
+
+                    const uint8_t* sprite_bm = &(g_spriteBitmaps[ i-19 ][ 2 ]);  // "Cactus" or "Rock"
+                    const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+                    const int16_t spriteBmW  = *(sprite_bm - 2);
+                    const int16_t spriteBmH  = *(sprite_bm - 1);
+
+                    // Init a billboard object.
+                    g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int(x * 64);
+                    g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int(y * 64);
+                    g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
+                    g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
+                    g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
+                    g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                    g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                }
+
+                i = 14; // Convert the map item to terrain/surface item
+
+            }  // end if
+
+            blockMapRAM[y*mapWidth + x] = i;
+
+        }  // end for
+
+    }  // end for
+}

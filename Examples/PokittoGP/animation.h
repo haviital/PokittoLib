@@ -46,6 +46,8 @@ public:
 
     void Start( uint32_t durationInMs, int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint8_t* bitmap, CAnimValueCallback* cb = NULL, int32_t callbackParam = 0 );
 
+    void Stop();
+
     void Draw();
 
     // When this is called the CAnimValue is finished and will be used for other tasks. The caller should either

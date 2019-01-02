@@ -32,13 +32,16 @@ CMenu::CMenu() :
     m_sceneryH(sceneryH),
     m_trackNum(0),
     m_trackCount(0),
-    m_isTrackOk(false)
+    m_isTrackOk(false),
+    m_textYPosAnimValue(NULL)
 {
 }
 
 void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMenuMode)
 {
-     if(requestedMenuMode != enumNoMenu )
+    bool stopAnimations = false;
+
+    if(requestedMenuMode != enumNoMenu )
         m_mode = requestedMenuMode;
 
     if(m_isOpen || mygame.buttons.pressed(BTN_C) || (requestedMenuMode != enumNoMenu) )
@@ -69,6 +72,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
                     // Menu closed
                     m_cursorPos = 0;
+                    stopAnimations = true;
                }
            }
            break;
@@ -129,6 +133,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
                     // Menu closed
                     m_cursorPos = 0;
+                    stopAnimations = true;
                }
            }
            break;
@@ -145,6 +150,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
                     // Menu closed
                     m_cursorPos = 0;
+                    stopAnimations = true;
                 }
             }
             break;
@@ -159,6 +165,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
                     // Menu closed
                     m_cursorPos = 0;
+                    stopAnimations = true;
                 }
             }
             break;
@@ -191,6 +198,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
                          // Menu closed
                         m_cursorPos = 0;
+                        stopAnimations = true;
 
                    }
                  }
@@ -214,6 +222,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
                          // Menu closed
                         m_cursorPos = 0;
+                        stopAnimations = true;
                    }
                }
            }
@@ -242,7 +251,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
                     // Menu closed
                     m_cursorPos = 0;
-
+                    stopAnimations = true;
                 }
             }
             break;
@@ -270,7 +279,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
                     // Menu closed
                     m_cursorPos = 0;
-
+                    stopAnimations = true;
                 }
             }
             break;
@@ -279,6 +288,17 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
             break;
 
         }  // end switch
+
+        // If menu is closed, stop animations
+        if( stopAnimations )
+        {
+
+            m_animUpButtonHint.Stop();
+            m_animDownButtonHint.Stop();
+            if( m_textYPosAnimValue )
+                m_textYPosAnimValue->Reset();
+            m_textYPosAnimValue = NULL;
+        }
 
         // Draw button hints, if any.
         m_animUpButtonHint.Draw();
@@ -513,7 +533,11 @@ bool CMenu::HandlePilotPictureMenu()
 //
 bool CMenu::HandleSelectTrackMenu()
 {
-    // The track names
+    #if POK_SIM
+    char* tracksDirName = "./pgpdata/tracks/";
+    #else
+    char* tracksDirName = "pgpdata/tracks";
+    #endif
 
     if(!m_hasTrackBeenLoaded)
     {
@@ -532,12 +556,10 @@ bool CMenu::HandleSelectTrackMenu()
 
         char* currDirName = NULL;
         #if POK_SIM
-        char* tracksDirName = "./pgpdata/tracks/";
         getFirstDirEntry(tracksDirName); // This is always "." in Windows.
         getNextDirEntry(); // This is always ".." in Windows.
         bool isFirstFile = false;
         #else
-        char* tracksDirName = "pgpdata/tracks";
         bool isFirstFile = true;
         #endif
         int i = 0;
@@ -597,17 +619,15 @@ bool CMenu::HandleSelectTrackMenu()
 
             // TODO: reset all textures to ROM textures
             // Read and verify textures
-            if( m_isTrackOk )
-
-                m_isTrackOk = TrackImporter::ReadAndValidateTextures(tracksDirName, m_dirNameArr[m_trackNum-1]);
+            // if( m_isTrackOk )
+            //    m_isTrackOk = TrackImporter::ReadAndValidateTextures(tracksDirName, m_dirNameArr[m_trackNum-1]);
         }
 
         if(m_isTrackOk)
         {
-            // Print the track name.
-            char text[64];
-            mygame.display.setColor(2,1);
-            mygame.display.print(5, 5, trackName);
+            // Store names.
+            strcpy( m_trackName, trackName );
+            strcpy( m_authorName, authorName );
 
             // Store the map.
             if(m_trackNum == 0)
@@ -620,65 +640,8 @@ bool CMenu::HandleSelectTrackMenu()
             }
             else
             {
-                uint8_t blockMapRAM2[mapWidth*mapHeight];
-                {
-                    // Map of blocks. Defines the whole game field!
-                    if( blockMapRAM == NULL )
-                        blockMapRAM = new uint8_t[mapWidth*mapHeight];
-                    int32_t convTableLen = sizeof(TrackImporter::asciiTrackConversionTable);
-                    g_billboardObjectInRamCount = 0;
-                    for(int32_t y = 0; y < mapHeight; y++)
-                    {
-                        for(int32_t x = 0; x < mapWidth; x++)
-                        {
-                            // Create map
-                            int invY = mapHeight - 1 - y; // mirror map vertically
-                            int32_t mapWidth2 = mapWidth+1; // added newline
-                            char item = myTrack2[invY*mapWidth2 + x];
-                            //assert(item!=' ');
-
-                            // Search the item from the conversion table
-                            int32_t i=0;
-                            for(; i<convTableLen; i++ )
-                                if(TrackImporter::asciiTrackConversionTable[i]==item)
-                                    break;
-
-                            if(i>=convTableLen || item==' ')
-                                break; // error
-
-                            // Check for billboard objects
-                            if( i==19 || i==20)
-                            {
-                                if( g_billboardObjectInRamCount <= g_BillboardObjectArrayMaxCount - 8 )
-                                {
-                                    int32_t bbIndex = g_billboardObjectInRamCount;
-                                    g_billboardObjectInRamCount++;
-
-                                    const uint8_t* sprite_bm = &(g_spriteBitmaps[ i-19 ][ 2 ]);  // "Cactus" or "Rock"
-                                    const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
-                                    const int16_t spriteBmW  = *(sprite_bm - 2);
-                                    const int16_t spriteBmH  = *(sprite_bm - 1);
-
-                                    // Init a billboard object.
-                                    g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int(x * 64);
-                                    g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int(y * 64);
-                                    g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
-                                    g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
-                                    g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
-                                    g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                                    g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-                                }
-
-                                i = 14; // Convert the map item to terrain/surface item
-
-                            }  // end if
-
-                            blockMapRAM[y*mapWidth + x] = i;
-
-                        }  // end for
-
-                    }  // end for
-                }
+                // Convert ascii map to element indices.
+                TrackImporter::ConvertAsciiToMapElements( myTrack2 );
 
                 // Now point to the map in RAM.
                 blockMap = blockMapRAM;
@@ -714,18 +677,47 @@ bool CMenu::HandleSelectTrackMenu()
             m_fxScaleFactor = fix16_from_float(1);
             m_test = 0;
 
-            //if()
+            // Button animations.
+            if( m_trackCount > 1)
             {
                 int32_t buttonX = (screenW/2) - image_ui_button_down[0];
-                int32_t buttonY = screenH - image_ui_button_down[1]-1;
-                m_animUpButtonHint.Start( 2*1000, buttonX, buttonY, buttonX, buttonY, (uint8_t*)image_ui_button_down,
+                int32_t buttonUpY = 17;
+                m_animUpButtonHint.Start( 2*1000, buttonX, buttonUpY, buttonX, buttonUpY, (uint8_t*)image_ui_button_up,
+                        this, (int32_t)ButtonAnimState::enumShow );
+                int32_t buttonDownY = screenH - image_ui_button_down[1]-1;
+                m_animDownButtonHint.Start( 2*1000, buttonX, buttonDownY, buttonX, buttonDownY, (uint8_t*)image_ui_button_down,
                         this, (int32_t)ButtonAnimState::enumShow );
             }
+
+            // Text animations
+            if( ! m_textYPosAnimValue )
+                m_textYPosAnimValue = CAnimValue::GetFreeElement();
+            if( m_textYPosAnimValue )
+                m_textYPosAnimValue->Start( 2*1000,  fix16_from_int( 5 ), fix16_from_int( 5 ),
+                        this, (int32_t)ButtonAnimState::enumShowTitleText );
 
         }
     }
     else if (m_isTrackOk)
     {
+        // Clear screen
+        mygame.display.setColor(1,1);
+        mygame.display.fillRect(0, 0, screenW, 35);
+
+        // Print the track name and author name.
+        char text[64];
+        mygame.display.setColor(2,1);
+
+        if( ! m_textYPosAnimValue )
+            mygame.display.print(2, 5, m_trackName);
+        else
+        {
+            int32_t y = fix16_to_int( m_textYPosAnimValue->m_fxValue );
+            mygame.display.print(2, y, m_trackName);
+            mygame.display.print(2, y+10, "by");
+            mygame.display.print(2, y+20, m_authorName);
+        }
+
         // Draw track
 
         //mygame.display.setColor(2,1);
@@ -769,7 +761,17 @@ bool CMenu::HandleSelectTrackMenu()
     if(Pokitto::Core::buttons.released(BTN_A))
     {
         if(! m_pressedAkeyDownOutsideMenu)
-             return false; // Close the view
+        {
+            if(m_trackNum != 0)
+            {
+                // Read textures.
+                (void)TrackImporter::ReadAndValidateTextures( tracksDirName, m_dirNameArr[m_trackNum-1] );
+
+                // Update billboard objects.
+                //TrackImporter::UpdateBBObjects();
+            }
+            return false; // Close the view
+        }
         else
             m_pressedAkeyDownOutsideMenu = false; // Ready to close this view on next A button press.
     }
@@ -813,12 +815,25 @@ bool CMenu::HandleSelectTrackMenu()
 void CMenu::Finished( int32_t par )
 {
     ButtonAnimState bas = (ButtonAnimState)par;
-    if( bas == ButtonAnimState::enumShow )
+    if( bas == ButtonAnimState::enumShowTitleText )
     {
-//        int32_t buttonX = (screenW/2) - image_ui_button_down[0];
-//        int32_t buttonY = screenH - image_ui_button_down[1]-1;
-//        m_animUpButtonHint.Start( 2*1000, buttonX, buttonY, buttonX, screenH, (uint8_t*)image_ui_button_down,
-//                this, (int32_t)ButtonAnimState::enumDisappear );
+        m_textYPosAnimValue->Start( 1*1000,  fix16_from_int( 5 ), fix16_from_int( -15 ),
+            this, (int32_t)ButtonAnimState::enumScrollToAuthorText );
+    }
+    else if( bas == ButtonAnimState::enumScrollToAuthorText )
+    {
+        m_textYPosAnimValue->Start( 2*1000,  fix16_from_int( -15 ), fix16_from_int( -15 ),
+            this, (int32_t)ButtonAnimState::enumShowAuthorText );
+    }
+    else if( bas == ButtonAnimState::enumShowAuthorText )
+    {
+        m_textYPosAnimValue->Start( 1*1000,  fix16_from_int( -15), fix16_from_int( 5 ),
+            this, (int32_t)ButtonAnimState::enumScrollToTitleText );
+    }
+    else if( bas == ButtonAnimState::enumScrollToTitleText )
+    {
+        m_textYPosAnimValue->Start( 2*1000,  fix16_from_int( 5 ), fix16_from_int( 5 ),
+            this, (int32_t)ButtonAnimState::enumShowTitleText );
     }
     else
     {
