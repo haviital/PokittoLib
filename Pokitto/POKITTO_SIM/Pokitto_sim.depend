@@ -5047,7 +5047,7 @@
 
 1535654860 c:\git\pokittolib2\pokitto\pokitto_libs\fixmath\fix16.hpp
 
-1546462202 c:\git\pokittolib2\examples\pokittogp\main.h
+1546813734 c:\git\pokittolib2\examples\pokittogp\main.h
 	"fix16.h"
 	"PokittoCookie.h"
 	"animation.h"
@@ -5055,18 +5055,18 @@
 1546212295 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\image_numbers.h
 	<stdint.h>
 
-1543185978 c:\git\pokittolib2\examples\pokittogp\playership.h
+1546813984 c:\git\pokittolib2\examples\pokittogp\playership.h
 	"main.h"
 	"ship.h"
 	"menu.h"
 
-1543185978 c:\git\pokittolib2\examples\pokittogp\ship.h
+1546730539 c:\git\pokittolib2\examples\pokittogp\ship.h
 	"main.h"
 
 1546371845 c:\git\pokittolib2\examples\pokittogp\menu.h
 	"fix16.h"
 
-1546464004 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
+1546813370 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -5075,7 +5075,7 @@
 	"playerShip.h"
 	"menu.h"
 
-1546461830 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\gamedata.h
+1546731051 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\gamedata.h
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -5354,13 +5354,13 @@
 1541961253 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\pilots.h
 	<stdint.h>
 
-1544558209 source:c:\git\pokittolib2\examples\pokittogp\playership.cpp
+1546797014 source:c:\git\pokittolib2\examples\pokittogp\playership.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
 	"playerShip.h"
 
-1543185978 source:c:\git\pokittolib2\examples\pokittogp\ship.cpp
+1546813984 source:c:\git\pokittolib2\examples\pokittogp\ship.cpp
 	"Pokitto.h"
 	"PokittoCookie.h"
 	"fix16.h"
@@ -5452,7 +5452,7 @@
 	"fix16.h"
 	"ship.h"
 
-1546464304 source:c:\git\pokittolib2\examples\pokittogp\trackimporter.cpp
+1546466182 source:c:\git\pokittolib2\examples\pokittogp\trackimporter.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"

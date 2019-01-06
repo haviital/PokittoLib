@@ -9,6 +9,7 @@ public:
     virtual void Update();
     virtual void Reset();
     virtual void UpdateTrackPos();
+    virtual void SetImpulse( fix16_t fxImpulseAngle );
 
 public:
     fix16_t m_fxVel;
@@ -26,4 +27,8 @@ public:
     bool m_isPlayer;
     int32_t m_trackIndex;
     LapTimingState m_lapTimingState;
+
+    // Impact
+    fix16_t m_fxImpulseAcc;
+    fix16_t m_fxImpulseAngle;
 };

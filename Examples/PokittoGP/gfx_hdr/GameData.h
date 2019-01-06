@@ -535,37 +535,37 @@ const int16_t shipBmH  = *(ship_bm - 1);
 const fix16_t fxShipScaledW  = shipBmW * fxShipScaledSizeFactor;
 const fix16_t fxShipScaledH  = shipBmH * fxShipScaledSizeFactor;
 
-const CObject3d g_timeTrialBilboardObjectsInRom_track1[3*8] =
+const Object3dInitData g_timeTrialBilboardObjectsInRom_track1[3*8] =
 {
     // Cactuses
-    {fix16_from_int(3), fix16_from_int(632), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH, 0, 0, 0},
-    {fix16_from_int(243), fix16_from_int(1465), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH, 0, 0, 0},
-    {fix16_from_int(706), fix16_from_int(1425), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH, 0, 0, 0},
-    {fix16_from_int(667), fix16_from_int(2024), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH, 0, 0, 0},
-    {fix16_from_int(1174), fix16_from_int(1844), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH, 0, 0, 0},
-    {fix16_from_int(2050), fix16_from_int(1851), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH, 0, 0, 0},
-    {fix16_from_int(1922), fix16_from_int(1130), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH, 0, 0, 0},
-    {fix16_from_int(1986), fix16_from_int(35), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH, 0, 0, 0},
+    {fix16_from_int(3), fix16_from_int(632), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
+    {fix16_from_int(243), fix16_from_int(1465), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
+    {fix16_from_int(706), fix16_from_int(1425), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
+    {fix16_from_int(667), fix16_from_int(2024), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
+    {fix16_from_int(1174), fix16_from_int(1844), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
+    {fix16_from_int(2050), fix16_from_int(1851), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
+    {fix16_from_int(1922), fix16_from_int(1130), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
+    {fix16_from_int(1986), fix16_from_int(35), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
 
     // Stones
-    {fix16_from_int(131), fix16_from_int(632), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH, 0, 0, 0},
-    {fix16_from_int(582), fix16_from_int(1469), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH, 0, 0, 0},
-    {fix16_from_int(953), fix16_from_int(2042), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH, 0, 0, 0},
-    {fix16_from_int(1839), fix16_from_int(1920), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH, 0, 0, 0},
-    {fix16_from_int(521), fix16_from_int(127), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH, 0, 0, 0},
-    {fix16_from_int(581), fix16_from_int(505), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH, 0, 0, 0},
-    {fix16_from_int(333), fix16_from_int(634), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH, 0, 0, 0},
-    {fix16_from_int(6), fix16_from_int(1220), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH, 0, 0, 0},
+    {fix16_from_int(131), fix16_from_int(632), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
+    {fix16_from_int(582), fix16_from_int(1469), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
+    {fix16_from_int(953), fix16_from_int(2042), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
+    {fix16_from_int(1839), fix16_from_int(1920), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
+    {fix16_from_int(521), fix16_from_int(127), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
+    {fix16_from_int(581), fix16_from_int(505), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
+    {fix16_from_int(333), fix16_from_int(634), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
+    {fix16_from_int(6), fix16_from_int(1220), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
 
     // Set static cars on track.
-    {fix16_from_int(42), fix16_from_int(1290), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH, 0, 0, 0},
-    {fix16_from_int(1320), fix16_from_int(1975), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH, 0, 0, 0},
-    {fix16_from_int(1960), fix16_from_int(1479), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH, 0, 0, 0},
-    {fix16_from_int(1922), fix16_from_int(430), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH, 0, 0, 0},
-    {fix16_from_int(1624), fix16_from_int(80), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH, 0, 0, 0},
-    {fix16_from_int(1012), fix16_from_int(-190), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH, 0, 0, 0},
-    {fix16_from_int(554), fix16_from_int(412), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH, 0, 0, 0},
-    {fix16_from_int(236), fix16_from_int(598), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH, 0, 0, 0},
+    {fix16_from_int(42), fix16_from_int(1290), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
+    {fix16_from_int(1320), fix16_from_int(1975), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
+    {fix16_from_int(1960), fix16_from_int(1479), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
+    {fix16_from_int(1922), fix16_from_int(430), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
+    {fix16_from_int(1624), fix16_from_int(80), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
+    {fix16_from_int(1012), fix16_from_int(-190), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
+    {fix16_from_int(554), fix16_from_int(412), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
+    {fix16_from_int(236), fix16_from_int(598), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
 
 };
 

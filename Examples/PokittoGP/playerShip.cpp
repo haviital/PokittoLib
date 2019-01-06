@@ -30,6 +30,8 @@ void CPlayerShip::Update()
     fix16_t fxVelOld = m_fxVel;
     bool prevCollided = m_isCollided;
 
+    m_bitmap = billboard_object_bitmaps[0];  // org car
+
     // Calcucalate the current waypoint and rank.
     CalculateRank();
 
@@ -38,7 +40,7 @@ void CPlayerShip::Update()
     uint8_t wavetype = 1;
     //uint8_t tileIndex = 5;
     uint8_t tileIndex = GetTileIndexCommon(fix16_to_int(m_fxX), fix16_to_int(m_fxY));
-    if( m_isCollidedToPlayerShip ||
+    if( /*m_isCollidedToPlayerShip ||*/
         (
             tileIndex != 5 && tileIndex != 6 &&
             (tileIndex < 11 || tileIndex > 15)
@@ -130,9 +132,8 @@ void CPlayerShip::Update()
     // If colliding, slow down
     if( m_isCollided ) {
 
-
         // Break or stop
-        if( m_isCollidedToPlayerShip )
+        if( /*m_isCollidedToPlayerShip*/ false )
         {
             m_fxVel = fix16_one;
         }
@@ -163,8 +164,35 @@ void CPlayerShip::Update()
     fix16_t fxCos = fix16_cos(m_fxAngle);
     fix16_t fxSin = fix16_sin(m_fxAngle);
 
-    m_fxX += fix16_mul(m_fxVel, fxCos);
-    m_fxY += fix16_mul(m_fxVel, fxSin);
+    fix16_t fxVelX = fix16_mul(m_fxVel, fxCos);
+    fix16_t fxVelY = fix16_mul(m_fxVel, fxSin);
+
+    if( m_fxImpulseAcc != 0 )
+    {
+        // Move ship along the impulse.
+        fix16_t fxImpulseCos = fix16_cos( m_fxImpulseAngle );
+        fix16_t fxImpulseSin = fix16_sin( m_fxImpulseAngle );
+        fix16_t fxImpulseVelX = fix16_mul( m_fxImpulseAcc, fxImpulseCos );
+        fix16_t fxImpulseVelY = fix16_mul( m_fxImpulseAcc, fxImpulseSin );
+        fxVelX += fxImpulseVelX;
+        fxVelY += fxImpulseVelY;
+#if 0
+        // Project impulse on ship acc vector
+        // Get the angle between impulse and ship
+        fix16_t fxAngleBetween = m_fxAngle - fxShipAngle;
+        fix16_t fxAngleBetweenCos = fix16_cos( fxAngleBetween );
+        fix16_t fxImpulseVecOnShipVec = fix16_mul( m_fxVel, fxAngleBetweenCos );
+        m_fxVel += fxImpulseVecOnShipVec;
+        if( m_fxVel < 0 )
+            m_fxVel = 0;
+#endif
+        // Reset impulse
+        m_fxImpulseAngle = 0;
+        m_fxImpulseAcc = 0;
+    }
+
+    m_fxX += fxVelX;
+    m_fxY += fxVelY;
 
     // Change sound effect if needed.
     if(fxVelOld != m_fxVel || prevCollided != m_isCollided )
@@ -292,12 +320,12 @@ void CPlayerShip::HandleGameKeys()
             m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY - fix16_from_int(5);
         }
     }
-    // Break a little if no A button is pressed
+    // Break a little (friction) if no A button is pressed
     else  {
 
         if(!m_isCollided || m_fxVel>=fxMaxSpeedCollided)
         {
-            m_fxVel = m_fxVel - (fix16_one>>5);
+            m_fxVel = m_fxVel - (fix16_one>>5); // Friction
             m_fxCameraBehindPlayerTarget = fxCameraBehindPlayerY;
         }
 

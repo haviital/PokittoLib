@@ -29,8 +29,8 @@ const fix16_t fxMaxSpeedCollided = fix16_one>>1;
 const fix16_t fxMaxSpeed = fix16_one*6;  // player max speed
 
 const fix16_t fxDefaultOtherShipSpeed = fix16_one*10;
-const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
 const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;
+const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
 //const fix16_t fxDefaultOtherShipSpeed = (fix16_one*10)>>2;
 //const fix16_t fxDefaultOtherShipSpeedInCorner =  (fxMaxSpeedCollided * 12)>>2;
 //const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  (fxMaxSpeedCollided * 7)>>2;
@@ -57,8 +57,23 @@ enum LapTimingState {
 };
 
 //
+struct Object3dInitData
+{
+public:
+    fix16_t m_fxX;
+    fix16_t m_fxY;
+    fix16_t m_fxScaledWidth;
+    fix16_t m_fxScaledHeight;
+    const uint8_t* m_bitmap;
+    int16_t m_bitmapW;
+    int16_t m_bitmapH;
+};
+
 class CObject3d
 {
+public:
+    virtual void SetImpulse( fix16_t fxImpulseAngle ) {}
+
 public:
     fix16_t m_fxX;
     fix16_t m_fxY;
@@ -72,6 +87,7 @@ public:
     fix16_t m_fxYInView;
     fix16_t m_fxDistancePot;
 };
+
 
 class CWaypoint
 {

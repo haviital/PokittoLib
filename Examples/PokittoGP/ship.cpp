@@ -154,7 +154,7 @@ void CShip::Update()
     }
     else
     {
-        // Not colided
+        // Not coLlided
 
         // Get target speed
          // If my direction is over 90 degrees wrrong, slow down
@@ -162,7 +162,7 @@ void CShip::Update()
         if( (fxAngleDiff > (fix16_pi>>2) ) || (fxAngleDiff < -(fix16_pi>>2) ) )
             fxTargetSpeed = m_fxCornerSpeed2;
 
-        // Calculate speed to the current waypoint
+        // Calculate speed.
         if( m_fxVel > fxTargetSpeed )
             m_fxVel -= m_fxDeacc;  // Break
         else
@@ -178,11 +178,44 @@ void CShip::Update()
     fix16_t fxCos = fix16_cos(m_fxAngle);
     fix16_t fxSin = fix16_sin(m_fxAngle);
 
-    m_fxX += fix16_mul(m_fxVel, fxCos);
-    m_fxY += fix16_mul(m_fxVel, fxSin);
+    fix16_t fxVelX = fix16_mul(m_fxVel, fxCos);
+    fix16_t fxVelY = fix16_mul(m_fxVel, fxSin);
+
+    if( m_fxImpulseAcc != 0 )
+    {
+        // Move ship along the impulse.
+        fix16_t fxImpulseCos = fix16_cos( m_fxImpulseAngle );
+        fix16_t fxImpulseSin = fix16_sin( m_fxImpulseAngle );
+        fix16_t fxImpulseVelX = fix16_mul( m_fxImpulseAcc, fxImpulseCos );
+        fix16_t fxImpulseVelY = fix16_mul( m_fxImpulseAcc, fxImpulseSin );
+        fxVelX += fxImpulseVelX;
+        fxVelY += fxImpulseVelY;
+#if 0
+        // Project impulse on ship acc vector
+        // Get the angle between impulse and ship
+        fix16_t fxAngleBetween = m_fxAngle - fxShipAngle;
+        fix16_t fxAngleBetweenCos = fix16_cos( fxAngleBetween );
+        fix16_t fxImpulseVecOnShipVec = fix16_mul( m_fxVel, fxAngleBetweenCos );
+        m_fxVel += fxImpulseVecOnShipVec;
+        if( m_fxVel < 0 )
+            m_fxVel = 0;
+#endif
+        // Reset impulse
+        m_fxImpulseAcc = 0;
+        m_fxImpulseAngle = 0;
+    }
+
+    m_fxX += fxVelX;
+    m_fxY += fxVelY;
 
     // Update the ship position on track.
     UpdateTrackPos();
+}
+// Handle keys
+void CShip::SetImpulse( fix16_t fxImpulseAngle )
+{
+    m_fxImpulseAcc = fix16_one<<2;
+    m_fxImpulseAngle = fxImpulseAngle; // -(fix16_pi>>2);
 }
 
 void CShip::Reset()
@@ -190,6 +223,8 @@ void CShip::Reset()
      // Reset game
     m_activeLapNum = 1;
     m_lapTimingState = enumReadyToStart;
+    m_fxImpulseAcc = 0;
+    m_fxImpulseAngle = 0;
 }
 
 // Update the ship position on track.

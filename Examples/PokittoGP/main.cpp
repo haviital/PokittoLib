@@ -29,6 +29,10 @@ fix16_t PerspectiveScaleX[screenH];
 fix16_t fxCamX = fix16_from_int(42);
 fix16_t fxCamY = fix16_from_int(490);
 
+fix16_t fxTest_X = 0;
+fix16_t fxTest_Y = 0;
+fix16_t fxTest_Angle = 0;
+
 // Ship bitmap
 const uint8_t* activeShipBitmapData = billboard_object_bitmaps[0];
 uint32_t shipBitmapW = *(activeShipBitmapData - 2);
@@ -185,11 +189,9 @@ int main () {
             #if 0
             char text[128];
             mygame.display.setColor(9,3);
-            mygame.display.print(0,0, itoa(fix16_to_int(fxCamX),text,10)); mygame.display.print(", ");
-            mygame.display.print(itoa(fix16_to_int(fxCamY)+65,text,10)); mygame.display.print("     ");
-            mygame.display.print(0,10, itoa(g_playerShip.m_currentRank,text,10)); mygame.display.print(", ");
-            mygame.display.print( itoa(g_playerShip.m_activeLapNum,text,10) ); mygame.display.print(", ");
-            mygame.display.print( itoa(g_playerShip.m_trackIndex,text,10) ); mygame.display.print("     ");
+            mygame.display.print(0,0, "dx="); mygame.display.print(itoa(fix16_to_int(fxTest_X),text,10));
+            mygame.display.print(",dy="); mygame.display.print(itoa(fix16_to_int(fxTest_Y),text,10));
+            mygame.display.print(0,10, "deg="); mygame.display.print(itoa((fxTest_Angle*180)/fix16_pi,text,10));
             #endif
 
             // Handle menus
@@ -877,10 +879,6 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
 
         if( obj != NULL )
         {
-            //!!HV
-            if(i>15)
-                obj = g_drawList[i];
-
             fix16_t fxX = obj->m_fxX;
             fix16_t fxY = obj->m_fxY;
 
@@ -935,6 +933,7 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                         // Position relative to player ship.
                         fix16_t fxX3 = fxX - fxRotCenterX;
                         fix16_t fxY3 = fxY - fxRotCenterY;
+
                         // Calculate distance.
                         // Scale down so that it will not overflow
                         fxX3 >>= 4;
@@ -943,7 +942,21 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                         const int32_t ShipCollisionLimit = 10;
                         const fix16_t fxShipCollisionDistancePotLimit = fix16_from_int(ShipCollisionLimit*ShipCollisionLimit);
                         if( fxDistanceFromShipPot < fxShipCollisionDistancePotLimit>>8 )
+                        {
+                            // Set impulse on both the object and the player ship.
+                            fix16_t fxAngleToShip = fix16_atan2(fxY3, fxX3);
+                            fxAngleToShip += fxAngle + (fix16_pi*4);
+                            fxAngleToShip = fxAngleToShip % (fix16_pi*2);
+                            obj->SetImpulse( fxAngleToShip );
+                            g_playerShip.SetImpulse( fxAngleToShip + fix16_pi );
+
+                            //!!HV
+                            fxTest_X = fxX - fxRotCenterX;
+                            fxTest_Y = fxY - fxRotCenterY;
+                            fxTest_Angle = fxAngleToShip;
+
                             isCollidedToPlayerShip = true;
+                        }
                     }
                 }
 
