@@ -47,6 +47,11 @@ namespace TrackImporter
         char* trackPath, char* trackFileName,
         /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName );
 
+    // Read the track objects ascii file from SD
+    bool ReadTrackObjects( char* trackPath, char* trackDirName );
+
+    char* ReadValue( char* bufPtr, char* endPtr, /*OUT*/ int32_t& value );
+
     bool ReadAndValidateTextures(char* trackDirPath, char* trackDirName);
 
     void ConvertAsciiToMapElements( char* myTrack2 );

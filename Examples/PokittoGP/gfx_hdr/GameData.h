@@ -503,8 +503,8 @@ const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
 const uint8_t* current_texture_bitmaps_mm2[current_texture_bitmaps_count] = {0};
 
 //
-const uint32_t waypointCount = 22;
-const CWaypoint waypoints[waypointCount] =
+const uint32_t waypointCountROM = 22;
+const CWaypoint waypointsROM[ waypointCountROM ] =
 {
     {72,990,fxDefaultOtherShipSpeed}, {59,1297,fxDefaultOtherShipSpeed}, {166,1394,fxDefaultOtherShipSpeedInSlowCorner},
     {589,1379,fxDefaultOtherShipSpeed}, {642,1479,fxDefaultOtherShipSpeedInCorner}, {667,1897,fxDefaultOtherShipSpeed},

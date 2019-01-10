@@ -4,6 +4,8 @@
 #include "trackImporter.h"
 #include "imageformat.h"
 
+const char lineFeed = 10, carriageReturn=13;
+
 //
 //
 bool TrackImporter::ReadAndValidateTrack(
@@ -55,7 +57,6 @@ bool TrackImporter::ReadAndValidateTrack(
 
     // Read the track name
     int32_t pos = 0;
-    const char lineFeed = 10, carriageReturn=13;
     int32_t i=0;
     for(;myTrack1[pos]!=lineFeed && myTrack1[pos]!=carriageReturn && i<=maxTrackOrAuthorNameLen;pos++, i++)
         trackName[i] = myTrack1[pos];
@@ -124,9 +125,6 @@ bool TrackImporter::ReadAndValidateTrack(
             pos++;
             for(;pos<len && (myTrack1[pos]==lineFeed || myTrack1[pos]==carriageReturn);pos++);
             pos--;
-
-
-
         }
         else if(currentPosInLine>=mapWidth)
         {
@@ -200,6 +198,102 @@ bool TrackImporter::ReadAndValidateTrack(
         mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
         return false;
     }
+}
+
+// Read the track objects ascii file from SD
+bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
+{
+    const int32_t blockSize = 1024;
+    char buffer[blockSize+1] = {0};
+    char filePathAndName[128] = {0};
+    strcpy(filePathAndName, trackPath);
+    #ifndef POK_SIM
+    strcat(filePathAndName, "/");
+    #endif
+    strcat(filePathAndName, trackDirName);
+    strcat(filePathAndName, "/");
+    char* trackFileName = "objects.txt";
+    strcat(filePathAndName, trackFileName);
+    uint8_t err = fileOpen(filePathAndName, FILE_MODE_READONLY);
+    if(err)
+    {
+        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+        mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+        mygame.display.print(1, 50, "File is not");
+        mygame.display.print(1, 60, "found!");
+        fileClose(); // close any open files
+        return false;
+    }
+    uint16_t len = fileReadBytes((uint8_t*)buffer, blockSize);
+    buffer[len] = 0; // ending null
+    char* bufPtr = buffer;
+    char* endPtr = buffer + len;
+
+    // read waypoints
+
+    // "[waypoints]"
+    bufPtr = strchr( bufPtr, ']'); bufPtr++;
+    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn); bufPtr++); // Skip extra LF and CR chars
+    int32_t wp = 0;
+    while( bufPtr < endPtr && wp < waypointMaxCount)
+    {
+        // Read waypoint data
+        int32_t x;
+        int32_t y;
+        int32_t radius;
+        int32_t vel;
+        int32_t checkpoint;
+        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ x );
+        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ y );
+        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ radius );
+        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ vel );
+        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ checkpoint );
+
+        // Add a new waypoint
+        waypoints[wp].x = x;
+        waypoints[wp].y = y;
+        if( vel = 100 )
+            waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeed;
+        else if( vel = 75 )
+            waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeedInCorner;
+        else
+            waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeedInSlowCorner;
+
+        wp++;
+    }
+    waypointCount = wp;
+
+    fileClose(); // close any open files
+
+    return true;
+}
+
+char* TrackImporter::ReadValue( char* bufPtr, char* endPtr, /*OUT*/ int32_t& value )
+{
+    //
+    // Read value.
+
+    // find the nearesr of: comma, lineFeed or carriageReturn.
+    char* newBufPtr = strchr( bufPtr, ',');
+    char* newBufPtr2 = strchr( bufPtr, lineFeed);
+    if(newBufPtr==NULL) newBufPtr = newBufPtr2;
+    if( newBufPtr2!=NULL && newBufPtr2 < newBufPtr) newBufPtr = newBufPtr2;
+    newBufPtr2 = strchr( bufPtr, carriageReturn);
+    if( newBufPtr2!=NULL && newBufPtr2 < newBufPtr) newBufPtr = newBufPtr2;
+
+    // if found, convert to integer.
+    if(!newBufPtr || newBufPtr-bufPtr >= 8) return NULL;
+    char valueAsStr[8];
+    int32_t strsize = newBufPtr-bufPtr;
+    strncpy( valueAsStr, bufPtr, strsize );
+    valueAsStr[ strsize ] = 0;
+    value = atoi( valueAsStr );
+
+    // Skip trailing comma, LF and CR chars
+    bufPtr += strsize;
+    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==','); bufPtr++);
+
+    return bufPtr;
 }
 
 //

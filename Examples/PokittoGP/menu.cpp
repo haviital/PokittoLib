@@ -83,11 +83,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 Pokitto::Core::display.load565Palette(image_titlescreen_pal);
                 DrawBitmapOpaque8bit(0, 0, &(image_titlescreen[2]), image_titlescreen[0], image_titlescreen[1] );
 
-                bool isUserTrack = (m_trackNum != 0);
-                if(!isUserTrack)  // ROM track
-                    m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos, "Time trial", "Race", "Select track", "See pilots");
-                else  // User track
-                     m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos, "Time trial", "Select track", "See pilots", NULL);
+                m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos, "Time trial", "Race", "Select track", "See pilots");
 
                 if( ! m_isOpen )
                 {
@@ -110,7 +106,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                          // Reset game
                         ResetGame( false );
                     }
-                    else if(!isUserTrack && m_cursorPos == 1)
+                    else if(m_cursorPos == 1)
                     {
                         // race
                         m_mode = enumContinueMenu;
@@ -118,13 +114,13 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                          // Reset game
                         ResetGame( true );
                     }
-                    else if((!isUserTrack && m_cursorPos == 2) || (isUserTrack && m_cursorPos == 1))
+                    else if(m_cursorPos == 2)
                     {
                         // Select track
                         m_mode = enumSelectTrackMenu;
                         m_isOpen = true;
                     }
-                    else if((!isUserTrack && m_cursorPos == 3) || (isUserTrack && m_cursorPos == 2))
+                    else if(m_cursorPos == 3)
                     {
                         // race
                         m_mode = enumPilotPictureMenu;
@@ -771,6 +767,9 @@ bool CMenu::HandleSelectTrackMenu()
                 mygame.display.print(1, 30, "Loading");
                 mygame.display.print(1, 40, "graphics...");
                 while (!mygame.update()); // draw now
+
+                // Read waypoints
+                bool ok = TrackImporter::ReadTrackObjects( tracksDirName, m_dirNameArr[m_trackNum-1] );
 
                 // Read textures.
                 (void)TrackImporter::ReadAndValidateTextures( tracksDirName, m_dirNameArr[m_trackNum-1] );

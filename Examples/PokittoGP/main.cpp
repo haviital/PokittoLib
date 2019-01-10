@@ -61,11 +61,16 @@ const uint32_t g_objects3dMaxCount = 32;
 uint32_t g_objects3dCount = 0;
 CObject3d* g_objects3d[ g_objects3dMaxCount ] = {0};
 
+
+
 // Reserve space for objects in RAM.
 uint8_t* g_spriteBitmaps[2] = {0};
 CObject3d g_BillboardObjectArray[g_BillboardObjectArrayMaxCount];
 CShip g_ShipObjectArray[1*8];
 CPlayerShip g_playerShip;
+uint32_t waypointCount = 22;
+const uint32_t waypointMaxCount = 30;
+CWaypoint waypoints[waypointMaxCount];
 
 // Ships
 const uint32_t g_shipsMaxCount = 10;
@@ -500,8 +505,13 @@ void DrawRankNumber(int32_t x, int32_t y)
 // Init game objects
 void InitGameObjectsForTrack1(bool isRace)
 {
-    #if 1
 
+    // Copy waypoints
+    for( int32_t wp = 0; wp < waypointCountROM && wp < waypointMaxCount; wp++)
+        waypoints[wp] = waypointsROM[wp];
+    waypointCount = waypointMaxCount;
+
+    #if 1
     int32_t billboardObjectCount = g_BillboardObjectArrayMaxCount - 8;  // race
 
     int32_t i = 0;
@@ -542,6 +552,8 @@ void InitGameObjectsForTrack1(bool isRace)
     }
     else
     {
+        // ROM track
+
         // Copy cactus and rock array pointers to the object list.
         if( !g_isRace )
             billboardObjectCount = g_BillboardObjectArrayMaxCount;  // time treial
@@ -612,7 +624,7 @@ void InitGameObjectsForTrack1(bool isRace)
     {
         int16_t w = i + 6;
         if(w>=waypointCount)
-            w = waypointCount - 1;
+            w = waypointCount - 1; // max value for w
         g_objects3d[i] = &g_BillboardObjectArray[i];
         g_objects3d[i]->m_fxX = fix16_from_int(waypoints[w].x);
         g_objects3d[i]->m_fxY = fix16_from_int(waypoints[w].y);
