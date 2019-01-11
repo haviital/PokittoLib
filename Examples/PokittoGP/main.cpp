@@ -506,47 +506,42 @@ void DrawRankNumber(int32_t x, int32_t y)
 void InitGameObjectsForTrack1(bool isRace)
 {
 
-    // Copy waypoints
-    for( int32_t wp = 0; wp < waypointCountROM && wp < waypointMaxCount; wp++)
-        waypoints[wp] = waypointsROM[wp];
-    waypointCount = waypointMaxCount;
-
     #if 1
     int32_t billboardObjectCount = g_BillboardObjectArrayMaxCount - 8;  // race
 
-    int32_t i = 0;
+    int32_t o3dIndex = 0;
     if(menu.m_trackNum !=0 )  // user track
     {
-        for(; i < g_billboardObjectInRamCount && i < billboardObjectCount; i++ )
+        for(; o3dIndex < g_billboardObjectInRamCount && o3dIndex < billboardObjectCount; o3dIndex++ )
         {
-            g_objects3d[i] = &g_BillboardObjectArray[i];
+            g_objects3d[o3dIndex] = &g_BillboardObjectArray[o3dIndex];
 
             const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-            if(g_objects3d[i]->m_bitmap==cactus_bm && g_spriteBitmaps[0] != NULL)
+            if(g_objects3d[o3dIndex]->m_bitmap==cactus_bm && g_spriteBitmaps[0] != NULL)
             {
                 const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
                 const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
                 const int16_t spriteBmW  = *(sprite_bm - 2);
                 const int16_t spriteBmH  = *(sprite_bm - 1);
-                g_objects3d[i]->m_bitmap = sprite_bm;
-                g_objects3d[i]->m_bitmapW = spriteBmW;
-                g_objects3d[i]->m_bitmapH = spriteBmH;
-                g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
+                g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
+                g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
+                g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
             }
 
             const uint8_t* rock_bm = billboard_object_bitmaps[26];
-            if(g_objects3d[i]->m_bitmap==rock_bm && g_spriteBitmaps[1] != NULL)
+            if(g_objects3d[o3dIndex]->m_bitmap==rock_bm && g_spriteBitmaps[1] != NULL)
             {
                 const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
                 const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
                 const int16_t spriteBmW  = *(sprite_bm - 2);
                 const int16_t spriteBmH  = *(sprite_bm - 1);
-                g_objects3d[i]->m_bitmap = sprite_bm;
-                g_objects3d[i]->m_bitmapW = spriteBmW;
-                g_objects3d[i]->m_bitmapH = spriteBmH;
-                g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
+                g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
+                g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
+                g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
             }
         }
     }
@@ -554,22 +549,27 @@ void InitGameObjectsForTrack1(bool isRace)
     {
         // ROM track
 
+        // Copy waypoints
+        for( int32_t wp = 0; wp < waypointCountROM && wp < waypointMaxCount; wp++)
+            waypoints[wp] = waypointsROM[wp];
+        waypointCount = waypointMaxCount;
+
         // Copy cactus and rock array pointers to the object list.
         if( !g_isRace )
             billboardObjectCount = g_BillboardObjectArrayMaxCount;  // time treial
         //if(menu.m_trackNum !=0)  // user track, no billboard objects
         //    billboardObjectCount = 0;
 
-        for(; i < billboardObjectCount; i++ )
+        for(; o3dIndex < billboardObjectCount; o3dIndex++ )
         {
-            g_objects3d[i] = &g_BillboardObjectArray[i];
-            g_objects3d[i]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[i].m_fxX;
-            g_objects3d[i]->m_fxY = g_timeTrialBilboardObjectsInRom_track1[i].m_fxY;
-            g_objects3d[i]->m_bitmap = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmap;
-            g_objects3d[i]->m_bitmapW = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapW;
-            g_objects3d[i]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[i].m_bitmapH;
-            g_objects3d[i]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledWidth;
-            g_objects3d[i]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[i].m_fxScaledHeight;
+            g_objects3d[o3dIndex] = &g_BillboardObjectArray[o3dIndex];
+            g_objects3d[o3dIndex]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_fxX;
+            g_objects3d[o3dIndex]->m_fxY = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_fxY;
+            g_objects3d[o3dIndex]->m_bitmap = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_bitmap;
+            g_objects3d[o3dIndex]->m_bitmapW = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_bitmapW;
+            g_objects3d[o3dIndex]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_bitmapH;
+            g_objects3d[o3dIndex]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_fxScaledWidth;
+            g_objects3d[o3dIndex]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_fxScaledHeight;
 
             #if 0
 
@@ -577,31 +577,31 @@ void InitGameObjectsForTrack1(bool isRace)
             if(menu.m_trackNum !=0 )  // user track
             {
                 const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-                if(g_objects3d[i]->m_bitmap==cactus_bm && g_spriteBitmaps[0]!=NULL)
+                if(g_objects3d[o3dIndex]->m_bitmap==cactus_bm && g_spriteBitmaps[0]!=NULL)
                 {
                     const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
                     const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
                     const int16_t spriteBmW  = *(sprite_bm - 2);
                     const int16_t spriteBmH  = *(sprite_bm - 1);
-                    g_objects3d[i]->m_bitmap = sprite_bm;
-                    g_objects3d[i]->m_bitmapW = spriteBmW;
-                    g_objects3d[i]->m_bitmapH = spriteBmH;
-                    g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                    g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                    g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
+                    g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
+                    g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
+                    g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                    g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
                 }
 
                 const uint8_t* rock_bm = billboard_object_bitmaps[26];
-                if(g_objects3d[i]->m_bitmap==rock_bm && g_spriteBitmaps[1]!=NULL)
+                if(g_objects3d[o3dIndex]->m_bitmap==rock_bm && g_spriteBitmaps[1]!=NULL)
                 {
                     const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
                     const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
                     const int16_t spriteBmW  = *(sprite_bm - 2);
                     const int16_t spriteBmH  = *(sprite_bm - 1);
-                    g_objects3d[i]->m_bitmap = sprite_bm;
-                    g_objects3d[i]->m_bitmapW = spriteBmW;
-                    g_objects3d[i]->m_bitmapH = spriteBmH;
-                    g_objects3d[i]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                    g_objects3d[i]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+                    g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
+                    g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
+                    g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
+                    g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+                    g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
                 }
             }
 
@@ -620,37 +620,36 @@ void InitGameObjectsForTrack1(bool isRace)
     const fix16_t fxSpotScaledW  = fix16_from_int(spotBmW);
     const fix16_t fxSpotScaledH  = fix16_from_int(spotBmH);
 
-    for(int32_t i = 0; i < 2*8; i++ )
+    for(int32_t o3dIndex = 0; o3dIndex < 2*8; o3dIndex++ )
     {
-        int16_t w = i + 6;
+        int16_t w = o3dIndex + 6;
         if(w>=waypointCount)
             w = waypointCount - 1; // max value for w
-        g_objects3d[i] = &g_BillboardObjectArray[i];
-        g_objects3d[i]->m_fxX = fix16_from_int(waypoints[w].x);
-        g_objects3d[i]->m_fxY = fix16_from_int(waypoints[w].y);
-        g_objects3d[i]->m_bitmap = spot_bm;
-        g_objects3d[i]->m_bitmapW = spotBmW;
-        g_objects3d[i]->m_bitmapH = spotBmH;
-        g_objects3d[i]->m_fxScaledWidth = fxSpotScaledW;
-        g_objects3d[i]->m_fxScaledHeight = ( waypoints[w].fxTargetSpeed == fxDefaultOtherShipSpeedInCorner ) ? fxSpotScaledH>>1 : fxSpotScaledH;
+        g_objects3d[o3dIndex] = &g_BillboardObjectArray[o3dIndex];
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(waypoints[w].x);
+        g_objects3d[o3dIndex]->m_fxY = fix16_from_int(waypoints[w].y);
+        g_objects3d[o3dIndex]->m_bitmap = spot_bm;
+        g_objects3d[o3dIndex]->m_bitmapW = spotBmW;
+        g_objects3d[o3dIndex]->m_bitmapH = spotBmH;
+        g_objects3d[o3dIndex]->m_fxScaledWidth = fxSpotScaledW;
+        g_objects3d[o3dIndex]->m_fxScaledHeight = ( waypoints[w].fxTargetSpeed == fxDefaultOtherShipSpeedInCorner ) ? fxSpotScaledH>>1 : fxSpotScaledH;
     }
     #endif
 
-    int32_t ii = 0;
+    //int32_t ii = 0;
     if( !g_isRace )
     {
         // Time trial
 
         // Player Ship
         g_shipCount = 0;
-        ii = i;
-        g_objects3d[ii] = &g_playerShip;
+        g_objects3d[o3dIndex] = &g_playerShip;
         fix16_t fxScaledSizeFactor = fix16_from_float(0.65);
         g_playerShip.m_bitmap = billboard_object_bitmaps[0];
-        g_playerShip.m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
-        g_playerShip.m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
-        g_playerShip.m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
-        g_playerShip.m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        g_playerShip.m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
+        g_playerShip.m_bitmapH = *(g_objects3d[o3dIndex]->m_bitmap - 1);
+        g_playerShip.m_fxScaledWidth = g_objects3d[o3dIndex]->m_bitmapW * fxScaledSizeFactor;
+        g_playerShip.m_fxScaledHeight = g_objects3d[o3dIndex]->m_bitmapH * fxScaledSizeFactor;
         g_playerShip.m_fxVel = 0;
         g_playerShip.m_fxAcc = 0;
         g_playerShip.m_fxDeacc = 0;
@@ -675,13 +674,15 @@ void InitGameObjectsForTrack1(bool isRace)
 
         // Player Ship
         int32_t i=0;
-        ii = i + (2*8);
-        g_objects3d[ii] = &g_playerShip;
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[0];
-        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
-        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
-        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
-        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        //ii = i + (2*8);
+        o3dIndex++;
+
+        g_objects3d[o3dIndex] = &g_playerShip;
+        g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[0];
+        g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
+        g_objects3d[o3dIndex]->m_bitmapH = *(g_objects3d[o3dIndex]->m_bitmap - 1);
+        g_objects3d[o3dIndex]->m_fxScaledWidth = g_objects3d[o3dIndex]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[o3dIndex]->m_fxScaledHeight = g_objects3d[o3dIndex]->m_bitmapH * fxScaledSizeFactor;
         g_ships[i] = &g_playerShip;
         g_ships[i]->m_fxVel = 0;
         g_ships[i]->m_fxAcc = 0;
@@ -697,15 +698,17 @@ void InitGameObjectsForTrack1(bool isRace)
 
         // Ship 1: fast in streight road, slow in corners
         i=1;
-        ii = i + (2*8);
-        g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(35);
-        g_objects3d[ii]->m_fxY = fix16_from_int(600+(2*50));
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[17];
-        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
-        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
-        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
-        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        //o3dIndex = i + (2*8);
+        o3dIndex++;
+
+        g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35);
+        g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600+(2*50));
+        g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[17];
+        g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
+        g_objects3d[o3dIndex]->m_bitmapH = *(g_objects3d[o3dIndex]->m_bitmap - 1);
+        g_objects3d[o3dIndex]->m_fxScaledWidth = g_objects3d[o3dIndex]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[o3dIndex]->m_fxScaledHeight = g_objects3d[o3dIndex]->m_bitmapH * fxScaledSizeFactor;
         g_ships[i] = &g_ShipObjectArray[i];
         g_ships[i]->m_fxVel = 0;
         g_ships[i]->m_fxAcc = fix16_from_float(0.200);
@@ -720,15 +723,17 @@ void InitGameObjectsForTrack1(bool isRace)
 
         // Ship 2: slow in streight road, fast in corners
         i=2;
-        ii = i + (2*8);
-        g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(35+50);
-        g_objects3d[ii]->m_fxY = fix16_from_int(600+(2*50));
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[13];
-        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
-        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
-        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
-        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        //o3dIndex = i + (2*8);
+        o3dIndex++;
+
+        g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35+50);
+        g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600+(2*50));
+        g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[13];
+        g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
+        g_objects3d[o3dIndex]->m_bitmapH = *(g_objects3d[o3dIndex]->m_bitmap - 1);
+        g_objects3d[o3dIndex]->m_fxScaledWidth = g_objects3d[o3dIndex]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[o3dIndex]->m_fxScaledHeight = g_objects3d[o3dIndex]->m_bitmapH * fxScaledSizeFactor;
         g_ships[i] = &g_ShipObjectArray[i];
         g_ships[i]->m_fxVel = 0;
         g_ships[i]->m_fxAcc = fix16_from_float(0.200);
@@ -743,15 +748,17 @@ void InitGameObjectsForTrack1(bool isRace)
 
         // Ship 3: slow in streight road, fast in corners
         i=3;
-        ii = i + (2*8);
-        g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(35 + 50);
-        g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[1];
-        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
-        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
-        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
-        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        //o3dIndex = i + (2*8);
+        o3dIndex++;
+
+        g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35 + 50);
+        g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600+50);
+        g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[1];
+        g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
+        g_objects3d[o3dIndex]->m_bitmapH = *(g_objects3d[o3dIndex]->m_bitmap - 1);
+        g_objects3d[o3dIndex]->m_fxScaledWidth = g_objects3d[o3dIndex]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[o3dIndex]->m_fxScaledHeight = g_objects3d[o3dIndex]->m_bitmapH * fxScaledSizeFactor;
         g_ships[i] = &g_ShipObjectArray[i];
         g_ships[i]->m_fxVel = 0;
         g_ships[i]->m_fxAcc = fix16_from_float(0.200);
@@ -767,15 +774,17 @@ void InitGameObjectsForTrack1(bool isRace)
 
         // Ship 4: fast in streight road, slow in corners
         i=4;
-        ii = i + (2*8);
-        g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(35);
-        g_objects3d[ii]->m_fxY = fix16_from_int(600+50);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[9];
-        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
-        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
-        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
-        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        //o3dIndex = i + (2*8);
+        o3dIndex++;
+
+        g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35);
+        g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600+50);
+        g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[9];
+        g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
+        g_objects3d[o3dIndex]->m_bitmapH = *(g_objects3d[o3dIndex]->m_bitmap - 1);
+        g_objects3d[o3dIndex]->m_fxScaledWidth = g_objects3d[o3dIndex]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[o3dIndex]->m_fxScaledHeight = g_objects3d[o3dIndex]->m_bitmapH * fxScaledSizeFactor;
         g_ships[i] = &g_ShipObjectArray[i];
         g_ships[i]->m_fxVel = 0;
         g_ships[i]->m_fxAcc = fix16_from_float(0.200);
@@ -790,15 +799,17 @@ void InitGameObjectsForTrack1(bool isRace)
 
         // Ship 5: slow in streight road, fast in corners
         i=5;
-        ii = i + (2*8);
-        g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(35 + 50);
-        g_objects3d[ii]->m_fxY = fix16_from_int(600);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[20];
-        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
-        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
-        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
-        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        //o3dIndex = i + (2*8);
+        o3dIndex++;
+
+        g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35 + 50);
+        g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600);
+        g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[20];
+        g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
+        g_objects3d[o3dIndex]->m_bitmapH = *(g_objects3d[o3dIndex]->m_bitmap - 1);
+        g_objects3d[o3dIndex]->m_fxScaledWidth = g_objects3d[o3dIndex]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[o3dIndex]->m_fxScaledHeight = g_objects3d[o3dIndex]->m_bitmapH * fxScaledSizeFactor;
         g_ships[i] = &g_ShipObjectArray[i];
         g_ships[i]->m_fxVel = 0;
         g_ships[i]->m_fxAcc = fix16_from_float(0.200);
@@ -814,15 +825,17 @@ void InitGameObjectsForTrack1(bool isRace)
 
         // Ship 6: fast in streight road, slow in corners
         i=6;
-        ii = i + (2*8);
-        g_objects3d[ii] = &g_ShipObjectArray[i];
-        g_objects3d[ii]->m_fxX = fix16_from_int(35);
-        g_objects3d[ii]->m_fxY = fix16_from_int(600);
-        g_objects3d[ii]->m_bitmap = billboard_object_bitmaps[6];
-        g_objects3d[ii]->m_bitmapW = *(g_objects3d[ii]->m_bitmap - 2);
-        g_objects3d[ii]->m_bitmapH = *(g_objects3d[ii]->m_bitmap - 1);
-        g_objects3d[ii]->m_fxScaledWidth = g_objects3d[ii]->m_bitmapW * fxScaledSizeFactor;
-        g_objects3d[ii]->m_fxScaledHeight = g_objects3d[ii]->m_bitmapH * fxScaledSizeFactor;
+        //o3dIndex = i + (2*8);
+        o3dIndex++;
+
+        g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35);
+        g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600);
+        g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[6];
+        g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
+        g_objects3d[o3dIndex]->m_bitmapH = *(g_objects3d[o3dIndex]->m_bitmap - 1);
+        g_objects3d[o3dIndex]->m_fxScaledWidth = g_objects3d[o3dIndex]->m_bitmapW * fxScaledSizeFactor;
+        g_objects3d[o3dIndex]->m_fxScaledHeight = g_objects3d[o3dIndex]->m_bitmapH * fxScaledSizeFactor;
         g_ships[i] = &g_ShipObjectArray[i];
         g_ships[i]->m_fxVel = 0;
         g_ships[i]->m_fxAcc = fix16_from_float(0.200);
@@ -838,7 +851,7 @@ void InitGameObjectsForTrack1(bool isRace)
     }
 
    // Set the object count.
-    g_objects3dCount = ii + 1;
+    g_objects3dCount = o3dIndex + 1;
 
     // Setup draw list
     static_assert( g_objects3dMaxCount <= g_drawListMaxCount, "error");
