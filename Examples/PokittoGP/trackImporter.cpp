@@ -252,9 +252,9 @@ bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
         // Add a new waypoint
         waypoints[wp].x = x;
         waypoints[wp].y = y;
-        if( vel = 100 )
+        if( vel == 100 )
             waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeed;
-        else if( vel = 75 )
+        else if( vel == 75 )
             waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeedInCorner;
         else
             waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeedInSlowCorner;

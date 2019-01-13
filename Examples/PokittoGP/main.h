@@ -5,6 +5,8 @@
 #include "PokittoCookie.h"
 #include "animation.h"
 
+// #define TEST_SHOW_INFO_OF_SHIP_NUM 1
+
 class CShip;
 class CPlayerShip;
 

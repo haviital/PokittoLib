@@ -91,7 +91,7 @@ void CShip::Update()
         fxDirX = fix16_from_int(waypoints[m_activeWaypointIndex].x) - m_fxX;
         fxDirY = fix16_from_int(waypoints[m_activeWaypointIndex].y) - m_fxY;
 
-        fix16_t m_fxWaypointTargetSpeed = 0;
+        //fix16_t m_fxWaypointTargetSpeed = 0;
         switch(waypoints[m_activeWaypointIndex].fxTargetSpeed)
         {
         case fxDefaultOtherShipSpeed:
