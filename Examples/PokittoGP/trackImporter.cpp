@@ -589,7 +589,8 @@ void TrackImporter::ConvertAsciiToMapElements( char* myTrack2 )
                 break; // error
 
             // Check for billboard objects
-            if( i==19 || i==20)
+            if(false)
+            //if( i==19 || i==20)
             {
                 if( g_billboardObjectInRamCount <= g_BillboardObjectArrayMaxCount - 8 )
                 {

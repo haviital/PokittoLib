@@ -19,7 +19,7 @@ namespace TrackImporter
         '|',  // 0: The left edge.
         '!',  // 1: The right edge.
         ' ',  // 2: None.
-        ' ',  // 3: None
+        ':',  // 3: The vertical road centre.
         '=',  // 4: The top edge
         '-',  // 5: The bottom edge
         '\\', // 6: The outer corner of the 1st quarter.
@@ -35,8 +35,9 @@ namespace TrackImporter
         '*',  // 16: The starting grid, right side.
         'X',  // 17: The halfway mark, left side.
         'x',  // 18: The halfway mark, right side.
-        'C',  // 19: The cactus billboard.
-        'R',  // 20: The rock billboard.
+        '~',  // 19: The horizontal road centre.
+        'o',  // 19: The empty road centre.
+
     };
 
     // constants.
