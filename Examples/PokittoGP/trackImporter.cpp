@@ -140,12 +140,12 @@ bool TrackImporter::ReadAndValidateTrack(
         if(currentLineNum>=mapHeight )
         {
             // Too many lines
-            mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
-            mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
-            mygame.display.print(1, 50, "Too many");
-            mygame.display.print(1, 60, "lines!");
-            mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
-            return false;
+            //mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+            //mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+            //mygame.display.print(1, 50, "Too many");
+            //mygame.display.print(1, 60, "lines!");
+            //mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
+            //return false;
         }
 
         // If this is not the last char on the line, copy it to the map.
@@ -191,12 +191,12 @@ bool TrackImporter::ReadAndValidateTrack(
     if(currentPosInLine<mapWidth)
     {
         // Too short line
-        mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
-        mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
-        mygame.display.print(1, 50, "Line is too");
-        mygame.display.print(1, 60, "short!");
-        mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
-        return false;
+        //mygame.display.setColor(3,1);mygame.display.print(1, 30, trackDirName);
+        //mygame.display.print(1, 40, trackFileName);mygame.display.setColor(2,1);
+        //mygame.display.print(1, 50, "Line is too");
+        //mygame.display.print(1, 60, "short!");
+        //mygame.display.print(1, 70, "Line:");mygame.display.print(currentLineNum+3);
+        //return false;
     }
 }
 
@@ -233,9 +233,9 @@ bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
 
     // "[waypoints]"
     bufPtr = strchr( bufPtr, ']'); bufPtr++;
-    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn); bufPtr++); // Skip extra LF and CR chars
+    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==' '); bufPtr++); // Skip extra space, LF and CR chars
     int32_t wp = 0;
-    while( bufPtr < endPtr && wp < waypointMaxCount)
+    while( ( bufPtr < endPtr ) && ( wp < waypointMaxCount ) && ( *bufPtr != '[' ) )
     {
         // Read waypoint data
         int32_t x;
@@ -263,6 +263,51 @@ bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
     }
     waypointCount = wp;
 
+    // "[billboards]"
+    bufPtr = strchr( bufPtr, ']'); bufPtr++;
+    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==' '); bufPtr++); // Skip extra space, LF and CR chars
+    int32_t bbIndex = 0;
+    while( ( bufPtr < endPtr ) && ( bbIndex <= g_BillboardObjectArrayMaxCount - 8 ) && ( *bufPtr != '[' ) )
+    {
+        // Read billboard data
+        int32_t id;
+        int32_t x;
+        int32_t y;
+        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ id );
+        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ x );
+        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ y );
+
+        // Add a new billboard
+
+        // "Cactus" or "Rock"
+        const fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
+        const uint8_t* cactus_bm = billboard_object_bitmaps[25];
+        const fix16_t fxStoneScaledSizeFactor = fix16_from_float(1.0);
+        const uint8_t* stone_bm = billboard_object_bitmaps[26];
+        uint8_t* sprite_bm = (uint8_t*)cactus_bm;
+        fix16_t fxSpriteScaledSizeFactor = fxCactusScaledSizeFactor;
+        if( id==1 ) // stone
+        {
+            sprite_bm = (uint8_t*)stone_bm;
+            fxSpriteScaledSizeFactor = fxStoneScaledSizeFactor;
+        }
+        const int16_t spriteBmW  = *(sprite_bm - 2);
+        const int16_t spriteBmH  = *(sprite_bm - 1);
+
+        // Init a billboard object.
+        g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int( x );
+        g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int( y );
+        g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
+        g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
+        g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
+        g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+        g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+
+        bbIndex++;
+    }
+
+    g_billboardObjectInRamCount = bbIndex;
+
     fileClose(); // close any open files
 
     return true;
@@ -282,16 +327,16 @@ char* TrackImporter::ReadValue( char* bufPtr, char* endPtr, /*OUT*/ int32_t& val
     if( newBufPtr2!=NULL && newBufPtr2 < newBufPtr) newBufPtr = newBufPtr2;
 
     // if found, convert to integer.
-    if(!newBufPtr || newBufPtr-bufPtr >= 8) return NULL;
+    if(!newBufPtr || newBufPtr-bufPtr >= 8) return endPtr;
     char valueAsStr[8];
     int32_t strsize = newBufPtr-bufPtr;
     strncpy( valueAsStr, bufPtr, strsize );
     valueAsStr[ strsize ] = 0;
     value = atoi( valueAsStr );
 
-    // Skip trailing comma, LF and CR chars
+    // Skip trailing comma, space, LF and CR chars
     bufPtr += strsize;
-    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==','); bufPtr++);
+    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==',' || *bufPtr==' '); bufPtr++);
 
     return bufPtr;
 }
