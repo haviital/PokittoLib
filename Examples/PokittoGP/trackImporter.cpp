@@ -206,6 +206,7 @@ bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
     const int32_t blockSize = 1024;
     char buffer[blockSize+1] = {0};
     char filePathAndName[128] = {0};
+    char lineBuffer[32] = {0};
     strcpy(filePathAndName, trackPath);
     #ifndef POK_SIM
     strcat(filePathAndName, "/");
@@ -214,6 +215,7 @@ bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
     strcat(filePathAndName, "/");
     char* trackFileName = "objects.txt";
     strcat(filePathAndName, trackFileName);
+
     uint8_t err = fileOpen(filePathAndName, FILE_MODE_READONLY);
     if(err)
     {
@@ -224,93 +226,153 @@ bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
         fileClose(); // close any open files
         return false;
     }
-    uint16_t len = fileReadBytes((uint8_t*)buffer, blockSize);
-    buffer[len] = 0; // ending null
-    char* bufPtr = buffer;
-    char* endPtr = buffer + len;
 
-    // read waypoints
+    uint16_t len = blockSize;
+    char* bufPtr = NULL;
+    char* endPtr = NULL;
+    bool isBufferLeft = false;
+    FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
 
-    // "[waypoints]"
-    bufPtr = strchr( bufPtr, ']'); bufPtr++;
-    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==' '); bufPtr++); // Skip extra space, LF and CR chars
-    int32_t wp = 0;
-    while( ( bufPtr < endPtr ) && ( wp < waypointMaxCount ) && ( *bufPtr != '[' ) )
+    // *** "[waypoints]"
+    char* foundPtr = strstr( bufPtr, "waypoints]" );
+    if( foundPtr != NULL )
     {
-        // Read waypoint data
-        int32_t x;
-        int32_t y;
-        int32_t radius;
-        int32_t vel;
-        int32_t checkpoint;
-        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ x );
-        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ y );
-        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ radius );
-        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ vel );
-        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ checkpoint );
+       bufPtr =  foundPtr + strlen("waypoints]");
 
-        // Add a new waypoint
-        waypoints[wp].x = x;
-        waypoints[wp].y = y;
-        if( vel == 100 )
-            waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeed;
-        else if( vel == 75 )
-            waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeedInCorner;
-        else
-            waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeedInSlowCorner;
-
-        wp++;
-    }
-    waypointCount = wp;
-
-    // "[billboards]"
-    bufPtr = strchr( bufPtr, ']'); bufPtr++;
-    for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==' '); bufPtr++); // Skip extra space, LF and CR chars
-    int32_t bbIndex = 0;
-    while( ( bufPtr < endPtr ) && ( bbIndex <= g_BillboardObjectArrayMaxCount - 8 ) && ( *bufPtr != '[' ) )
-    {
-        // Read billboard data
-        int32_t id;
-        int32_t x;
-        int32_t y;
-        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ id );
-        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ x );
-        bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ y );
-
-        // Add a new billboard
-
-        // "Cactus" or "Rock"
-        const fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
-        const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-        const fix16_t fxStoneScaledSizeFactor = fix16_from_float(1.0);
-        const uint8_t* stone_bm = billboard_object_bitmaps[26];
-        uint8_t* sprite_bm = (uint8_t*)cactus_bm;
-        fix16_t fxSpriteScaledSizeFactor = fxCactusScaledSizeFactor;
-        if( id==1 ) // stone
+        for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==' '); bufPtr++); // Skip extra space, LF and CR chars
+        int32_t wp = 0;
+        while( ( wp < waypointMaxCount ) && ( *bufPtr != '[' ) )
         {
-            sprite_bm = (uint8_t*)stone_bm;
-            fxSpriteScaledSizeFactor = fxStoneScaledSizeFactor;
+            // Check if we can read more of the buffer.
+            if( bufPtr >= endPtr && isBufferLeft )
+                FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
+
+            // Exit if in the end of the buffer.
+            if( bufPtr >= endPtr)
+                break;
+
+            // Read waypoint data
+            int32_t x;
+            int32_t y;
+            int32_t radius;
+            int32_t vel;
+            int32_t checkpoint;
+            bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ x );
+            bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ y );
+            bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ radius );
+            bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ vel );
+            bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ checkpoint );
+
+            // Add a new waypoint
+            waypoints[wp].x = x;
+            waypoints[wp].y = y;
+            if( vel == 100 )
+                waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeed;
+            else if( vel == 75 )
+                waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeedInCorner;
+            else
+                waypoints[wp].fxTargetSpeed = fxDefaultOtherShipSpeedInSlowCorner;
+
+            wp++;
         }
-        const int16_t spriteBmW  = *(sprite_bm - 2);
-        const int16_t spriteBmH  = *(sprite_bm - 1);
-
-        // Init a billboard object.
-        g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int( x );
-        g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int( y );
-        g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
-        g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
-        g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
-        g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-        g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-
-        bbIndex++;
+        waypointCount = wp;
     }
 
-    g_billboardObjectInRamCount = bbIndex;
+    // Check if we can read more of the buffer.
+    if( bufPtr >= endPtr && isBufferLeft )
+        FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
+
+    // *** "[billboards]"
+    foundPtr = strstr( bufPtr, "billboards]" );
+    if( foundPtr != NULL )
+    {
+        bufPtr =  foundPtr + strlen("billboards]");
+        for(; bufPtr < endPtr && (*bufPtr==lineFeed || *bufPtr==carriageReturn || *bufPtr==' '); bufPtr++); // Skip extra space, LF and CR chars
+        int32_t bbIndex = 0;
+        while( ( bbIndex <= g_BillboardObjectArrayMaxCount - 8 ) && ( *bufPtr != '[' ) )
+        {
+            // Check if we can read more of the buffer.
+            if( bufPtr >= endPtr && isBufferLeft )
+                FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
+
+            // Exit if in the end of the buffer.
+            if( bufPtr >= endPtr)
+                break;
+
+            // Read billboard data
+            int32_t id;
+            int32_t x;
+            int32_t y;
+            bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ id );
+            bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ x );
+            bufPtr = ReadValue( bufPtr, endPtr, /*OUT*/ y );
+
+            // Add a new billboard
+
+            // "Cactus" or "Rock"
+            const fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
+            const uint8_t* cactus_bm = billboard_object_bitmaps[25];
+            const fix16_t fxStoneScaledSizeFactor = fix16_from_float(1.0);
+            const uint8_t* stone_bm = billboard_object_bitmaps[26];
+            uint8_t* sprite_bm = (uint8_t*)cactus_bm;
+            fix16_t fxSpriteScaledSizeFactor = fxCactusScaledSizeFactor;
+            if( id==1 ) // stone
+            {
+                sprite_bm = (uint8_t*)stone_bm;
+                fxSpriteScaledSizeFactor = fxStoneScaledSizeFactor;
+            }
+            const int16_t spriteBmW  = *(sprite_bm - 2);
+            const int16_t spriteBmH  = *(sprite_bm - 1);
+
+            // Init a billboard object.
+            g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int( x );
+            g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int( y );
+            g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
+            g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
+            g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
+            g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+            g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+
+            bbIndex++;
+        }
+
+        g_billboardObjectInRamCount = bbIndex;
+    }
 
     fileClose(); // close any open files
-
     return true;
+}
+
+void TrackImporter::FillBuffer( char* buffer, int32_t blockSize,
+    /*OUT*/ uint16_t& len, /*OUT*/char** bufPtr,/*OUT*/char** endPtr, /*OUT*/bool& isBufferLeft )
+{
+    // First, copy the rest of the previous buffer to the beginning.
+    int32_t remainingBufferLen = blockSize - len;
+    if( remainingBufferLen > 0 )
+        memcpy( buffer, buffer+len , remainingBufferLen);
+
+    // Read the next block
+    char* tmpPtr = buffer+remainingBufferLen;
+    int32_t newLen = fileReadBytes((uint8_t*)tmpPtr, len);
+    len = newLen + remainingBufferLen;  // total lenght
+
+    // Check if the file is maximum lenght and cut it from the 'LF'
+    *bufPtr = buffer;
+    *endPtr = buffer + len;
+    isBufferLeft = false;
+    if(len == blockSize && buffer[len-1]!=lineFeed)
+    {
+        // Find previous LF
+        char* ptr = *endPtr - 1;
+        for(; ptr > *bufPtr && *ptr!=lineFeed; ptr--); // Go back to the nearest linefeed
+        uint16_t len2 = *endPtr - ptr;
+        len -= len2;
+        *endPtr = buffer + len;
+        isBufferLeft = true;
+    }
+
+     // Skip extra space, LF and CR chars
+    for(; *bufPtr < *endPtr && (**bufPtr==lineFeed || **bufPtr==carriageReturn || **bufPtr==' '); (*bufPtr)++);
 }
 
 char* TrackImporter::ReadValue( char* bufPtr, char* endPtr, /*OUT*/ int32_t& value )

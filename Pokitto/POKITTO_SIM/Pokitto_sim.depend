@@ -5031,7 +5031,7 @@
 	"PokittoCookie.h"
 	"Synth.h"
 
-1546351786 source:c:\git\pokittolib2\examples\pokittogp\gfxdraw.cpp
+1547999909 source:c:\git\pokittolib2\examples\pokittogp\gfxdraw.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -5452,13 +5452,13 @@
 	"fix16.h"
 	"ship.h"
 
-1547676115 source:c:\git\pokittolib2\examples\pokittogp\trackimporter.cpp
+1548187304 source:c:\git\pokittolib2\examples\pokittogp\trackimporter.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
 	"trackImporter.h"
 	"imageformat.h"
 
-1547504862 c:\git\pokittolib2\examples\pokittogp\trackimporter.h
+1548103100 c:\git\pokittolib2\examples\pokittogp\trackimporter.h
 	"main.h"
 

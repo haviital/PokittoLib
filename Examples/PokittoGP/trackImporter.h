@@ -51,6 +51,9 @@ namespace TrackImporter
     // Read the track objects ascii file from SD
     bool ReadTrackObjects( char* trackPath, char* trackDirName );
 
+    void FillBuffer( char* buffer, int32_t blockSize,
+        /*OUT*/ uint16_t& len, /*OUT*/char** bufPtr,/*OUT*/char** endPtr, /*OUT*/bool& isBufferLeft );
+
     char* ReadValue( char* bufPtr, char* endPtr, /*OUT*/ int32_t& value );
 
     bool ReadAndValidateTextures(char* trackDirPath, char* trackDirName);

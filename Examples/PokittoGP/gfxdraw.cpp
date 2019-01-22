@@ -216,6 +216,117 @@ void DrawBitmapOpaque8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
     }
 }
 
+// Draw the horizontal opaquae tiles. The tile bitmap must be 256 color. Width must be power-of-two (POT).
+// TODO: top-y-clipping
+void DrawTiledBitmapOpaque256ColorPOT(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, const uint32_t bitmapW_POT, uint32_t bitmapH, uint32_t targetW )
+{
+    // Sanity check
+
+    if(posX >= screenW ||
+       posY >= screenH || posY < 0    // y-clipping  from top not implemented yet. Preventing overflow.
+    )
+        return;
+
+    uint8_t* scrptr = mygame.display.getBuffer(); // 8-bit screen buffer
+
+    // Screen coordinates, x,y. Bitmap coordinates: u, v
+
+    uint32_t finalV = 0;
+
+    // clip
+
+    uint8_t clippedStartU = 0;
+    uint8_t clippedStartV = 0;
+    uint8_t clippedWidth = targetW;
+    uint8_t clippedHeight = bitmapH;
+    if(posX < 0) {
+        clippedStartU = -posX;
+        clippedWidth = targetW + posX;
+    }
+    else
+        scrptr += posX;  // Bitmap starting position on screen
+
+    if(posX+targetW > screenW) {
+        clippedWidth -=  posX + targetW - screenW;
+    }
+
+     if(posY+bitmapH > screenH) {
+        clippedHeight -=  posY + bitmapH - screenH;
+    }
+
+   // Draw
+    for( uint32_t y=posY; y<clippedHeight+posY ; y++ ) {
+
+        uint8_t* screenScanlinePtr = scrptr + (y * mygame.display.width);
+        const uint8_t* bitmapScanlinePtr = bitmapPtr + (finalV*bitmapW_POT); //advance pointer
+        uint32_t finalU = clippedStartU;
+
+        // *** Draw one pixel row.
+        //uint32_t x = 0;
+        uint8_t color = 0;
+
+        // ** Draw the first pixels (1-7 pixels).
+        uint32_t srcTileOffset = finalU & (bitmapW_POT-1);
+        uint32_t firstBlitWidth = clippedWidth & 0x7;
+        uint32_t xindex = 0;
+        while( xindex < firstBlitWidth ) {
+
+            // Draw pixel.
+            uint8_t color = *(bitmapScanlinePtr +  xindex++);
+            *screenScanlinePtr++ = color;
+
+        }  // end while
+        finalU += firstBlitWidth;
+
+
+        // *** Draw middle pixels
+        while(clippedStartU + clippedWidth - finalU >= 8)
+        {
+            // Calc the offset inside tile
+            srcTileOffset = srcTileOffset & (bitmapW_POT-1);
+
+            // Draw 8 pixels, unrolled.
+            color = *(bitmapScanlinePtr + srcTileOffset++);
+            *screenScanlinePtr++ = color;
+            color = *(bitmapScanlinePtr + srcTileOffset++);
+            *screenScanlinePtr++ = color;
+            color = *(bitmapScanlinePtr + srcTileOffset++);
+            *screenScanlinePtr++ = color;
+            color = *(bitmapScanlinePtr + srcTileOffset++);
+            *screenScanlinePtr++ = color;
+            color = *(bitmapScanlinePtr + srcTileOffset++);
+            *screenScanlinePtr++ = color;
+            color = *(bitmapScanlinePtr + srcTileOffset++);
+            *screenScanlinePtr++ = color;
+            color = *(bitmapScanlinePtr + srcTileOffset++);
+            *screenScanlinePtr++ = color;
+            color = *(bitmapScanlinePtr + srcTileOffset++);
+            *screenScanlinePtr++ = color;
+
+            // Increment tile offset
+            finalU += 8;
+
+        }  // end while
+
+        // Calc the offset inside tile
+        srcTileOffset = srcTileOffset & (bitmapW_POT-1);
+
+        // ** Draw the rest of the pixels (1-7 pixels).
+        uint32_t lastBlitWidth = clippedStartU + clippedWidth - finalU;
+        xindex = 0;
+        while( xindex < lastBlitWidth ) {
+
+            // Draw pixel.
+            uint8_t color = *(bitmapScanlinePtr + xindex++);
+            *screenScanlinePtr++ = color;
+
+        }  // end while
+
+        finalV++;
+
+   }  // end for
+}
+
 // Draw the bitmap.
 // TODO: top-y-clipping
 void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH )
