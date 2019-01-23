@@ -49,7 +49,7 @@ int32_t textureMode = 1;
 uint8_t* blockMapRAM = NULL;
 
 // Initially, point to the map in ROM.
-uint8_t* blockMap = (uint8_t*)blockMapROM;
+uint8_t* blockMap = NULL;
 int32_t g_billboardObjectInRamCount = 0;
 
 
@@ -154,6 +154,10 @@ int main () {
         char myTrack2[TrackImporter::mapTotalSizeinFile] = {0};
         bool isTrackOk = TrackImporter::ReadFromROMAndValidateTrack(
             /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
+
+        // Restore ROM textures.
+        RestoreRomTextures();
+
         // Convert ascii map to element indices.
         TrackImporter::ConvertAsciiToMapElements( myTrack2 );
 
@@ -644,7 +648,7 @@ void InitGameObjectsForTrack1(bool isRace)
         int32_t i=0;
         //ii = i + (2*8);
         int32_t shipIndex = 0;
-        o3dIndex++;
+        //o3dIndex++;
 
         g_objects3d[o3dIndex] = &g_playerShip;
         g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[0];
