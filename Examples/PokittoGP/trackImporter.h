@@ -44,8 +44,12 @@ namespace TrackImporter
     const int32_t maxTrackOrAuthorNameLen = 13;
     const int32_t mapTotalSizeinFile = (mapWidth+1)*mapHeight; // added newline
 
-    bool ReadAndValidateTrack(
+    bool ReadFromFileAndValidateTrack(
         char* trackPath, char* trackFileName,
+        /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName );
+    bool ReadFromROMAndValidateTrack(
+        /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName );
+    bool ReadAndValidateTrack( char* myTrack1, uint16_t len, char* trackDirName, char* trackFileName,
         /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName );
 
     bool ReadTrackObjectsFromROM();

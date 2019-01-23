@@ -146,8 +146,23 @@ int main () {
     uint32_t noteIndex = 0;
     int notenumber = 50;
 
-    // Read ROM track objects.
-    (void)TrackImporter::ReadTrackObjectsFromROM();
+    // Read ROM track and objects.
+    {
+        // Read and verify track
+        char trackName[TrackImporter::maxTrackOrAuthorNameLen+2] = "Pokitto";
+        char authorName[TrackImporter::maxTrackOrAuthorNameLen+2] = "Hanski";
+        char myTrack2[TrackImporter::mapTotalSizeinFile] = {0};
+        bool isTrackOk = TrackImporter::ReadFromROMAndValidateTrack(
+            /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
+        // Convert ascii map to element indices.
+        TrackImporter::ConvertAsciiToMapElements( myTrack2 );
+
+        // Now point to the map in RAM.
+        blockMap = blockMapRAM;
+
+        // Read track objects.
+        (void)TrackImporter::ReadTrackObjectsFromROM();
+    }
 
     // *** The game loop
     while (mygame.isRunning()) {

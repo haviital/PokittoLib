@@ -97,7 +97,6 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
 
                     int32_t menuItemNum = 0;
-                    //if(m_trackNum == 0)
                     if(m_cursorPos == 0)
                     {
                         // time trial
@@ -609,8 +608,19 @@ bool CMenu::HandleSelectTrackMenu()
         if(m_trackNum != 0)
         {
              // Read and verify track
-            m_isTrackOk = TrackImporter::ReadAndValidateTrack(
+            m_isTrackOk = TrackImporter::ReadFromFileAndValidateTrack(
                 tracksDirName, m_dirNameArr[m_trackNum-1],
+                /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
+
+            // TODO: reset all textures to ROM textures
+            // Read and verify textures
+            // if( m_isTrackOk )
+            //    m_isTrackOk = TrackImporter::ReadAndValidateTextures(tracksDirName, m_dirNameArr[m_trackNum-1]);
+        }
+        else
+        {
+             // Read and verify track
+            m_isTrackOk = TrackImporter::ReadFromROMAndValidateTrack(
                 /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
 
             // TODO: reset all textures to ROM textures
@@ -629,12 +639,12 @@ bool CMenu::HandleSelectTrackMenu()
             RestoreRomTextures();
 
             // Store the map.
-            if(m_trackNum == 0)
-            {
-                // Now point to the map in ROM.
-                blockMap = (uint8_t*)blockMapROM;
-            }
-            else
+            //if(m_trackNum == 0)
+            //{
+            //    // Now point to the map in ROM.
+            //    blockMap = (uint8_t*)blockMapROM;
+            //}
+            //else
             {
                 // Convert ascii map to element indices.
                 TrackImporter::ConvertAsciiToMapElements( myTrack2 );

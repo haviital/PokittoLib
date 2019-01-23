@@ -5066,7 +5066,7 @@
 1546371845 c:\git\pokittolib2\examples\pokittogp\menu.h
 	"fix16.h"
 
-1548273325 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
+1548276380 source:c:\git\pokittolib2\examples\pokittogp\main.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
@@ -5341,7 +5341,7 @@
 1546212296 c:\git\pokittolib2\examples\pokittogp\gfx_hdr\image_spot.h
 	<stdint.h>
 
-1548273271 source:c:\git\pokittolib2\examples\pokittogp\menu.cpp
+1548275701 source:c:\git\pokittolib2\examples\pokittogp\menu.cpp
 	"Pokitto.h"
 	"main.h"
 	"menu.h"
@@ -5453,16 +5453,19 @@
 	"fix16.h"
 	"ship.h"
 
-1548273950 source:c:\git\pokittolib2\examples\pokittogp\trackimporter.cpp
+1548277019 source:c:\git\pokittolib2\examples\pokittogp\trackimporter.cpp
 	"Pokitto.h"
 	"fix16.h"
 	"main.h"
 	"trackImporter.h"
 	"imageformat.h"
 	"objects_txt.h"
+	"track_txt.h"
 
-1548273372 c:\git\pokittolib2\examples\pokittogp\trackimporter.h
+1548275272 c:\git\pokittolib2\examples\pokittogp\trackimporter.h
 	"main.h"
 
 1548272439 c:\git\pokittolib2\examples\pokittogp\objects_txt.h
+
+1548275120 c:\git\pokittolib2\examples\pokittogp\track_txt.h
 

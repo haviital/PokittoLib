@@ -4,12 +4,11 @@
 #include "trackImporter.h"
 #include "imageformat.h"
 #include "objects_txt.h"
+#include "track_txt.h"
 
 const char lineFeed = 10, carriageReturn=13;
 
-//
-//
-bool TrackImporter::ReadAndValidateTrack(
+bool TrackImporter::ReadFromFileAndValidateTrack(
     char* trackPath, char* trackDirName,
     /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName )
 {
@@ -43,6 +42,29 @@ bool TrackImporter::ReadAndValidateTrack(
     uint16_t len = fileReadBytes((uint8_t*)myTrack1, mapTotalSizeinFile*2);
     fileClose(); // close any open files
 
+    // Read and validate the track.
+    return ReadAndValidateTrack( myTrack1, len, trackDirName, trackFileName, /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
+}
+
+bool TrackImporter::ReadFromROMAndValidateTrack(
+    /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName )
+{
+    // Clear screen
+    mygame.display.setColor(1,1);
+    mygame.display.fillRect(0, 0, screenW, screenH);
+    mygame.display.setColor(2,1);
+
+    // Read the track ascii file from SD
+    char myTrack1[mapTotalSizeinFile*2] = {0};
+
+    // Read and validate the track.
+    return ReadAndValidateTrack( (char*)track_txt, strlen(track_txt), "rom", "rom", /*OUT*/myTrack2, /*OUT*/trackName, /*OUT*/authorName );
+}
+//
+////
+bool TrackImporter::ReadAndValidateTrack( char* myTrack1, uint16_t len, char* trackDirName, char* trackFileName,
+    /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName )
+{
     // If a file contains only the decimal bytes 9–13, 32–126, it's probably a pure ASCII text file.
     for(int32_t i=0; i<len; i++)
     {
@@ -56,8 +78,11 @@ bool TrackImporter::ReadAndValidateTrack(
         }
     }
 
-    // Read the track name
+    // Skip extra LF and CR chars
     int32_t pos = 0;
+    for(;myTrack1[pos]==lineFeed || myTrack1[pos]==carriageReturn;pos++);
+
+    // Read the track name
     int32_t i=0;
     for(;myTrack1[pos]!=lineFeed && myTrack1[pos]!=carriageReturn && i<=maxTrackOrAuthorNameLen;pos++, i++)
         trackName[i] = myTrack1[pos];
