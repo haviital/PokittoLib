@@ -768,12 +768,17 @@ bool CMenu::HandleSelectTrackMenu()
                 mygame.display.print(1, 40, "graphics...");
                 while (!mygame.update()); // draw now
 
-                // Read waypoints
-                bool ok = TrackImporter::ReadTrackObjects( tracksDirName, m_dirNameArr[m_trackNum-1] );
+                // Read waypoints and objects
+                bool ok = TrackImporter::ReadTrackObjectsFromFile( tracksDirName, m_dirNameArr[m_trackNum-1] );
 
                 // Read textures.
                 (void)TrackImporter::ReadAndValidateTextures( tracksDirName, m_dirNameArr[m_trackNum-1] );
             }
+            else
+            {
+                (void)TrackImporter::ReadTrackObjectsFromROM();
+            }
+
             return false; // Close the view
         }
         else

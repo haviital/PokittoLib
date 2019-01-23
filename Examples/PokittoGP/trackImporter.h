@@ -48,8 +48,10 @@ namespace TrackImporter
         char* trackPath, char* trackFileName,
         /*OUT*/char* myTrack2, /*OUT*/char* trackName, /*OUT*/char* authorName );
 
+    bool ReadTrackObjectsFromROM();
     // Read the track objects ascii file from SD
-    bool ReadTrackObjects( char* trackPath, char* trackDirName );
+    bool ReadTrackObjectsFromFile( char* trackPath, char* trackDirName );
+    bool ReadTrackObjects( char* buffer, int32_t blockSize, bool readFromFile );
 
     void FillBuffer( char* buffer, int32_t blockSize,
         /*OUT*/ uint16_t& len, /*OUT*/char** bufPtr,/*OUT*/char** endPtr, /*OUT*/bool& isBufferLeft );

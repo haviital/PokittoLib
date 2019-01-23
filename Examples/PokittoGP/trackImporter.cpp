@@ -239,7 +239,7 @@ bool TrackImporter::ReadTrackObjectsFromFile( char* trackPath, char* trackDirNam
 bool TrackImporter::ReadTrackObjectsFromROM()
 {
     // Read objects
-    bool retval = ReadTrackObjects( objects_txt, strlen(objects_txt) );
+    bool retval = ReadTrackObjects( (char*)objects_txt, strlen(objects_txt), false );
 
     fileClose(); // close any open files
 
@@ -247,14 +247,14 @@ bool TrackImporter::ReadTrackObjectsFromROM()
 }
 
 // Read the track objects ascii file from SD
-bool TrackImporter::ReadTrackObjects( char buffer, int32_t blockSize, bool readFromFile )
+bool TrackImporter::ReadTrackObjects( char* buffer, int32_t blockSize, bool readFromFile )
 {
 
     uint16_t len = blockSize;
-    char* bufPtr = NULL;
-    char* endPtr = NULL;
+    char* bufPtr = buffer ; //NULL;
+    char* endPtr = buffer + len;
     bool isBufferLeft = false;
-    FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
+    if(readFromFile) FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
 
     // *** "[waypoints]"
     char* foundPtr = strstr( bufPtr, "waypoints]" );
@@ -267,7 +267,7 @@ bool TrackImporter::ReadTrackObjects( char buffer, int32_t blockSize, bool readF
         while( ( wp < waypointMaxCount ) && ( *bufPtr != '[' ) )
         {
             // Check if we can read more of the buffer.
-            if( bufPtr >= endPtr && isBufferLeft )
+            if( bufPtr >= endPtr && isBufferLeft && readFromFile )
                 FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
 
             // Exit if in the end of the buffer.
@@ -302,7 +302,7 @@ bool TrackImporter::ReadTrackObjects( char buffer, int32_t blockSize, bool readF
     }
 
     // Check if we can read more of the buffer.
-    if( bufPtr >= endPtr && isBufferLeft )
+    if( bufPtr >= endPtr && isBufferLeft && readFromFile )
         FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
 
     // *** "[billboards]"
@@ -315,7 +315,7 @@ bool TrackImporter::ReadTrackObjects( char buffer, int32_t blockSize, bool readF
         while( ( bbIndex <= g_BillboardObjectArrayMaxCount - 8 ) && ( *bufPtr != '[' ) )
         {
             // Check if we can read more of the buffer.
-            if( bufPtr >= endPtr && isBufferLeft )
+            if( bufPtr >= endPtr && isBufferLeft && readFromFile)
                 FillBuffer( buffer, blockSize, /*OUT*/len, /*OUT*/&bufPtr,/*OUT*/&endPtr, /*OUT*/isBufferLeft );
 
             // Exit if in the end of the buffer.

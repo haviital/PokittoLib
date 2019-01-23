@@ -5,6 +5,7 @@
 #include "ship.h"
 #include "playerShip.h"
 #include "menu.h"
+#include "TrackImporter.h"
 
 
 Pokitto::Core mygame;
@@ -142,9 +143,11 @@ int main () {
     // Initialize the music player
     InitMusicPlayer();
     snd.ampEnable(1);
-
     uint32_t noteIndex = 0;
     int notenumber = 50;
+
+    // Read ROM track objects.
+    (void)TrackImporter::ReadTrackObjectsFromROM();
 
     // *** The game loop
     while (mygame.isRunning()) {

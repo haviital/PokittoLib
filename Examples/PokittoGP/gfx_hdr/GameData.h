@@ -527,37 +527,8 @@ const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
 const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
 const uint8_t* current_texture_bitmaps_mm2[current_texture_bitmaps_count] = {0};
 
-//
-const uint32_t waypointCountROM = 22;
-const CWaypoint waypointsROM[ waypointCountROM ] =
-{
-{104,1442,128,fxDefaultOtherShipSpeed,1},
-{324,1610,128,fxDefaultOtherShipSpeed,1},
-{578,1612,128,fxDefaultOtherShipSpeed,1},
-{868,1884,128,fxDefaultOtherShipSpeed,1},
-{1132,1894,128,fxDefaultOtherShipSpeed,1},
-{1378,1706,128,fxDefaultOtherShipSpeed,1},
-{1760,1698,128,fxDefaultOtherShipSpeed,1},
-{1882,1570,128,fxDefaultOtherShipSpeed,1},
-{1888,1330,128,fxDefaultOtherShipSpeed,1},
-{1764,1248,128,fxDefaultOtherShipSpeed,1},
-{1420,1246,128,fxDefaultOtherShipSpeed,1},
-{1326,1190,128,fxDefaultOtherShipSpeed,1},
-{1022,1182,128,fxDefaultOtherShipSpeed,1},
-{932,1118,128,fxDefaultOtherShipSpeed,1},
-{500,1122,128,fxDefaultOtherShipSpeed,1},
-{500,944,128,fxDefaultOtherShipSpeed,1},
-{710,926,128,fxDefaultOtherShipSpeed,1},
-{914,732,128,fxDefaultOtherShipSpeed,1},
-{924,266,128,fxDefaultOtherShipSpeed,1},
-{768,90,128,fxDefaultOtherShipSpeed,1},
-{198,96,128,fxDefaultOtherShipSpeed,1},
-{86,276,128,fxDefaultOtherShipSpeed,1},
-{84,582,128,fxDefaultOtherShipSpeed,1},
-{90,962,128,fxDefaultOtherShipSpeed,1},
-};
-
 // Billboard objects on track
+// voiko nämä poistaa?
 const fix16_t fxShipScaledSizeFactor = fix16_from_float(0.65);
 const fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
 const uint8_t* cactus_bm = billboard_object_bitmaps[25];
@@ -575,66 +546,3 @@ const int16_t shipBmW  = *(ship_bm - 2);
 const int16_t shipBmH  = *(ship_bm - 1);
 const fix16_t fxShipScaledW  = shipBmW * fxShipScaledSizeFactor;
 const fix16_t fxShipScaledH  = shipBmH * fxShipScaledSizeFactor;
-
-const Object3dInitDataRom g_timeTrialBilboardObjectsInRom_track1[3*8] =
-{
-{0,144,1350},
-{0,120,1350},
-{0,40,1352},
-{0,70,1352},
-{0,328,1570},
-{0,360,1570},
-{0,392,1570},
-{0,424,1568},
-
-{0,454,1566},
-{0,486,1566},
-{0,516,1568},
-{0,548,1568},
-{0,580,1568},
-{0,298,1570},
-{0,610,1570},
-{0,640,1570},
-
-{254, 42, 1290},
-{254, 1320, 1975},
-{254, 1960, 1479},
-{254, 1922, 430},
-{254, 1922, 430},
-{254, 1012, -190},
-{254, 554, 412},
-{254, 236, 598},
-};
-
-#if 0
-    // Cactuses
-    {fix16_from_int(3), fix16_from_int(632), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
-    {fix16_from_int(243), fix16_from_int(1465), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
-    {fix16_from_int(706), fix16_from_int(1425), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
-    {fix16_from_int(667), fix16_from_int(2024), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
-    {fix16_from_int(1174), fix16_from_int(1844), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
-    {fix16_from_int(2050), fix16_from_int(1851), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
-    {fix16_from_int(1922), fix16_from_int(1130), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
-    {fix16_from_int(1986), fix16_from_int(35), fxCactusScaledW, fxCactusScaledH, cactus_bm, cactusBmW, cactusBmH},
-
-    // Stones
-    {fix16_from_int(131), fix16_from_int(632), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
-    {fix16_from_int(582), fix16_from_int(1469), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
-    {fix16_from_int(953), fix16_from_int(2042), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
-    {fix16_from_int(1839), fix16_from_int(1920), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
-    {fix16_from_int(521), fix16_from_int(127), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
-    {fix16_from_int(581), fix16_from_int(505), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
-    {fix16_from_int(333), fix16_from_int(634), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
-    {fix16_from_int(6), fix16_from_int(1220), fxStoneScaledW, fxStoneScaledH, stone_bm, stoneBmW, stoneBmH},
-
-    // Set static cars on track.
-    {fix16_from_int(42), fix16_from_int(1290), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
-    {fix16_from_int(1320), fix16_from_int(1975), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
-    {fix16_from_int(1960), fix16_from_int(1479), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
-    {fix16_from_int(1922), fix16_from_int(430), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
-    {fix16_from_int(1922), fix16_from_int(430), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
-    {fix16_from_int(1012), fix16_from_int(-190), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
-    {fix16_from_int(554), fix16_from_int(412), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
-    {fix16_from_int(236), fix16_from_int(598), fxShipScaledW, fxShipScaledH, ship_bm, shipBmW, shipBmH},
-#endif
-
