@@ -3,6 +3,7 @@
 #include "main.h"
 #include "trackImporter.h"
 #include "imageformat.h"
+#include "objects_txt.h"
 
 const char lineFeed = 10, carriageReturn=13;
 
@@ -201,12 +202,11 @@ bool TrackImporter::ReadAndValidateTrack(
 }
 
 // Read the track objects ascii file from SD
-bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
+bool TrackImporter::ReadTrackObjectsFromFile( char* trackPath, char* trackDirName )
 {
     const int32_t blockSize = 1024;
     char buffer[blockSize+1] = {0};
     char filePathAndName[128] = {0};
-    char lineBuffer[32] = {0};
     strcpy(filePathAndName, trackPath);
     #ifndef POK_SIM
     strcat(filePathAndName, "/");
@@ -226,6 +226,29 @@ bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
         fileClose(); // close any open files
         return false;
     }
+
+    // Read objects
+    bool retval = ReadTrackObjects( buffer, blockSize, true );
+
+    fileClose(); // close any open files
+
+    return retval;
+}
+
+// Read the track objects ascii file from SD
+bool TrackImporter::ReadTrackObjectsFromROM()
+{
+    // Read objects
+    bool retval = ReadTrackObjects( objects_txt, strlen(objects_txt) );
+
+    fileClose(); // close any open files
+
+    return retval;
+}
+
+// Read the track objects ascii file from SD
+bool TrackImporter::ReadTrackObjects( char buffer, int32_t blockSize, bool readFromFile )
+{
 
     uint16_t len = blockSize;
     char* bufPtr = NULL;
@@ -339,7 +362,6 @@ bool TrackImporter::ReadTrackObjects( char* trackPath, char* trackDirName )
         g_billboardObjectInRamCount = bbIndex;
     }
 
-    fileClose(); // close any open files
     return true;
 }
 

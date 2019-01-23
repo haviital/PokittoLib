@@ -71,6 +71,14 @@ public:
     int16_t m_bitmapH;
 };
 
+struct Object3dInitDataRom
+{
+public:
+    int8_t m_id;
+    int16_t m_x;
+    int16_t m_y;
+};
+
 class CObject3d
 {
 public:
@@ -96,7 +104,9 @@ class CWaypoint
  public:
     int32_t x;
     int32_t y;
+    fix16_t fxRadius;
     fix16_t fxTargetSpeed;
+    bool isCheckPoint;
 };
 
 class mycookie : public Pokitto::Cookie

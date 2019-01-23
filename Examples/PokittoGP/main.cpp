@@ -525,106 +525,38 @@ void InitGameObjectsForTrack1(bool isRace)
     int32_t billboardObjectCount = g_BillboardObjectArrayMaxCount - 8;  // race
 
     int32_t o3dIndex = 0;
-    if(menu.m_trackNum !=0 )  // user track
+    for(; o3dIndex < g_billboardObjectInRamCount && o3dIndex < billboardObjectCount; o3dIndex++ )
     {
-        for(; o3dIndex < g_billboardObjectInRamCount && o3dIndex < billboardObjectCount; o3dIndex++ )
+        g_objects3d[o3dIndex] = &g_BillboardObjectArray[o3dIndex];
+
+        const uint8_t* cactus_bm = billboard_object_bitmaps[25];
+        if(g_objects3d[o3dIndex]->m_bitmap==cactus_bm && g_spriteBitmaps[0] != NULL)
         {
-            g_objects3d[o3dIndex] = &g_BillboardObjectArray[o3dIndex];
+            const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
+            const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+            const int16_t spriteBmW  = *(sprite_bm - 2);
+            const int16_t spriteBmH  = *(sprite_bm - 1);
+            g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
+            g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
+            g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
+            g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+            g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
+        }
 
-            const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-            if(g_objects3d[o3dIndex]->m_bitmap==cactus_bm && g_spriteBitmaps[0] != NULL)
-            {
-                const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
-                const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
-                const int16_t spriteBmW  = *(sprite_bm - 2);
-                const int16_t spriteBmH  = *(sprite_bm - 1);
-                g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
-                g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
-                g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
-                g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-            }
-
-            const uint8_t* rock_bm = billboard_object_bitmaps[26];
-            if(g_objects3d[o3dIndex]->m_bitmap==rock_bm && g_spriteBitmaps[1] != NULL)
-            {
-                const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
-                const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
-                const int16_t spriteBmW  = *(sprite_bm - 2);
-                const int16_t spriteBmH  = *(sprite_bm - 1);
-                g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
-                g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
-                g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
-                g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-            }
+        const uint8_t* rock_bm = billboard_object_bitmaps[26];
+        if(g_objects3d[o3dIndex]->m_bitmap==rock_bm && g_spriteBitmaps[1] != NULL)
+        {
+            const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
+            const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
+            const int16_t spriteBmW  = *(sprite_bm - 2);
+            const int16_t spriteBmH  = *(sprite_bm - 1);
+            g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
+            g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
+            g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
+            g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
+            g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
         }
     }
-    else
-    {
-        // ROM track
-
-        // Copy waypoints
-        for( int32_t wp = 0; wp < waypointCountROM && wp < waypointMaxCount; wp++)
-            waypoints[wp] = waypointsROM[wp];
-        waypointCount = waypointMaxCount;
-
-        // Copy cactus and rock array pointers to the object list.
-        if( !g_isRace )
-            billboardObjectCount = g_BillboardObjectArrayMaxCount;  // time treial
-        //if(menu.m_trackNum !=0)  // user track, no billboard objects
-        //    billboardObjectCount = 0;
-
-        for(; o3dIndex < billboardObjectCount; o3dIndex++ )
-        {
-            g_objects3d[o3dIndex] = &g_BillboardObjectArray[o3dIndex];
-            g_objects3d[o3dIndex]->m_fxX = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_fxX;
-            g_objects3d[o3dIndex]->m_fxY = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_fxY;
-            g_objects3d[o3dIndex]->m_bitmap = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_bitmap;
-            g_objects3d[o3dIndex]->m_bitmapW = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_bitmapW;
-            g_objects3d[o3dIndex]->m_bitmapH = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_bitmapH;
-            g_objects3d[o3dIndex]->m_fxScaledWidth = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_fxScaledWidth;
-            g_objects3d[o3dIndex]->m_fxScaledHeight = g_timeTrialBilboardObjectsInRom_track1[o3dIndex].m_fxScaledHeight;
-
-            #if 0
-
-            // If this is a use track, replace the sprites.
-            if(menu.m_trackNum !=0 )  // user track
-            {
-                const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-                if(g_objects3d[o3dIndex]->m_bitmap==cactus_bm && g_spriteBitmaps[0]!=NULL)
-                {
-                    const uint8_t* sprite_bm = &(g_spriteBitmaps[0][2]);
-                    const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
-                    const int16_t spriteBmW  = *(sprite_bm - 2);
-                    const int16_t spriteBmH  = *(sprite_bm - 1);
-                    g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
-                    g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
-                    g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
-                    g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                    g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-                }
-
-                const uint8_t* rock_bm = billboard_object_bitmaps[26];
-                if(g_objects3d[o3dIndex]->m_bitmap==rock_bm && g_spriteBitmaps[1]!=NULL)
-                {
-                    const uint8_t* sprite_bm = &(g_spriteBitmaps[1][2]);
-                    const fix16_t fxSpriteScaledSizeFactor = fix16_from_float(1.0);
-                    const int16_t spriteBmW  = *(sprite_bm - 2);
-                    const int16_t spriteBmH  = *(sprite_bm - 1);
-                    g_objects3d[o3dIndex]->m_bitmap = sprite_bm;
-                    g_objects3d[o3dIndex]->m_bitmapW = spriteBmW;
-                    g_objects3d[o3dIndex]->m_bitmapH = spriteBmH;
-                    g_objects3d[o3dIndex]->m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                    g_objects3d[o3dIndex]->m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-                }
-            }
-
-            #endif
-
-        } // end for
-
-    } // end if
 
     #else
 
