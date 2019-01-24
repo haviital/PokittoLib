@@ -951,6 +951,9 @@
 		<Unit filename="../../Examples/PokittoGP/menu.h">
 			<Option target="PokittoGP" />
 		</Unit>
+		<Unit filename="../../Examples/PokittoGP/objects_txt.h">
+			<Option target="PokittoGP" />
+		</Unit>
 		<Unit filename="../../Examples/PokittoGP/playerShip.cpp">
 			<Option target="PokittoGP" />
 		</Unit>
@@ -967,6 +970,9 @@
 			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../../Examples/PokittoGP/trackImporter.h">
+			<Option target="PokittoGP" />
+		</Unit>
+		<Unit filename="../../Examples/PokittoGP/track_txt.h">
 			<Option target="PokittoGP" />
 		</Unit>
 		<Unit filename="../../Examples/SFXeditor/My_settings.h">
