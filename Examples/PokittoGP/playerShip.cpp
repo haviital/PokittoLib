@@ -250,7 +250,7 @@ void CPlayerShip::Reset()
     CShip::Reset();
 
      // Reset game
-    m_fxX = fix16_from_int(35);
+    m_fxX = fix16_from_int(45);
     m_fxY = fix16_from_int(550);
     m_fxVel = 0;
     m_fxAngle = fix16_pi>>1;

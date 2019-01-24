@@ -677,8 +677,11 @@ void InitGameObjectsForTrack1(bool isRace)
         o3dIndex++;
         shipIndex++;
 
+        int32_t x1 = 45;
+        int32_t x2 = x1+50;
+
         g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
-        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35);
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(x1);
         g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600+(2*50));
         g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[17];
         g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
@@ -708,7 +711,7 @@ void InitGameObjectsForTrack1(bool isRace)
         shipIndex++;
 
         g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
-        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35+50);
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(x2);
         g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600+(2*50));
         g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[13];
         g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
@@ -738,7 +741,7 @@ void InitGameObjectsForTrack1(bool isRace)
         shipIndex++;
 
         g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
-        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35 + 50);
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(x2);
         g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600+50);
         g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[1];
         g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
@@ -768,7 +771,7 @@ void InitGameObjectsForTrack1(bool isRace)
         shipIndex++;
 
         g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
-        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35);
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(x1);
         g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600+50);
         g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[9];
         g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
@@ -798,7 +801,7 @@ void InitGameObjectsForTrack1(bool isRace)
         shipIndex++;
 
         g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
-        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35 + 50);
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(x2);
         g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600);
         g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[20];
         g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
@@ -828,7 +831,7 @@ void InitGameObjectsForTrack1(bool isRace)
         shipIndex++;
 
         g_objects3d[o3dIndex] = &g_ShipObjectArray[i];
-        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(35);
+        g_objects3d[o3dIndex]->m_fxX = fix16_from_int(x1);
         g_objects3d[o3dIndex]->m_fxY = fix16_from_int(600);
         g_objects3d[o3dIndex]->m_bitmap = billboard_object_bitmaps[6];
         g_objects3d[o3dIndex]->m_bitmapW = *(g_objects3d[o3dIndex]->m_bitmap - 2);
