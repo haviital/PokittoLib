@@ -267,19 +267,23 @@ void DrawTiledBitmapOpaque256ColorPOT(int32_t posX, int32_t posY, const uint8_t*
 
         // ** Draw the first pixels (1-7 pixels).
         uint32_t srcTileOffset = finalU & (bitmapW_POT-1);
-        uint32_t firstBlitWidth = clippedWidth & 0x7;
-        uint32_t xindex = 0;
-        while( xindex < firstBlitWidth ) {
+        uint32_t srcTileOffset8 = ( finalU & 0x7 ); // 0-7
+        if( srcTileOffset8 != 0 )
+        {
+            finalU += 8-srcTileOffset8;
+            uint32_t srcTileOffsetEnd = srcTileOffset + (8-srcTileOffset8);
+            while( srcTileOffset < srcTileOffsetEnd ) {
 
-            // Draw pixel.
-            uint8_t color = *(bitmapScanlinePtr +  xindex++);
-            *screenScanlinePtr++ = color;
+                // Draw pixel.
+                uint8_t color = *(bitmapScanlinePtr + srcTileOffset++);
+                *screenScanlinePtr++ = color;
 
-        }  // end while
-        finalU += firstBlitWidth;
+            }  // end while
 
+        }  // end if
 
         // *** Draw middle pixels
+        //uint32_t srcTileOffset = finalU & (bitmapW_POT-1);
         while(clippedStartU + clippedWidth - finalU >= 8)
         {
             // Calc the offset inside tile
@@ -313,11 +317,11 @@ void DrawTiledBitmapOpaque256ColorPOT(int32_t posX, int32_t posY, const uint8_t*
 
         // ** Draw the rest of the pixels (1-7 pixels).
         uint32_t lastBlitWidth = clippedStartU + clippedWidth - finalU;
-        xindex = 0;
-        while( xindex < lastBlitWidth ) {
+        uint32_t srcTileOffsetEnd = srcTileOffset + lastBlitWidth;
+        while( srcTileOffset < srcTileOffsetEnd ) {
 
             // Draw pixel.
-            uint8_t color = *(bitmapScanlinePtr + xindex++);
+            uint8_t color = *(bitmapScanlinePtr + srcTileOffset++);
             *screenScanlinePtr++ = color;
 
         }  // end while

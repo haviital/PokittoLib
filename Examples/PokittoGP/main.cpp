@@ -65,6 +65,7 @@ CObject3d* g_objects3d[ g_objects3dMaxCount ] = {0};
 
 
 // Reserve space for objects in RAM.
+uint8_t* g_BackgroundTileBitmap = NULL;
 uint8_t* g_spriteBitmaps[2] = {0};
 CObject3d g_BillboardObjectArray[g_BillboardObjectArrayMaxCount];
 CShip g_ShipObjectArray[1*8];
@@ -183,11 +184,13 @@ int main () {
 
                 // Draw sky
                 fix16_t fxAnglePositive =  ((fxCamAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
-                int16_t skyX = ((fxAnglePositive>>9) % 22);
-                uint16_t skyW = image_sky_long[0];
-                uint16_t skyH = image_sky_long[1];
-                const uint8_t* skyBitmapPtr = &(image_sky_long[2]);
-                DrawBitmapOpaque8bit( skyX-22, 0, skyBitmapPtr, skyW, skyH );
+                int16_t skyX = ((fxAnglePositive>>9) & 0xf);
+                skyX = skyX - 16;
+                uint16_t skyW = g_BackgroundTileBitmap[0]; // 16
+                uint16_t skyH = g_BackgroundTileBitmap[1]; // 16
+                const uint8_t* skyBitmapDataPtr = &(g_BackgroundTileBitmap[2]);
+                //DrawBitmapOpaque8bit( skyX-22, 0, skyBitmapPtr, skyW, skyH );
+                DrawTiledBitmapOpaque256ColorPOT(skyX, 0, skyBitmapDataPtr, skyW, skyH, 110 - skyX);
 
                 // ** Draw the road and edges and terrain.
                 fix16_t fxCamX = g_playerShip.m_fxX;
@@ -1128,6 +1131,11 @@ void RestoreRomTextures()
         free(g_spriteBitmaps[ii]);
         g_spriteBitmaps[ii] = NULL;
     }
+
+    //
+    if(g_BackgroundTileBitmap != image_sky )
+        free( g_BackgroundTileBitmap );
+    g_BackgroundTileBitmap = (uint8_t*)image_sky;
 }
 
 

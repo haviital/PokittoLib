@@ -457,6 +457,7 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
 
     struct STextureFileParam
     {
+        int32_t type; // 0=texture, 1=sprite, 2=background tile
         int32_t w,h;
         int32_t numOfParts;
         char filename[16];
@@ -465,15 +466,17 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
     const int32_t startOfSpritesIndex = 6;
     const STextureFileParam textureFileParamArr[] =
     {
-        {0,0,0,""},
-        {16,24,4,"tex01.bmp"},  // 1: ball
-        {8,12,1,"tex02.bmp"},   // 2: road1
-        {8,12,1,"tex03.bmp"},   // 3: road2
-        {16,24,4,"tex04.bmp"},  // 4: terrain
-        {16,24,4,"tex05.bmp"},  // 5: start grid
+        {0,0,0,0,""},
+        {0,16,24,4,"tex01.bmp"},  // 1: ball
+        {0,8,12,1,"tex02.bmp"},   // 2: road1
+        {0,8,12,1,"tex03.bmp"},   // 3: road2
+        {0,16,24,4,"tex04.bmp"},  // 4: terrain
+        {0,16,24,4,"tex05.bmp"},  // 5: start grid
 
-        {-1,-1,1,"sprite01.bmp"},  // Cactus
-        {-1,-1,1,"sprite02.bmp"},  // Stone
+        {1,-1,-1,1,"sprite01.bmp"},  // Cactus
+        {1,-1,-1,1,"sprite02.bmp"},  // Stone
+
+        {2,16,16,1,"bkground.bmp"},   // background tile
     };
 
     // Try to read all textures.
@@ -573,7 +576,7 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
             mygame.display.print(1, 60, "image format");
             return false;
         }
-        else if (textureFileParamArr[fileIndex].w == -1 && textureFileParamArr[fileIndex].h == -1) // sprite
+        else if ( textureFileParamArr[fileIndex].type == 1 ) // sprite
         {
             // Billboard sprite ok.
 
@@ -594,7 +597,23 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
             g_spriteBitmaps[fileIndex-startOfSpritesIndex] = bitmap;
             bitmap = NULL;
         }
-        else
+        else if ( textureFileParamArr[fileIndex].type == 2 ) // background tile
+        {
+            // Billboard sprite ok.
+
+            // Convert indexes
+            int32_t w = textureFileParamArr[ fileIndex].w;
+            int32_t h = textureFileParamArr[ fileIndex].h;
+            uint8_t* bitmapData = &(bitmap[2]);
+            for(int32_t ii=0; ii<w*h; ii++)
+            {
+                uint8_t colorIndex = bitmapData[ii] + startOfPaletteImportIndex;  // Convert to the imported color area.;
+                *(bitmapData+ii) = colorIndex;
+            }
+            g_BackgroundTileBitmap = bitmap;
+            bitmap = NULL;
+        }
+        else if( textureFileParamArr[fileIndex].type == 0 )
         {
             // Texture ok.
 

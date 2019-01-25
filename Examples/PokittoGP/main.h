@@ -144,6 +144,7 @@ extern int32_t g_billboardObjectInRamCount;
 extern CObject3d g_BillboardObjectArray[g_BillboardObjectArrayMaxCount];
 extern const uint8_t billboard_object_bitmaps_count;
 extern const uint8_t* billboard_object_bitmaps [];
+extern uint8_t* g_BackgroundTileBitmap;
 
 extern uint32_t g_frameNum;
 extern bool g_isRace;
@@ -159,6 +160,7 @@ void SetupMusic(int32_t songNumber);
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fxRotateCenterX, fix16_t fxRotateCenterY, fix16_t* perspectiveScaleXArr, fix16_t* perspectiveScaleYArr, uint16_t sceneryH2);
 void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor);
 void DrawBitmapOpaque8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );
+void DrawTiledBitmapOpaque256ColorPOT(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, const uint32_t bitmapW_POT, uint32_t bitmapH, uint32_t targetW );
 void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );
 void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH, uint32_t scaledW, uint32_t scaledH );
 void DrawRankNumber(int32_t x, int32_t y);
