@@ -270,9 +270,13 @@ void CPlayerShip::HandleGameKeys()
 {
 
 #if 1
-        // Playing
+    // Playing
 
-        // Turn left
+    // Debug: calculate available RAM is all button , A, B and C, are pressed!
+    if( mygame.buttons.aBtn() && mygame.buttons.bBtn() && mygame.buttons.cBtn() )
+        CalcFreeRamAndHang();
+
+    // Turn left
     if(mygame.buttons.leftBtn()) {
         if( ! m_isTurningLeft )
             m_fxRotVel = fxInitialRotVel; // Reset to initial velocity when started turning

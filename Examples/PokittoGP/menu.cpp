@@ -567,10 +567,10 @@ bool CMenu::HandleSelectTrackMenu()
                 currDirName = getFirstDirEntry(tracksDirName);
             else
                 currDirName = getNextDirEntry();
+            currDirName[8]='\0'; // Break to 8 chars in case there is ".DIR" in the end of the name//
             #else
             currDirName = getNextDirEntry();
             #endif
-
            if(!currDirName || strlen(currDirName)==0)
                 break; // No more files
 

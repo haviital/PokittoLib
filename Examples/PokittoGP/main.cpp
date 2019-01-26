@@ -174,6 +174,7 @@ int main () {
 
         if (mygame.update()) {
 
+            // Update UI animations.
             g_currentFrameTimeInMs = mygame.getTime();
             CAnimValue::RunAll();
 
@@ -1138,4 +1139,21 @@ void RestoreRomTextures()
     g_BackgroundTileBitmap = (uint8_t*)image_sky;
 }
 
+void CalcFreeRamAndHang()
+{
+    int32_t i = 0;
+    int8_t* addr = (int8_t*)1;
+    for( ; addr != NULL; i++ )
+        addr = new int8_t[100];
+
+    int32_t freeSize = (i-1) * 100;
+    mygame.display.fillRect(0, 0, screenW, screenH);
+    mygame.display.setColor(2,1);
+    mygame.display.print(0, 0, "Free mem:");
+    mygame.display.println("");
+    mygame.display.println(freeSize);
+    mygame.display.println("bytes");
+    while ( ! mygame.update() ); // draw now
+    for( ; ; );  // Loop forever
+}
 
