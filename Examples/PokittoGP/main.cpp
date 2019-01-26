@@ -185,9 +185,9 @@ int main () {
 
                 // Draw sky
                 fix16_t fxAnglePositive =  ((fxCamAngle) % (fix16_pi<<1)) +  (fix16_pi<<1);
-                int16_t skyX = ((fxAnglePositive>>9) & 0xf);
-                skyX = skyX - 16;
-                uint16_t skyW = g_BackgroundTileBitmap[0]; // 16
+                int16_t skyX = ((fxAnglePositive>>9) & 0x1f);
+                skyX = skyX - 32;
+                uint16_t skyW = g_BackgroundTileBitmap[0]; // 32
                 uint16_t skyH = g_BackgroundTileBitmap[1]; // 16
                 const uint8_t* skyBitmapDataPtr = &(g_BackgroundTileBitmap[2]);
                 //DrawBitmapOpaque8bit( skyX-22, 0, skyBitmapPtr, skyW, skyH );

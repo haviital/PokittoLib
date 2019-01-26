@@ -54,8 +54,8 @@ Colour: 29 r:152 g:72  b:152
 Colour: 30 r:56  g:56  b:152
 Colour: 31 r:152 g:152 b:152
 Colour: 32 r:136 g:184 b:200
-Colour: 33 r:152 g:200 b:216
-Colour: 34 r:240 g:240 b:240
+Colour: 33 r:240 g:240 b:240
+Colour: 34 r:152 g:200 b:216
 Colour: 35 r:232 g:232 b:232
 Colour: 36 r:168 g:216 b:232
 Colour: 37 r:184 g:232 b:248
@@ -1718,7 +1718,7 @@ C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr.cmd image_sky
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_sky.bmp  1>tmp\image_sky.ppm 
-bmptoppm: Windows BMP, 16x16x8
+bmptoppm: Windows BMP, 32x16x8
 bmptoppm: WRITING PPM IMAGE
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_sky.ppm -mapfile=tmp\palette256.ppm  1>output\image_sky.bmp 
@@ -1731,8 +1731,8 @@ Pokitto BMP to Pokitto bitmap conversion utility
 File name: image_sky.bmp 
 Number of colours used: 256
 Bits per pixel: 8
-Size in pixels: 16 x 16
-Size in bytes: 256
+Size in pixels: 32 x 16
+Size in bytes: 512
 Outputting c file: image_sky.c
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_sky.c ..\..\..\gfx_hdr\image_sky.h 

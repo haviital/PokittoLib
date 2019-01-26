@@ -476,7 +476,7 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
         {1,-1,-1,1,"sprite01.bmp"},  // Cactus
         {1,-1,-1,1,"sprite02.bmp"},  // Stone
 
-        //{2,16,16,1,"bkground.bmp"},   // background tile
+        {2,32,16,1,"bkground.bmp"},   // background tile
     };
 
     // Try to read all textures.
