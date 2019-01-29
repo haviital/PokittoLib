@@ -33,7 +33,9 @@ void CPlayerShip::Update()
     m_bitmap = billboard_object_bitmaps[0];  // org car
 
     // Calcucalate the current waypoint and rank.
-    CalculateRank();
+    if( m_doRecalcRank )
+        CalculateRank();
+    m_doRecalcRank = false;
 
     // *** Check collision to road edges
     m_isCollided = false;
@@ -60,71 +62,12 @@ void CPlayerShip::Update()
     else
         m_current_lap_time_ms = mygame.getTime() - m_start_ms;
 
-    // Handle lap starting and ending detection.
+    // Handle race/time trial starting and ending detection.
     bool isOnStartingGrid = ( tileIndex >= 11 && tileIndex <= 14);
-    bool isOnHalfWayPoint = (tileIndex == 15);
-    switch(m_lapTimingState)
-    {
-    case enumReadyToStart:
-        if( isOnStartingGrid )
-        {
-            m_lapTimingState = enumStarted;
-            m_start_ms = mygame.getTime();  // started
-        }
-        break;
-    case enumStarted:
-        if( ! isOnStartingGrid )
-        {
-            m_lapTimingState = enumOnTimedTrack;
-            //m_lapTimingState = enumOverHalfWayPoint;
-        }
-        break;
-    case enumOnTimedTrack:
-        if( isOnHalfWayPoint )
-        {
-            m_lapTimingState = enumOverHalfWayPoint;
-         }
-        break;
-    case enumOverHalfWayPoint:
-        if( isOnStartingGrid )
-        {
-            // Startup song.
-            SetupMusic(2);
+    HandleRaceStartingAndEnding( isOnStartingGrid );
 
-            // Finished!
-            m_final_lap_time_ms = mygame.getTime() - m_start_ms;
-
-            // Open the menu after the race.
-            if( g_isRace)
-            //if( g_isRace )
-            {
-                if( m_activeLapNum>2)
-                {
-                    // Race finished
-                    m_requestedMenuMode = CMenu::enumRaceFinishedMenu;
-                    m_lapTimingState = enumFinished;
-                }
-                else
-                {
-                    m_lapTimingState = enumStarted;
-                }
-            }
-            else
-            {
-                // Open the menu after the time trial.
-                m_requestedMenuMode = CMenu::enumTimeTrialFinishedMenu;
-            }
-
-            // Save cookie if this is the best time
-            SaveHighScore(m_final_lap_time_ms);
-
-            m_activeLapNum++;
-        }
-        break;
-
-    case enumFinished:
-        break;
-    }
+    // Find active waypoint
+    FindActiveWaypoint();
 
     // Read keys.
     HandleGameKeys();
@@ -222,27 +165,117 @@ void CPlayerShip::Update()
     m_isCollidedToPlayerShip = false;
 }
 
+void CPlayerShip::HandleRaceStartingAndEnding( bool isOnStartingGrid )
+{
+    switch(m_lapTimingState)
+    {
+    case enumReadyToStart:
+        if( isOnStartingGrid )
+        {
+            m_lapTimingState = enumStarted;
+            m_start_ms = mygame.getTime();  // started
+        }
+        break;
+    case enumStarted:
+        if( ! isOnStartingGrid )
+        {
+            m_lapTimingState = enumOnTimedTrack;
+        }
+        break;
+    case enumOnTimedTrack:
+        if( isOnStartingGrid && m_activeWaypointIndex > waypointCount - 5 )  // At least the one of the 5 last waypoints visited
+        {
+            // Startup song.
+            SetupMusic(2);
+
+            // Finished!
+            m_final_lap_time_ms = mygame.getTime() - m_start_ms;
+
+            // Open the menu after the race.
+            if( g_isRace)
+            //if( g_isRace )
+            {
+                if( m_activeLapNum>2)
+                {
+                    // Race finished
+                    m_requestedMenuMode = CMenu::enumRaceFinishedMenu;
+                    m_lapTimingState = enumFinished;
+                }
+                else
+                {
+                    m_lapTimingState = enumStarted;
+                }
+            }
+            else
+            {
+                // Open the menu after the time trial.
+                m_requestedMenuMode = CMenu::enumTimeTrialFinishedMenu;
+            }
+
+            // Save cookie if this is the best time
+            SaveHighScore(m_final_lap_time_ms);
+
+            m_activeLapNum++;
+        }
+        break;
+
+    case enumFinished:
+        break;
+    }
+}
+
+void CPlayerShip::FindActiveWaypoint()
+{
+
+    // *** Update visited waypoints
+
+    // Direction vector to the current waypoint. Check the 5 next waypoints, one at a frame.
+    m_lastCheckedWPIndex++;
+    if( ++m_lastCheckedWPIndex >= waypointCount + 5)
+        m_lastCheckedWPIndex -= waypointCount;  // new round
+    if( m_lastCheckedWPIndex > m_activeWaypointIndex + 5 || m_lastCheckedWPIndex < m_activeWaypointIndex )
+       m_lastCheckedWPIndex = m_activeWaypointIndex + 1;
+
+    // Calc real index.  m_lastCheckedWPIndex can be bigger than waypointCount.
+    int8_t lastCheckedWPIndex = m_lastCheckedWPIndex;
+    if(lastCheckedWPIndex >= waypointCount )
+        lastCheckedWPIndex -= waypointCount;
+
+
+    fix16_t fxDirX = fix16_from_int(waypoints[ lastCheckedWPIndex].x ) - m_fxX;
+    fix16_t fxDirY = fix16_from_int(waypoints[ lastCheckedWPIndex].y ) - m_fxY;
+
+    // Calculate distance.
+    // Scale down so that it will not overflow
+    fix16_t fxX3 = fxDirX;
+    fix16_t fxY3 = fxDirY;
+    fxX3 >>= 4;
+    fxY3 >>= 4;
+    fix16_t fxDistanceToWaypoint = fix16_mul(fxX3, fxX3) + fix16_mul(fxY3,fxY3);
+    const fix16_t fxLimit = fix16_from_int(20*20);
+    if( fxDistanceToWaypoint < fxLimit>>4 )
+    {
+        m_activeWaypointIndex = lastCheckedWPIndex;
+        m_lastCheckedWPIndex = -1; // None checked
+        m_doRecalcRank = true;
+        //m_waypointsVisited[ m_lastVisitedWPIndex ] = true;
+    }
+}
+
 void CPlayerShip::CalculateRank()
 {
-    // Update the ship position on track.
-    int32_t oldTrackIndex = m_trackIndex;
-    UpdateTrackPos();
-
-    //
-    if(oldTrackIndex != m_trackIndex)
+    int32_t numOfCarsWithBetterRank = 0;
+    int8_t activeWaypointIndex = m_activeWaypointIndex + 1;  // active waypoint is 1 less for player than for other ships
+    for(int32_t i=1; i < g_shipCount; i++)
     {
-        int32_t numOfCarsWithBetterRank = 0;
-        for(int32_t i=1; i < g_shipCount; i++)
+        if( g_ships[i]->m_activeLapNum > m_activeLapNum ||
+            ( g_ships[i]->m_activeLapNum == m_activeLapNum && g_ships[i]->m_activeWaypointIndex >= activeWaypointIndex ))
         {
-            if( g_ships[i]->m_activeLapNum > m_activeLapNum ||
-                ( g_ships[i]->m_activeLapNum == m_activeLapNum && g_ships[i]->m_trackIndex >= m_trackIndex ))
-            {
-                numOfCarsWithBetterRank++;
-            }
+            numOfCarsWithBetterRank++;
         }
-
-        m_currentRank = numOfCarsWithBetterRank+1;
     }
+
+    m_currentRank = numOfCarsWithBetterRank+1;
 }
 
 void CPlayerShip::Reset()
@@ -263,6 +296,10 @@ void CPlayerShip::Reset()
     //!!!HV snd.ampEnable(1);
     //snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
     setOSC(&osc1,1,wavetype,1,0,0,m_tonefreq,amplitude,0,0,0,0,0,0,arpmode,1,0);
+    //for( int32_t i = 0; i < 50 && i < waypointCount; i++ ) m_waypointsVisited[ i ] = false;
+    m_activeWaypointIndex = -1;
+    m_lastCheckedWPIndex = -1;
+    m_doRecalcRank = false;
  }
 
 // Handle keys

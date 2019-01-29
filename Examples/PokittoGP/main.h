@@ -38,7 +38,6 @@ const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
 //const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  (fxMaxSpeedCollided * 7)>>2;
 
 const fix16_t fxCameraBehindPlayerY = fix16_from_int(70);
-const uint8_t trackTraceLineCount = 30;
 //const fix16_t fxDefaultOtherShipSpeed = fix16_one;
 
 //const fix16_t fxMaxSpeedCollided = fix16_one>>4;
@@ -53,7 +52,6 @@ enum LapTimingState {
     enumReadyToStart = 0,
     enumStarted = 1,
     enumOnTimedTrack = 2,
-    enumOverHalfWayPoint = 3,
     enumFinished = 4,
 
 };
@@ -125,7 +123,6 @@ extern uint8_t* blockMapRAM;
 //extern const uint8_t blockMapROM[];
 extern uint8_t* blockMap;
 extern const uint8_t blockData[][8*8];
-extern const uint8_t trackTraceLine[trackTraceLineCount];
 extern const uint8_t* current_texture_bitmaps[];
 extern const uint8_t* current_texture_bitmaps_mm1[];
 extern const uint8_t* current_texture_bitmaps_mm2[];

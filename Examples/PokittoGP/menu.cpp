@@ -567,7 +567,6 @@ bool CMenu::HandleSelectTrackMenu()
                 currDirName = getFirstDirEntry(tracksDirName);
             else
                 currDirName = getNextDirEntry();
-            currDirName[8]='\0'; // Break to 8 chars in case there is ".DIR" in the end of the name//
             #else
             currDirName = getNextDirEntry();
             #endif
@@ -584,6 +583,10 @@ bool CMenu::HandleSelectTrackMenu()
             }
             else
             {
+                // The currDirName is in the form: "mydir" or "mydir123.DIR" (if the first dir is 8 chars long in HW!)
+                #ifndef POK_SIM
+                currDirName[8]='\0'; // Break to 8 chars in case there is ".DIR" in the end
+                #endif
                 int32_t length = strlen(currDirName);
                 strncpy(m_dirNameArr[i], currDirName, length);
                 m_dirNameArr[i][length] = '\0'; // "mydir\0"

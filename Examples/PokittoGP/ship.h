@@ -8,7 +8,6 @@ public:
     CShip();
     virtual void Update();
     virtual void Reset();
-    virtual void UpdateTrackPos();
     virtual void SetImpulse( fix16_t fxImpulseAngle );
 
 public:
@@ -25,7 +24,6 @@ public:
     //fix16_t m_fxLastDistanceToWaypoint;
     int32_t m_activeLapNum;
     bool m_isPlayer;
-    int32_t m_trackIndex;
     LapTimingState m_lapTimingState;
 
     // Impact

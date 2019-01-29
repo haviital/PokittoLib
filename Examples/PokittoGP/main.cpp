@@ -238,6 +238,13 @@ int main () {
             mygame.display.print( itoa(g_playerShip.m_activeLapNum,text,10) ); mygame.display.print(", ");
             mygame.display.print( itoa(g_playerShip.m_trackIndex,text,10) ); mygame.display.print("     ");
 
+            #elif 0  // Player waypoints
+
+            char text[128];
+            mygame.display.setColor(9,3);
+
+            mygame.display.print(0,1, "LASTWP="); mygame.display.print(g_playerShip.m_activeWaypointIndex);
+
             #endif
 
             // Handle menus

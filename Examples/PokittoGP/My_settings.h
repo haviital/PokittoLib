@@ -24,7 +24,7 @@
 #define FIXMATH_NO_ROUNDING // this increases the fps from 32 to 42. Not visible difference noticed, at least for now.
 
 //#define PROJ_DEVELOPER_MODE 1
-#define PROJ_SHOW_FPS_COUNTER 1
+//#define PROJ_SHOW_FPS_COUNTER 1
 #define PROJ_FPS 200
 
 #define SCREENCAPTURE 0

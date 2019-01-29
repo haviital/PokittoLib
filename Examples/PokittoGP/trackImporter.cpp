@@ -761,44 +761,6 @@ void TrackImporter::ConvertAsciiToMapElements( char* myTrack2 )
             if(i>=convTableLen || item==' ')
                 break; // error
 
-            // Check for billboard objects
-            if(false)
-            //if( i==19 || i==20)
-            {
-                if( g_billboardObjectInRamCount <= g_BillboardObjectArrayMaxCount - 8 )
-                {
-                    int32_t bbIndex = g_billboardObjectInRamCount;
-                    g_billboardObjectInRamCount++;
-
-                    // "Cactus" or "Rock"
-                    const fix16_t fxCactusScaledSizeFactor = fix16_from_float(0.8);
-                    const uint8_t* cactus_bm = billboard_object_bitmaps[25];
-                    const fix16_t fxStoneScaledSizeFactor = fix16_from_float(1.0);
-                    const uint8_t* stone_bm = billboard_object_bitmaps[26];
-                    uint8_t* sprite_bm = (uint8_t*)cactus_bm;
-                    fix16_t fxSpriteScaledSizeFactor = fxCactusScaledSizeFactor;
-                    if( i==20 )
-                    {
-                        sprite_bm = (uint8_t*)stone_bm;
-                        fxSpriteScaledSizeFactor = fxStoneScaledSizeFactor;
-                    }
-                    const int16_t spriteBmW  = *(sprite_bm - 2);
-                    const int16_t spriteBmH  = *(sprite_bm - 1);
-
-                    // Init a billboard object.
-                    g_BillboardObjectArray[ bbIndex ].m_fxX = fix16_from_int( x * 64 + 32 );
-                    g_BillboardObjectArray[ bbIndex ].m_fxY = fix16_from_int( y * 64 + 32 );
-                    g_BillboardObjectArray[ bbIndex ].m_bitmap = sprite_bm;
-                    g_BillboardObjectArray[ bbIndex ].m_bitmapW = spriteBmW;
-                    g_BillboardObjectArray[ bbIndex ].m_bitmapH = spriteBmH;
-                    g_BillboardObjectArray[ bbIndex ].m_fxScaledWidth = spriteBmW * fxSpriteScaledSizeFactor;
-                    g_BillboardObjectArray[ bbIndex ].m_fxScaledHeight = spriteBmH * fxSpriteScaledSizeFactor;
-                }
-
-                i = 14; // Convert the map item to terrain/surface item
-
-            }  // end if
-
             blockMapRAM[y*mapWidth + x] = i;
 
         }  // end for

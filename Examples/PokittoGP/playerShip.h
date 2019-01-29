@@ -11,6 +11,8 @@ public:
     virtual void Reset();
     virtual void Update();
     void HandleGameKeys();
+    void HandleRaceStartingAndEnding( bool isOnStartingGrid );
+    void FindActiveWaypoint();
     void CalculateRank();
 
     // Handle keys
@@ -34,4 +36,8 @@ public:
     int32_t m_currentRank;
     uint32_t m_current_lap_time_ms;
     CMenu::MenuMode m_requestedMenuMode;
+    //bool m_waypointsVisited[ 50 ];
+    int8_t m_activeWaypointIndex;
+    int8_t m_lastCheckedWPIndex;
+    bool m_doRecalcRank;
 };

@@ -6,7 +6,6 @@
 CShip::CShip() :
     m_isPlayer(false),
     m_activeLapNum(0),
-    m_trackIndex(0),
     m_lapTimingState(enumReadyToStart)
 {
 }
@@ -39,16 +38,9 @@ void CShip::Update()
         if( ! isOnStartingGrid )
         {
             m_lapTimingState = enumOnTimedTrack;
-            //m_lapTimingState = enumOverHalfWayPoint;
         }
         break;
     case enumOnTimedTrack:
-        if( isOnHalfWayPoint )
-        {
-            m_lapTimingState = enumOverHalfWayPoint;
-         }
-        break;
-    case enumOverHalfWayPoint:
         if( isOnStartingGrid )
         {
             // Finished!
@@ -208,8 +200,6 @@ void CShip::Update()
     m_fxX += fxVelX;
     m_fxY += fxVelY;
 
-    // Update the ship position on track.
-    UpdateTrackPos();
 }
 // Handle keys
 void CShip::SetImpulse( fix16_t fxImpulseAngle )
@@ -225,28 +215,5 @@ void CShip::Reset()
     m_lapTimingState = enumReadyToStart;
     m_fxImpulseAcc = 0;
     m_fxImpulseAngle = 0;
-}
-
-// Update the ship position on track.
-void CShip::UpdateTrackPos()
-{
-     // Get the position.
-     //int32_t pos = fix16_to_int((m_fxX>>8) + ((m_fxY>>8) * 8));
-     int32_t pos = (fix16_to_int(m_fxX)>>8) + ((fix16_to_int(m_fxY)>>8) * 8);
-
-    // Find the current track index
-    int32_t i = m_trackIndex;
-    for(int32_t ii=0; ii<10; ii++, i++ )
-    {
-        if(i>=trackTraceLineCount)
-            i = 0;
-
-        if(trackTraceLine[i] == pos)
-        {
-            // Found the ship position on track!
-            m_trackIndex = i;
-            break;
-        }
-    }
 }
 
