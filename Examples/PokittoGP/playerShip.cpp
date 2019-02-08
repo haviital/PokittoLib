@@ -18,6 +18,8 @@ CPlayerShip::CPlayerShip()
     m_isCollided = false;
     m_isTurningLeft = false;
     m_isTurningRight = false;
+    m_jumpAnimValue = NULL;
+    m_boosterAnimValue = NULL;
 
     // *** Setup sound
     m_tonefreq=0;
@@ -42,16 +44,30 @@ void CPlayerShip::Update()
     uint8_t wavetype = 1;
     //uint8_t tileIndex = 5;
     uint8_t tileIndex = GetTileIndexCommon(fix16_to_int(m_fxX), fix16_to_int(m_fxY));
-    if( /*m_isCollidedToPlayerShip ||*/
-        (
-            tileIndex != 5 && tileIndex != 6 &&
-            (tileIndex < 11 || tileIndex > 15)
-        )
-    )
+    if( (tileIndex == 16 ) )
     {
+        // Jump from the ramp.
+        if( ! m_jumpAnimValue )
+        {
+            m_jumpAnimValue = CAnimValue::GetFreeElement();
+            m_jumpAnimValue->Start( 1500, 0, fix16_pi, this, 0 );
+        }
+    }
+    else if( tileIndex == 15 )
+    {
+        // Booster.
+        if( ! m_boosterAnimValue )
+        {
+            m_boosterAnimValue = CAnimValue::GetFreeElement();
+            m_boosterAnimValue->Start( 1000, fix16_one, fix16_one, this, 1 );
+        }
+    }
+    else if( ! m_jumpAnimValue && tileIndex != 5 && tileIndex != 6 &&
+        (tileIndex < 11 || tileIndex > 15) )
+    {
+        // Collided to the terrain.
         m_isCollided = true;
         wavetype = 5;
-
     }
 
     // get the current lap time
@@ -71,6 +87,10 @@ void CPlayerShip::Update()
 
     // Read keys.
     HandleGameKeys();
+
+    // Boost
+    if( m_boosterAnimValue )
+        m_fxVel = g_fxBoostVel;
 
     // If colliding, slow down
     if( m_isCollided ) {
@@ -99,7 +119,7 @@ void CPlayerShip::Update()
         m_fxRotVel = fxInitialRotVel*10;
 
     // Limit speed
-    if(m_fxVel>fxMaxSpeed)
+    if(m_fxVel>fxMaxSpeed && m_boosterAnimValue==NULL )
         m_fxVel = fxMaxSpeed;
     else if(m_fxVel<-fxMaxSpeed)
         m_fxVel = -fxMaxSpeed;
@@ -140,10 +160,19 @@ void CPlayerShip::Update()
     // Change sound effect if needed.
     if(fxVelOld != m_fxVel || prevCollided != m_isCollided )
     {
-        m_tonefreq = fix16_to_int(abs(m_fxVel*5));
-        if(m_tonefreq>50) m_tonefreq = 50;
-            //snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
+        if(m_boosterAnimValue)
+        {
+            // Booster sound
+            setOSC(&osc1,1,/*wavetype*/4,1,0,0,/* m_tonefreq */ 40,amplitude,0,0,0,0,0,0,arpmode,1,0);
+        }
+        else
+        {
+            // Sound by the speed
+            m_tonefreq = fix16_to_int(abs(m_fxVel*5));
+            if(m_tonefreq>50) m_tonefreq = 50;
+                //snd.playTone(1,m_tonefreq,amplitude,wavetype,arpmode);
             setOSC(&osc1,1,wavetype,1,0,0,m_tonefreq,amplitude,0,0,0,0,0,0,arpmode,1,0);
+        }
     }
 
     // Update camera pos
@@ -257,6 +286,7 @@ void CPlayerShip::FindActiveWaypoint()
     {
         m_activeWaypointIndex = lastCheckedWPIndex;
         m_lastCheckedWPIndex = -1; // None checked
+        m_activeWaypointFoundTimeInMs = mygame.getTime();
         m_doRecalcRank = true;
         //m_waypointsVisited[ m_lastVisitedWPIndex ] = true;
     }
@@ -300,6 +330,13 @@ void CPlayerShip::Reset()
     m_activeWaypointIndex = -1;
     m_lastCheckedWPIndex = -1;
     m_doRecalcRank = false;
+    m_activeWaypointFoundTimeInMs = 0;
+    if( m_jumpAnimValue )
+        m_jumpAnimValue->Reset();
+    m_jumpAnimValue = NULL;
+    if( m_boosterAnimValue )
+        m_boosterAnimValue->Reset();
+    m_boosterAnimValue = NULL;
  }
 
 // Handle keys
@@ -396,4 +433,12 @@ void CPlayerShip::HandleGameKeys()
 #endif
 }
 
+// Animation finished.
+void CPlayerShip::Finished( int32_t par )
+{
+    if(par==0)
+        m_jumpAnimValue = NULL;
+    else if(par==1)
+        m_boosterAnimValue = NULL;
+}
 

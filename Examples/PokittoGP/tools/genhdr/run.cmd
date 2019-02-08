@@ -3,7 +3,7 @@ echo on
 
 rem *** palette
 
-genpalette image_numbers.bmp image_shadow.bmp image_ship.bmp image_sky.bmp image_cactus.bmp image_rock1.bmp image_spot.bmp image_ball1.bmp image_terrain_6.bmp image_start.bmp image_road1.bmp image_road2.bmp image_light.bmp
+genpalette image_numbers.bmp image_shadow.bmp image_ship.bmp image_sky.bmp image_cactus.bmp image_rock1.bmp image_spot.bmp image_ball1.bmp image_terrain_6.bmp image_start.bmp image_road1.bmp image_road2.bmp image_light.bmp image_ramp1.bmp image_boost1.bmp
 C:\bin\NetPBM-10.68\bin\pngtopnm palette.png > tmp\palette256.ppm
 rem C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\palette256.ppm > palette.bmp
 C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\palette256.ppm -mapfile=tmp\palette256.ppm > output\palette.bmp
@@ -38,6 +38,8 @@ call ./genhdr_split4_mipmap.cmd image_start
 call ./genhdr.cmd image_road1
 call ./genhdr.cmd image_road2
 call ./genhdr.cmd image_light
+call ./genhdr.cmd image_boost1
+call ./genhdr.cmd image_ramp1
 
 call ./genhdr.cmd image_sky
 call ./genhdr.cmd image_sky_long

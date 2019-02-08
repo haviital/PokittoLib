@@ -3,7 +3,7 @@ C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>rem *** palette 
 
-C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>genpalette image_numbers.bmp image_shadow.bmp image_ship.bmp image_sky.bmp image_cactus.bmp image_rock1.bmp image_spot.bmp image_ball1.bmp image_terrain_6.bmp image_start.bmp image_road1.bmp image_road2.bmp image_light.bmp 
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>genpalette image_numbers.bmp image_shadow.bmp image_ship.bmp image_sky.bmp image_cactus.bmp image_rock1.bmp image_spot.bmp image_ball1.bmp image_terrain_6.bmp image_start.bmp image_road1.bmp image_road2.bmp image_light.bmp image_ramp1.bmp image_boost1.bmp 
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\pngtopnm palette.png  1>tmp\palette256.ppm 
 
@@ -19,8 +19,8 @@ Pokitto BMP to Pokitto bitmap conversion utility
 File name: palette.bmp 
 Number of colours used: 256
 Bits per pixel: 8
-Size in pixels: 84 x 1
-Size in bytes: 84
+Size in pixels: 104 x 1
+Size in bytes: 104
 Colour: 0  r:255 g:0   b:255
 Colour: 1  r:0   g:0   b:0  
 Colour: 2  r:94  g:94  b:94 
@@ -105,26 +105,26 @@ Colour: 80 r:190 g:190 b:190
 Colour: 81 r:127 g:127 b:199
 Colour: 82 r:159 g:159 b:159
 Colour: 83 r:149 g:149 b:149
-Colour: 84 r:0   g:0   b:0  
-Colour: 85 r:0   g:0   b:0  
-Colour: 86 r:0   g:0   b:0  
-Colour: 87 r:0   g:0   b:0  
-Colour: 88 r:0   g:0   b:0  
-Colour: 89 r:0   g:0   b:0  
-Colour: 90 r:0   g:0   b:0  
-Colour: 91 r:0   g:0   b:0  
-Colour: 92 r:0   g:0   b:0  
-Colour: 93 r:0   g:0   b:0  
-Colour: 94 r:0   g:0   b:0  
-Colour: 95 r:0   g:0   b:0  
-Colour: 96 r:0   g:0   b:0  
-Colour: 97 r:0   g:0   b:0  
-Colour: 98 r:0   g:0   b:0  
-Colour: 99 r:0   g:0   b:0  
-Colour: 100 r:0   g:0   b:0  
-Colour: 101 r:0   g:0   b:0  
-Colour: 102 r:0   g:0   b:0  
-Colour: 103 r:0   g:0   b:0  
+Colour: 84 r:255 g:139 b:0  
+Colour: 85 r:255 g:224 b:0  
+Colour: 86 r:213 g:119 b:7  
+Colour: 87 r:170 g:96  b:8  
+Colour: 88 r:205 g:126 b:32 
+Colour: 89 r:205 g:184 b:32 
+Colour: 90 r:203 g:125 b:32 
+Colour: 91 r:175 g:112 b:37 
+Colour: 92 r:254 g:255 b:252
+Colour: 93 r:176 g:113 b:37 
+Colour: 94 r:146 g:97  b:37 
+Colour: 95 r:147 g:97  b:37 
+Colour: 96 r:60  g:247 b:60 
+Colour: 97 r:3   g:198 b:3  
+Colour: 98 r:3   g:152 b:3  
+Colour: 99 r:61  g:185 b:61 
+Colour: 100 r:67  g:163 b:67 
+Colour: 101 r:123 g:123 b:123
+Colour: 102 r:78  g:155 b:78 
+Colour: 103 r:107 g:138 b:107
 Colour: 104 r:0   g:0   b:0  
 Colour: 105 r:0   g:0   b:0  
 Colour: 106 r:0   g:0   b:0  
@@ -1709,6 +1709,60 @@ Size in bytes: 96
 Outputting c file: image_light.c
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_light.c ..\..\..\gfx_hdr\image_light.h 
+        1 file(s) copied.
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr.cmd image_boost1 
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_boost1.bmp  1>tmp\image_boost1.ppm 
+bmptoppm: Windows BMP, 8x12x4
+bmptoppm: WRITING PPM IMAGE
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_boost1.ppm -mapfile=tmp\palette256.ppm  1>output\image_boost1.bmp 
+ppmtobmp: Writing 8 bits per pixel with a color palette
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_boost1.bmp -8 -n 
+Pokitto BMP to Pokitto bitmap conversion utility
+File name: image_boost1.bmp 
+Number of colours used: 256
+Bits per pixel: 8
+Size in pixels: 8 x 12
+Size in bytes: 96
+Outputting c file: image_boost1.c
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_boost1.c ..\..\..\gfx_hdr\image_boost1.h 
+        1 file(s) copied.
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>call ./genhdr.cmd image_ramp1 
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>echo on 
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\bmptoppm image_ramp1.bmp  1>tmp\image_ramp1.ppm 
+bmptoppm: Windows BMP, 8x12x4
+bmptoppm: WRITING PPM IMAGE
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>C:\bin\NetPBM-10.68\bin\ppmtobmp tmp\image_ramp1.ppm -mapfile=tmp\palette256.ppm  1>output\image_ramp1.bmp 
+ppmtobmp: Writing 8 bits per pixel with a color palette
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr>cd output 
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>..\bmp2pok image_ramp1.bmp -8 -n 
+Pokitto BMP to Pokitto bitmap conversion utility
+File name: image_ramp1.bmp 
+Number of colours used: 256
+Bits per pixel: 8
+Size in pixels: 8 x 12
+Size in bytes: 96
+Outputting c file: image_ramp1.c
+
+C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>copy image_ramp1.c ..\..\..\gfx_hdr\image_ramp1.h 
         1 file(s) copied.
 
 C:\git\PokittoLib2\Examples\PokittoGP\tools\genhdr\output>cd .. 

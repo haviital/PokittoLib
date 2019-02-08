@@ -207,7 +207,7 @@ int main () {
                 // Draw the current lap time
                 int32_t lapStartX = 110-5;  // 5 pixel margin
                 lapStartX -= 5*6; // 5 chars
-                DrawLapTime(g_playerShip.m_current_lap_time_ms, lapStartX, 1, fix16_one );
+                DrawLapTime(g_playerShip.m_current_lap_time_ms, g_playerShip.m_activeWaypointFoundTimeInMs, lapStartX, 1, fix16_one );
 
                 // Draw the current rank
                 if( g_isRace )
@@ -991,9 +991,9 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                             g_playerShip.SetImpulse( fxAngleToShip + fix16_pi );
 
                             //!!HV
-                            fxTest_X = fxX - fxRotCenterX;
-                            fxTest_Y = fxY - fxRotCenterY;
-                            fxTest_Angle = fxAngleToShip;
+                            //fxTest_X = fxX - fxRotCenterX;
+                            //fxTest_Y = fxY - fxRotCenterY;
+                            //fxTest_Angle = fxAngleToShip;
 
                             isCollidedToPlayerShip = true;
                         }
@@ -1044,6 +1044,7 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
             int32_t scaledHeight = fix16_to_int((fxScreenTrY - fxScreenBlY));
 
             // Draw shadow
+            int32_t jumpOffset = 0;
             if( drawablePrevObj == &g_playerShip )
             {
                 uint16_t shadowW = image_shadow[0];
@@ -1054,11 +1055,20 @@ bool Draw3dObects(fix16_t fxCamPosX, fix16_t fxCamPosY, fix16_t fxAngle)
                     fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight + shadowScreenOffsetY,
                     shadowBitmapPtr,
                     shadowW, shadowH, scaledWidth, scaledHeight );
+
+                // Calc jump offset
+                if( g_playerShip.m_jumpAnimValue )
+                {
+                    fix16_t fxVal = g_playerShip.m_jumpAnimValue->m_fxValue;
+                    fxVal = fix16_sin( fxVal );
+                    jumpOffset = fix16_to_int( -fxVal*10 );
+                }
             }
 
             // Draw scaled bitmap
             DrawScaledBitmap8bit(
-                fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1), horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight,
+                fix16_to_int(fxScreenBlX) + 63 - (scaledWidth>>1),
+                horizonY -screenShiftY- fix16_to_int(fxScreenBlY) - scaledHeight + jumpOffset,
                 bitmapData,
                 bitmapW, bitmapH, scaledWidth, scaledHeight );
 
@@ -1117,7 +1127,8 @@ void RestoreRomTextures()
         image_start_b+2,        /*index: 12*/
         image_start_c+2,        /*index: 13*/
         image_start_d+2,        /*index: 14*/
-        image_light+2,          /*index: 15*/
+        image_boost1+2,         /*index: 15*/
+        image_ramp1+2,          /*index: 16*/
     };
 
     for( int32_t i=1; i < current_texture_bitmaps_count-1; i++ )
@@ -1155,7 +1166,7 @@ void CalcFreeRamAndHang()
 
     int32_t freeSize = (i-1) * 100;
     mygame.display.fillRect(0, 0, screenW, screenH);
-    mygame.display.setColor(2,1);
+    mygame.display.setColor(3,1);
     mygame.display.print(0, 0, "Free mem:");
     mygame.display.println("");
     mygame.display.println(freeSize);

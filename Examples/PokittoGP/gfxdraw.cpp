@@ -603,8 +603,22 @@ void DrawScaledBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, 
 }
 
 //
-void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor)
+void DrawLapTime(int32_t milliseconds, uint32_t activeWpFoundAtInMs, uint32_t x, uint32_t y, fix16_t fxScaleFactor)
 {
+    // If cannot find new waypoints in 5 seconds, the player is out of track.
+    if(milliseconds>0 && activeWpFoundAtInMs>0 && ( g_currentFrameTimeInMs - activeWpFoundAtInMs ) > 5000 )
+    {
+        const unsigned char * orgFont = mygame.display.font;
+        mygame.display.setFont(font3x5);
+        if(g_currentFrameTimeInMs&0x400)
+            mygame.display.setColor(3,1);
+        else
+            mygame.display.setColor(2,1);
+        mygame.display.print(x,y,"OUT!");
+        mygame.display.setFont(orgFont);
+        return;
+    }
+
     fix16_t fxStartX = fix16_from_int(x);
     int32_t tens = milliseconds / 10000;
     milliseconds -= tens * 10000;

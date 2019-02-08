@@ -33,6 +33,7 @@ const fix16_t fxMaxSpeed = fix16_one*6;  // player max speed
 const fix16_t fxDefaultOtherShipSpeed = fix16_one*10;
 const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  fxMaxSpeedCollided * 7;
 const fix16_t fxDefaultOtherShipSpeedInCorner =  fxMaxSpeedCollided * 12;
+const fix16_t g_fxBoostVel = fix16_one*10;
 //const fix16_t fxDefaultOtherShipSpeed = (fix16_one*10)>>2;
 //const fix16_t fxDefaultOtherShipSpeedInCorner =  (fxMaxSpeedCollided * 12)>>2;
 //const fix16_t fxDefaultOtherShipSpeedInSlowCorner =  (fxMaxSpeedCollided * 7)>>2;
@@ -155,7 +156,7 @@ void SetupMusic(int32_t songNumber);
 
 //
 void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fxRotateCenterX, fix16_t fxRotateCenterY, fix16_t* perspectiveScaleXArr, fix16_t* perspectiveScaleYArr, uint16_t sceneryH2);
-void DrawLapTime(int32_t milliseconds, uint32_t x, uint32_t y, fix16_t fxScaleFactor);
+void DrawLapTime(int32_t milliseconds, uint32_t activeWpFoundAtInMs, uint32_t x, uint32_t y, fix16_t fxScaleFactor);
 void DrawBitmapOpaque8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );
 void DrawTiledBitmapOpaque256ColorPOT(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, const uint32_t bitmapW_POT, uint32_t bitmapH, uint32_t targetW );
 void DrawBitmap8bit(int32_t posX, int32_t posY, const uint8_t* bitmapPtr, uint32_t bitmapW, uint32_t bitmapH );

@@ -472,6 +472,8 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
         {0,8,12,1,"tex03.bmp"},   // 3: road2
         {0,16,24,4,"tex04.bmp"},  // 4: terrain
         {0,16,24,4,"tex05.bmp"},  // 5: start grid
+        {0,8,12,1,"tex06.bmp"},   // 6: booster
+        {0,8,12,1,"tex07.bmp"},   // 7: ramp
 
         {1,-1,-1,1,"sprite01.bmp"},  // Cactus
         {1,-1,-1,1,"sprite02.bmp"},  // Stone

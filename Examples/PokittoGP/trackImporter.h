@@ -14,7 +14,7 @@ namespace TrackImporter
     //........
 
     // Conversion between the ascii char and the block index.
-    const int32_t asciiTrackConversionTableCount = 22;
+    const int32_t asciiTrackConversionTableCount = 24;
     const char asciiTrackConversionTable[asciiTrackConversionTableCount] = {
         '|',  // 0: The left edge.
         '!',  // 1: The right edge.
@@ -38,7 +38,8 @@ namespace TrackImporter
         '~',  // 19: The horizontal road centre.
         'o',  // 20: The empty road centre.
         '@',  // 21: The starting grid, center block.
-
+        '1',  // 22: The empty road centre with a boost area.
+        '2',  // 23: The empty road centre with a ramp.
     };
 
     // constants.

@@ -57,6 +57,8 @@
 #include "image_sky_long.h"
 #include "image_light.h"
 #include "image_spot.h"
+#include "image_boost1.h"
+#include "image_ramp1.h"
 
 // Palette
 // UI colors ==> 0-7 colors
@@ -326,7 +328,7 @@
     },
     // block: 21
     {
-        // 8x8 tile indexes.Left edge of the road. Start grid.
+        // 8x8 tile indexes. Start grid, center block.
         12,11,12,11,12,11,12,11,
         14,13,14,13,14,13,14,13,
         12,11,12,11,12,11,12,11,
@@ -337,6 +339,30 @@
         14,13,14,13,14,13,14,13,
      },
 
+    // block: 22. Road middle block with boost area
+    {
+        // 8x8 tile indexes
+        6, 6, 6, 6, 6, 6, 6, 6,
+        6, 6, 6, 6, 6, 6, 6, 6,
+        6, 6,15,15,15,15, 6, 6,
+        6, 6,15,15,15,15, 6, 6,
+        6, 6,15,15,15,15, 6, 6,
+        6, 6,15,15,15,15, 6, 6,
+        6, 6, 6, 6, 6, 6, 6, 6,
+        6, 6, 6, 6, 6, 6, 6, 6,
+    },
+    // block: 23. Road middle block with ramp
+    {
+        // 8x8 tile indexes
+        6, 6, 6, 6, 6, 6, 6, 6,
+        6, 6, 6, 6, 6, 6, 6, 6,
+        6, 6,16,16,16,16, 6, 6,
+        6, 6,16,16,16,16, 6, 6,
+        6, 6,16,16,16,16, 6, 6,
+        6, 6,16,16,16,16, 6, 6,
+        6, 6, 6, 6, 6, 6, 6, 6,
+        6, 6, 6, 6, 6, 6, 6, 6,
+    },
 };
 
 const uint8_t billboard_object_bitmaps_count = 25 + 3;
@@ -470,7 +496,7 @@ const uint8_t* edge_bitmaps [edge_bitmaps_count] = {
 //    image_ball5_d+2,
 };
 
-const uint8_t current_texture_bitmaps_count = 16;
+const uint8_t current_texture_bitmaps_count = 17;
 const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
     NULL,
     image_ball1_a+2,        /*index: 1*/
@@ -487,7 +513,8 @@ const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
     image_start_b+2,        /*index: 12*/
     image_start_c+2,        /*index: 13*/
     image_start_d+2,        /*index: 14*/
-    image_light+2,          /*index: 15*/
+    image_boost1+2,         /*index: 15*/
+    image_ramp1+2,          /*index: 16*/
 };
 
 const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
