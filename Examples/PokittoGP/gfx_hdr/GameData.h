@@ -401,7 +401,7 @@ const uint8_t* billboard_object_bitmaps [billboard_object_bitmaps_count] = {
 };
 
 const uint8_t current_texture_bitmaps_count = 17;
-const uint8_t* default_rom_bitmaps[current_texture_bitmaps_count] =
+const uint8_t* default_rom_bitmap_data[current_texture_bitmaps_count] =
 {
     NULL,
     image_ball1_a+2,        /*index: 1*/
@@ -422,6 +422,6 @@ const uint8_t* default_rom_bitmaps[current_texture_bitmaps_count] =
     image_ramp1+2,          /*index: 16*/
 };
 
-const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {0};
-const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
-const uint8_t* current_texture_bitmaps_mm2[current_texture_bitmaps_count] = {0};
+const uint8_t* current_texture_bitmap_data[current_texture_bitmaps_count] = {0};
+const uint8_t* current_texture_bitmap_data_mm1[current_texture_bitmaps_count] = {0};
+const uint8_t* current_texture_bitmap_data_mm2[current_texture_bitmaps_count] = {0};

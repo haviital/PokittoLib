@@ -649,14 +649,14 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
 
             if( textureFileParamArr[ fileIndex].numOfParts == 1 )
             {
-                current_texture_bitmaps[texIndex] = bitmap+2;
-                current_texture_bitmaps_mm1[texIndex] =  current_texture_bitmaps[texIndex] + (w * w);
-                current_texture_bitmaps_mm2[texIndex] =  current_texture_bitmaps[texIndex] + (w * w) + (w>>1);
+                current_texture_bitmap_data[texIndex] = bitmap+2;
+                current_texture_bitmap_data_mm1[texIndex] =  current_texture_bitmap_data[texIndex] + (w * w);
+                current_texture_bitmap_data_mm2[texIndex] =  current_texture_bitmap_data[texIndex] + (w * w) + (w>>1);
                 bitmap = NULL;
 
                 // Convert indexes
                 for(int32_t ii=0; ii<w*h; ii++)
-                    *(((uint8_t*)(current_texture_bitmaps[texIndex]))+ii) = current_texture_bitmaps[texIndex][ii] + startOfPaletteImportIndex;
+                    *(((uint8_t*)(current_texture_bitmap_data[texIndex]))+ii) = current_texture_bitmap_data[texIndex][ii] + startOfPaletteImportIndex;
             }
             else if( textureFileParamArr[ fileIndex].numOfParts == 4 )
             {
@@ -685,10 +685,10 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
                         tmpBitmapData3[y*8+x] = readBitmapData[(y+8)*16+x+8] + startOfPaletteImportIndex;
                     }
                 }
-                current_texture_bitmaps[texIndex] = tmpBitmapData0;
-                current_texture_bitmaps[texIndex+1] = tmpBitmapData1;
-                current_texture_bitmaps[texIndex+2] = tmpBitmapData2;
-                current_texture_bitmaps[texIndex+3] = tmpBitmapData3;
+                current_texture_bitmap_data[texIndex] = tmpBitmapData0;
+                current_texture_bitmap_data[texIndex+1] = tmpBitmapData1;
+                current_texture_bitmap_data[texIndex+2] = tmpBitmapData2;
+                current_texture_bitmap_data[texIndex+3] = tmpBitmapData3;
 
                 // MIPMAP 1 (4x4 pixels)
                 uint8_t* readBitmapDataMM = readBitmapData + (16*16);
@@ -702,10 +702,10 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
                         tmpBitmapData3[(y+8)*8+x] = readBitmapDataMM[(y+4)*16 + x+4] + startOfPaletteImportIndex;
                     }
                 }
-                current_texture_bitmaps_mm1[texIndex] = tmpBitmapData0 + (8 * 8);
-                current_texture_bitmaps_mm1[texIndex+1] = tmpBitmapData1 + (8 * 8);
-                current_texture_bitmaps_mm1[texIndex+2] = tmpBitmapData2 + (8 * 8);
-                current_texture_bitmaps_mm1[texIndex+3] = tmpBitmapData3 + (8 * 8);
+                current_texture_bitmap_data_mm1[texIndex] = tmpBitmapData0 + (8 * 8);
+                current_texture_bitmap_data_mm1[texIndex+1] = tmpBitmapData1 + (8 * 8);
+                current_texture_bitmap_data_mm1[texIndex+2] = tmpBitmapData2 + (8 * 8);
+                current_texture_bitmap_data_mm1[texIndex+3] = tmpBitmapData3 + (8 * 8);
 
                 // MIPMAP 2 (2x2 pixels)
                 uint8_t* readBitmapDataMMM = readBitmapDataMM + 8;
@@ -719,10 +719,10 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
                         tmpBitmapData3[(y+8)*8+x+4] = readBitmapDataMMM[(y+2)*16 + x+2] + startOfPaletteImportIndex;
                     }
                 }
-                current_texture_bitmaps_mm2[texIndex] = tmpBitmapData0 + (8 * 8) + 4;
-                current_texture_bitmaps_mm2[texIndex+1] = tmpBitmapData1 + (8 * 8) + 4;
-                current_texture_bitmaps_mm2[texIndex+2] = tmpBitmapData2 + (8 * 8) + 4;
-                current_texture_bitmaps_mm2[texIndex+3] = tmpBitmapData3 + (8 * 8) + 4;
+                current_texture_bitmap_data_mm2[texIndex] = tmpBitmapData0 + (8 * 8) + 4;
+                current_texture_bitmap_data_mm2[texIndex+1] = tmpBitmapData1 + (8 * 8) + 4;
+                current_texture_bitmap_data_mm2[texIndex+2] = tmpBitmapData2 + (8 * 8) + 4;
+                current_texture_bitmap_data_mm2[texIndex+3] = tmpBitmapData3 + (8 * 8) + 4;
 
                 texIndex+=3;
 

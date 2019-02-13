@@ -1096,7 +1096,7 @@ void RestoreRomTextures()
    // TODO
     // must free the previously allocated user textures!
     //if(isUserTexture[texIndex])
-    //    free(current_texture_bitmaps[texIndex]-2);
+    //    free(current_texture_bitmap_data[texIndex]-2);
 
     // Copy the default palette.
     memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette_pal, 256*2);
@@ -1106,13 +1106,13 @@ void RestoreRomTextures()
     for( int32_t i=1; i < current_texture_bitmaps_count; i++ )
     {
         // Free the RAM bitmap.
-        if( current_texture_bitmaps[i] != NULL && current_texture_bitmaps[i] != default_rom_bitmaps[i] )
-            free((uint8_t*)(current_texture_bitmaps[i]-2));
+        if( current_texture_bitmap_data[i] != NULL && current_texture_bitmap_data[i] != default_rom_bitmap_data[i] )
+            free((uint8_t*)(current_texture_bitmap_data[i]-2));
 
         // Restore the default ROM bitmap.
-        current_texture_bitmaps[i] = default_rom_bitmaps[i];
-        current_texture_bitmaps_mm1[i] =  current_texture_bitmaps[i] + (texW * tileH);
-        current_texture_bitmaps_mm2[i] =  current_texture_bitmaps[i] + (texW * tileH) + (tileW>>1);
+        current_texture_bitmap_data[i] = default_rom_bitmap_data[i];
+        current_texture_bitmap_data_mm1[i] =  current_texture_bitmap_data[i] + (texW * tileH);
+        current_texture_bitmap_data_mm2[i] =  current_texture_bitmap_data[i] + (texW * tileH) + (tileW>>1);
    }
 
     // Reset sprite bitmap pointers.

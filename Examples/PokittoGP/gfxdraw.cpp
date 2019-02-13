@@ -63,11 +63,11 @@ void DrawMode7(int32_t tile2PosX, int32_t tile2PosY, fix16_t fxAngle, fix16_t fx
 
             // Get the tile.
             if( fxStepX >= fix16_from_int(2) )
-                tileBitmapPtr = (uint8_t*)current_texture_bitmaps_mm2[tileIndex]; // Background tile
+                tileBitmapPtr = (uint8_t*)current_texture_bitmap_data_mm2[tileIndex]; // Background tile
             else if( fxStepX >= fix16_from_float(1) )
-                tileBitmapPtr = (uint8_t*)current_texture_bitmaps_mm1[tileIndex]; // Background tile
+                tileBitmapPtr = (uint8_t*)current_texture_bitmap_data_mm1[tileIndex]; // Background tile
             else
-                tileBitmapPtr = (uint8_t*)current_texture_bitmaps[tileIndex]; // Background tile
+                tileBitmapPtr = (uint8_t*)current_texture_bitmap_data[tileIndex]; // Background tile
 
             // *** Draw one tile row fully.
 
