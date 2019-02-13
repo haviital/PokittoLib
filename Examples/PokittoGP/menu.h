@@ -16,6 +16,8 @@ public:
         enumRaceFinishedMenu = 5,
         enumPilotPictureMenu = 6,
         enumSelectTrackMenu = 7,
+        enumMoreMainMenu = 8,
+        enumCreditsScreenMenu = 9,
     };
 
     enum class ButtonAnimState
@@ -34,6 +36,7 @@ public:
     void HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMenuMode );
     bool HandleGenericMenu( uint32_t bestLap_ms, int32_t& /*in out */ cursorPos, char* item1, char* item2, char* item3, char* item4);
     bool HandlePilotPictureMenu();
+    bool HandleCreditScreenMenu();
     bool HandleSelectTrackMenu();
 
     // When this is called the CAnimValue is finished and will be used for other tasks. The caller should either

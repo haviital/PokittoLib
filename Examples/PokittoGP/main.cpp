@@ -134,13 +134,6 @@ int main () {
         #endif
     }
 
-    // Get mipmap pointers.
-    for( uint32_t ii=0; ii<current_texture_bitmaps_count; ii++)
-    {
-        current_texture_bitmaps_mm1[ii] =  current_texture_bitmaps[ii] + (texW * tileH);
-        current_texture_bitmaps_mm2[ii] =  current_texture_bitmaps[ii] + (texW * tileH) + (tileW>>1);
-    }
-
     // Initialize the music player
     InitMusicPlayer();
     snd.ampEnable(1);
@@ -1109,32 +1102,11 @@ void RestoreRomTextures()
     memcpy((uint8_t*)g_gamePalette, (uint8_t*)palette_pal, 256*2);
     Pokitto::Core::display.load565Palette(g_gamePalette);
 
-    // Free resources.
-    const uint8_t* default_rom_bitmaps[current_texture_bitmaps_count] =
-    {
-        NULL,
-        image_ball1_a+2,        /*index: 1*/
-        image_ball1_b+2,        /*index: 2*/
-        image_ball1_c+2,        /*index: 3*/
-        image_ball1_d+2,        /*index: 4*/
-        image_road1+2,          /*index: 5*/
-        image_road2+2,          /*index: 6*/
-        image_terrain_6_a+2,    /*index: 7*/
-        image_terrain_6_b+2,    /*index: 8*/
-        image_terrain_6_c+2,    /*index: 9*/
-        image_terrain_6_d+2,    /*index: 10*/
-        image_start_a+2,        /*index: 11*/
-        image_start_b+2,        /*index: 12*/
-        image_start_c+2,        /*index: 13*/
-        image_start_d+2,        /*index: 14*/
-        image_boost1+2,         /*index: 15*/
-        image_ramp1+2,          /*index: 16*/
-    };
-
-    for( int32_t i=1; i < current_texture_bitmaps_count-1; i++ )
+    // Free the current bitmaps and set the rom bitmaps.
+    for( int32_t i=1; i < current_texture_bitmaps_count; i++ )
     {
         // Free the RAM bitmap.
-        if(current_texture_bitmaps[i] != default_rom_bitmaps[i])
+        if( current_texture_bitmaps[i] != NULL && current_texture_bitmaps[i] != default_rom_bitmaps[i] )
             free((uint8_t*)(current_texture_bitmaps[i]-2));
 
         // Restore the default ROM bitmap.

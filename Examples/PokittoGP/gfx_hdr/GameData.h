@@ -400,104 +400,9 @@ const uint8_t* billboard_object_bitmaps [billboard_object_bitmaps_count] = {
     image_spot+2,
 };
 
-const uint8_t terrain_bitmaps_count = 1*4;
-const uint8_t* terrain_bitmaps [terrain_bitmaps_count] = {
-//    image_terrain_1_a+2,
-//    image_terrain_1_b+2,
-//    image_terrain_1_c+2,
-//    image_terrain_1_d+2,
-//    image_terrain_4_a+2,
-//    image_terrain_4_b+2,
-//    image_terrain_4_c+2,
-//    image_terrain_4_d+2,
-//    image_terrain_2_a+2,
-//    image_terrain_2_b+2,
-//    image_terrain_2_c+2,
-//    image_terrain_2_d+2,
-//    image_terrain_5_a+2,
-//    image_terrain_5_b+2,
-//    image_terrain_5_c+2,
-//    image_terrain_5_d+2,
-//    image_terrain_3_a+2,
-//    image_terrain_3_b+2,
-//    image_terrain_3_c+2,
-//    image_terrain_3_d+2,
-    image_terrain_6_a+2,
-    image_terrain_6_b+2,
-    image_terrain_6_c+2,
-    image_terrain_6_d+2,
-//    image_terrain_7_a+2,
-//    image_terrain_7_b+2,
-//    image_terrain_7_c+2,
-//    image_terrain_7_d+2,
-//    image_terrain_8_a+2,
-//    image_terrain_8_b+2,
-//    image_terrain_8_c+2,
-//    image_terrain_8_d+2,
-};
-
-//const uint8_t terrain_bitmaps_count = 8*4;
-//const uint8_t* terrain_bitmaps [terrain_bitmaps_count] = {
-//    image_terrain_1_a+2,
-//    image_terrain_1_b+2,
-//    image_terrain_1_c+2,
-//    image_terrain_1_d+2,
-//    image_terrain_2_a+2,
-//    image_terrain_2_b+2,
-//    image_terrain_2_c+2,
-//    image_terrain_2_d+2,
-//    image_terrain_3_a+2,
-//    image_terrain_3_b+2,
-//    image_terrain_3_c+2,
-//    image_terrain_3_d+2,
-//    image_terrain_4_a+2,
-//    image_terrain_4_b+2,
-//    image_terrain_4_c+2,
-//    image_terrain_4_d+2,
-//    image_terrain_5_a+2,
-//    image_terrain_5_b+2,
-//    image_terrain_5_c+2,
-//    image_terrain_5_d+2,
-//    image_terrain_6_a+2,
-//    image_terrain_6_b+2,
-//    image_terrain_6_c+2,
-//    image_terrain_6_d+2,
-//    image_terrain_7_a+2,
-//    image_terrain_7_b+2,
-//    image_terrain_7_c+2,
-//    image_terrain_7_d+2,
-//    image_terrain_8_a+2,
-//    image_terrain_8_b+2,
-//    image_terrain_8_c+2,
-//    image_terrain_8_d+2,
-//};
-
-const uint8_t edge_bitmaps_count = 1*4;
-const uint8_t* edge_bitmaps [edge_bitmaps_count] = {
-    image_ball1_a+2,
-    image_ball1_b+2,
-    image_ball1_c+2,
-    image_ball1_d+2,
-//    image_ball2_a+2,
-//    image_ball2_b+2,
-//    image_ball2_c+2,
-//    image_ball2_d+2,
-//    image_ball3_a+2,
-//    image_ball3_b+2,
-//    image_ball3_c+2,
-//    image_ball3_d+2,
-//    image_ball4_a+2,
-//    image_ball4_b+2,
-//    image_ball4_c+2,
-//    image_ball4_d+2,
-//    image_ball5_a+2,
-//    image_ball5_b+2,
-//    image_ball5_c+2,
-//    image_ball5_d+2,
-};
-
 const uint8_t current_texture_bitmaps_count = 17;
-const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
+const uint8_t* default_rom_bitmaps[current_texture_bitmaps_count] =
+{
     NULL,
     image_ball1_a+2,        /*index: 1*/
     image_ball1_b+2,        /*index: 2*/
@@ -517,5 +422,6 @@ const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {
     image_ramp1+2,          /*index: 16*/
 };
 
+const uint8_t* current_texture_bitmaps[current_texture_bitmaps_count] = {0};
 const uint8_t* current_texture_bitmaps_mm1[current_texture_bitmaps_count] = {0};
 const uint8_t* current_texture_bitmaps_mm2[current_texture_bitmaps_count] = {0};

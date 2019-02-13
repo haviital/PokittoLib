@@ -5,6 +5,8 @@
 #include "PokittoCookie.h"
 #include "animation.h"
 
+#define PGP_VERSION_STRING "1.1.0"
+
 // #define TEST_SHOW_INFO_OF_SHIP_NUM 1
 
 class CShip;
@@ -124,6 +126,7 @@ extern uint8_t* blockMapRAM;
 //extern const uint8_t blockMapROM[];
 extern uint8_t* blockMap;
 extern const uint8_t blockData[][8*8];
+extern const uint8_t* default_rom_bitmaps[];
 extern const uint8_t* current_texture_bitmaps[];
 extern const uint8_t* current_texture_bitmaps_mm1[];
 extern const uint8_t* current_texture_bitmaps_mm2[];
@@ -148,6 +151,8 @@ extern uint32_t g_frameNum;
 extern bool g_isRace;
 extern uint32_t g_shipCount;
 extern CShip* g_ships[];
+
+// *** Function protptypes
 
 //
 uint8_t GetTileIndexCommon(int32_t posX, int32_t posY);

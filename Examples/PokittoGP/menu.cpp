@@ -83,7 +83,11 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                 Pokitto::Core::display.load565Palette(image_titlescreen_pal);
                 DrawBitmapOpaque8bit(0, 0, &(image_titlescreen[2]), image_titlescreen[0], image_titlescreen[1] );
 
-                m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos, "Time trial", "Race", "Select track", "See pilots");
+                m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos,
+                        "Time trial",
+                        "Race",
+                        "Select track",
+                        "More");
 
                 if( ! m_isOpen )
                 {
@@ -95,8 +99,6 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                     playing = false;
                     setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
-
-                    int32_t menuItemNum = 0;
                     if(m_cursorPos == 0)
                     {
                         // time trial
@@ -122,7 +124,7 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                     else if(m_cursorPos == 3)
                     {
                         // race
-                        m_mode = enumPilotPictureMenu;
+                        m_mode = enumMoreMainMenu;
                         m_isOpen = true;
                     }
 
@@ -150,9 +152,72 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
             }
             break;
 
+        case enumMoreMainMenu:
+            {
+                // Load palette and the title image.
+                Pokitto::Core::display.load565Palette(image_titlescreen_pal);
+                DrawBitmapOpaque8bit(0, 0, &(image_titlescreen[2]), image_titlescreen[0], image_titlescreen[1] );
+
+                m_isOpen =  HandleGenericMenu( /*!!HV bestLap_ms*/0, m_cursorPos,
+                        "See pilots",
+                        "About",
+                        "Back",
+                        NULL);
+
+                if( ! m_isOpen )
+                {
+
+                    // Restore the original palette.
+                    //Pokitto::Core::display.load565Palette(g_gamePalette);
+
+                    //
+                    //playing = false;
+                    //setOSC(&osc1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+
+                    if(m_cursorPos == 0)
+                    {
+                        // Pilot picture
+                        m_mode = enumPilotPictureMenu;
+                        m_isOpen = true;
+                    }
+                    else if(m_cursorPos == 1)
+                    {
+                         // Credits Screen
+                        m_mode = enumCreditsScreenMenu;
+                        m_isOpen = true;
+                    }
+                    else
+                    {
+                        // Back
+                        m_mode = enumMainMenu;
+                        m_isOpen = true;
+                    }
+
+                    // Menu closed
+                    m_cursorPos = 0;
+                    stopAnimations = true;
+               }
+           }
+           break;
+
         case enumPilotPictureMenu:
             {
-                m_isOpen =  HandlePilotPictureMenu();
+                m_isOpen = HandlePilotPictureMenu();
+                if( ! m_isOpen )
+                {
+                    m_mode = enumMainMenu;
+                    m_isOpen = true;
+
+                    // Menu closed
+                    m_cursorPos = 0;
+                    stopAnimations = true;
+                }
+            }
+            break;
+
+        case enumCreditsScreenMenu:
+            {
+                m_isOpen = HandleCreditScreenMenu();
                 if( ! m_isOpen )
                 {
                     m_mode = enumMainMenu;
@@ -169,7 +234,11 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
             {
                 if(isRace_)
                 {
-                    m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Continue", "Exit race", NULL);
+                    m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos,
+                            "Restart",
+                            "Continue",
+                            "Exit race",
+                            NULL);
 
                     if( ! m_isOpen )
                     {
@@ -199,7 +268,11 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
                  }
                else  // !isRace_
                 {
-                    m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Exit trial", NULL, NULL);
+                    m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos,
+                            "Restart",
+                            "Exit trial",
+                            NULL,
+                            NULL);
 
                     if( ! m_isOpen )
                     {
@@ -225,7 +298,11 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
         case enumTimeTrialFinishedMenu:
             {
-               m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Exit trial", NULL, NULL);
+               m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos,
+                        "Restart",
+                        "Exit trial",
+                        NULL,
+                        NULL);
                 if( ! m_isOpen )
                 {
                     //
@@ -253,7 +330,11 @@ void CMenu::HandleMenus(bool isRace_, uint32_t bestLap_ms, MenuMode requestedMen
 
         case enumRaceFinishedMenu:
             {
-               m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos, "Restart", "Exit race", NULL, NULL);
+               m_isOpen =  HandleGenericMenu( bestLap_ms, m_cursorPos,
+                        "Restart",
+                        "Exit race",
+                        NULL,
+                        NULL);
                 if( ! m_isOpen )
                 {
                     //
@@ -488,6 +569,87 @@ bool CMenu::HandlePilotPictureMenu()
         // Show picture
         DrawBitmapOpaque8bit(0, 0, &(image_pilots2[2]), image_pilots2[0], image_pilots2[1] );
     }
+
+    if(Pokitto::Core::buttons.released(BTN_A))
+    {
+        if(! m_pressedAkeyDownOutsideMenu)
+        {
+            // Close the menu
+            //Pokitto::Core::display.load565Palette(g_gamePalette);
+            return false;
+        }
+        else
+        {
+            // Do not close the menu
+            m_pressedAkeyDownOutsideMenu = false;
+            return true;
+        }
+    }
+    else if(Pokitto::Core::buttons.released(BTN_UP) && m_pilotPicturePage == 1)
+    {
+        m_pilotPicturePage = 0;
+
+        // Do not close the menu
+        return true;
+    }
+    else if(Pokitto::Core::buttons.released(BTN_DOWN) && m_pilotPicturePage == 0)
+    {
+        m_pilotPicturePage = 1;
+
+        // Do not close the menu
+        return true;
+    }
+    else
+    {
+        // Do not close the menu
+        return true;
+    }
+}
+
+//
+//
+bool CMenu::HandleCreditScreenMenu()
+{
+    // If the menu is not yet open, make sure that the A key is pressed down *after* the menu is opened.
+    if( mygame.buttons.aBtn() )
+    {
+        if(! m_isOpen  )
+            m_pressedAkeyDownOutsideMenu = true;
+    }
+
+    // Clear screen
+    mygame.display.setColor(1,1);
+    mygame.display.fillRect(0, 0, screenW, screenH);
+    const unsigned char * orgFont = mygame.display.font;  // SAve original fonr
+    mygame.display.setFont(font3x5);
+
+    if(/*m_pilotPicturePage == 0*/true)
+    {
+        // Print text
+        mygame.display.setColor(2,1);
+        //                              123456789012345678901234567
+        mygame.display.print(0, 0,      "2019, ver. ");
+        mygame.display.println(PGP_VERSION_STRING);
+        mygame.display.println(         "");
+        mygame.display.println(         "Coded and designed by");
+        mygame.display.println(         "Hannu Viitala. Graphics");
+        mygame.display.println(         "by Pharap, JP, Vampirics,");
+        mygame.display.println(         "AndHeGames");
+        mygame.display.println(         "");
+        mygame.display.println(         "Thanks to Pokitto");
+        mygame.display.println(         "community for help!");
+        while (!mygame.update()); // draw now
+    }
+    else
+    {
+        // Print text
+        mygame.display.setColor(2,1);
+        mygame.display.print(1, 30, "Loading");
+        mygame.display.print(1, 40, "the track...");
+        while (!mygame.update()); // draw now
+    }
+
+    mygame.display.setFont(orgFont);  // Revert to the original font
 
     if(Pokitto::Core::buttons.released(BTN_A))
     {
