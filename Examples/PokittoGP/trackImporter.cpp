@@ -463,7 +463,7 @@ bool TrackImporter::ReadAndValidateTextures(char* trackDirPath, char* trackDirNa
         char filename[16];
     };
 
-    const int32_t startOfSpritesIndex = 6;
+    const int32_t startOfSpritesIndex = 8;
     const STextureFileParam textureFileParamArr[] =
     {
         {0,0,0,0,""},
