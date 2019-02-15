@@ -13,8 +13,7 @@ del frozen_mpy.c
 
 @rem Compile py-files to mpy-files
 for %%a in (src_py\*) do (
-    @echo on
-
+    
     tools\mpy-cross -o mpy\%%~na.mpy -s %%~na.py src_py\%%~na.py
     @echo *** Compile to bytecode: %%~na.py 
     if ERRORLEVEL 1 ( 

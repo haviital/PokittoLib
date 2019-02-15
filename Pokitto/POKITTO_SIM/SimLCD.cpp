@@ -1351,7 +1351,7 @@ uint8_t *d;
 setDRAMptr(0,0);
 
 for(x=0;x<110;x++)
-{
+ {
     d = scrbuf+x;// point to beginning of line in data
     uint8_t s=0;
     for(y=0;y<88;y++)
@@ -1382,7 +1382,7 @@ for(x=0;x<110;x++)
         setup_data_16(scanline[s++]);CLR_WR;SET_WR;CLR_WR;SET_WR;
   }
 
-}
+ }
 }
 
 void Pokitto::lcdRefreshMode14(uint8_t * scrbuf, uint16_t* paletteptr) {

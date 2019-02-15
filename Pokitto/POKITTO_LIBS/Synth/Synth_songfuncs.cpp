@@ -230,7 +230,6 @@ void emptySong(){
     song.note_stream[2] = &block[2].notenumber[0];
     sequencepos = 0;
 }
-#if POK_ENABLE_SD > 0
 
 int openSongFromSD(char* buffer) {
     if (!isThisFileOpen(buffer)) {

@@ -116,13 +116,15 @@ char* getCurrentFileName (){
     return currentfile;
 }
 
+char* getFirstDirEntry() {
+    return getFirstDirEntry((char*)"./");
+}
 
 char* getFirstDirEntry(char* path) {
     if (diropened) {
         tinydir_close(&tinydir);
         diropened=false;
     }
-    //tinydir_open(&tinydir, "./");
     tinydir_open(&tinydir, path);
     diropened = true;
     int err = tinydir_readfile(&tinydir, &tinyfile);
@@ -206,7 +208,6 @@ char* getFirstFile(char* ext, char* path) {
         tinydir_close(&tinydir);
         diropened=false;
     }
-    //tinydir_open(&tinydir, "./");
     tinydir_open(&tinydir, path);
     diropened = true;
     int b = tinydir_readfile(&tinydir, &tinyfile);

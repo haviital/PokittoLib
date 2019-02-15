@@ -34,11 +34,9 @@
 */
 /**************************************************************************/
 
-//!!HV #if POKITTO_USE_WIN_SIMULATOR
 #ifdef WIN32 // these types are not standard, only exist in windows
 #include "defines_win_SIM.h"
 #else
-//!!HV #if PROJ_LINUX
 #include "defines_linux_SIM.h"
 #endif
 

@@ -321,9 +321,6 @@ void Sound::updateTrack(uint8_t channel){
 #if(NUM_CHANNELS > 0)
 	if(channel>=NUM_CHANNELS)
 		return;
-    bool test = trackIsPlaying[channel];
-    bool test2 = patternIsPlaying[channel];
-    bool test3 = test && !test2;
 	if(trackIsPlaying[channel] && !patternIsPlaying[channel]){
 		uint16_t data = pgm_read_word(trackData[channel] + trackCursor[channel]);
 		if(data == 0xFFFF){ //en of the track
