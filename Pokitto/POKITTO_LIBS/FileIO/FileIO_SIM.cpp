@@ -116,10 +116,6 @@ char* getCurrentFileName (){
     return currentfile;
 }
 
-char* getFirstDirEntry() {
-    return getFirstDirEntry((char*)"./");
-}
-
 char* getFirstDirEntry(char* path) {
     if (diropened) {
         tinydir_close(&tinydir);
@@ -144,6 +140,10 @@ char* getFirstDirEntry(char* path) {
         if (err==-1) break;
     }
     return 0;
+}
+
+char* getFirstDirEntry() {
+    return getFirstDirEntry((char*)"./");
 }
 
 char* getNextDirEntry (){

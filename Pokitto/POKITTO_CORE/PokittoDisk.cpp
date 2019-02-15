@@ -83,10 +83,6 @@ void emptyFname() {
 
 /** PUBLIC FUNCTIONS **/
 
-char* getFirstDirEntry() {
-    return getFirstDirEntry("");
-}
-
 char* getFirstDirEntry(char* path) {
     res=0;
     if (!diropened) {
@@ -112,6 +108,10 @@ char* getFirstDirEntry(char* path) {
         if (res==0 && dir.index==0) break;
     }
     return 0;
+}
+
+char* getFirstDirEntry() {
+    return getFirstDirEntry("");
 }
 
 char* getNextDirEntry() {
