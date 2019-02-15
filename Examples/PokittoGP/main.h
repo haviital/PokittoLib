@@ -5,7 +5,7 @@
 #include "PokittoCookie.h"
 #include "animation.h"
 
-#define PGP_VERSION_STRING "1.1.0"
+#define PGP_VERSION_STRING "1.1.1"
 
 // #define TEST_SHOW_INFO_OF_SHIP_NUM 1
 

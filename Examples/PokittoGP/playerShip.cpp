@@ -214,9 +214,6 @@ void CPlayerShip::HandleRaceStartingAndEnding( bool isOnStartingGrid )
     case enumOnTimedTrack:
         if( isOnStartingGrid && m_activeWaypointIndex > waypointCount - 5 )  // At least the one of the 5 last waypoints visited
         {
-            // Startup song.
-            SetupMusic(2);
-
             // Finished!
             m_final_lap_time_ms = mygame.getTime() - m_start_ms;
 
@@ -229,6 +226,9 @@ void CPlayerShip::HandleRaceStartingAndEnding( bool isOnStartingGrid )
                     // Race finished
                     m_requestedMenuMode = CMenu::enumRaceFinishedMenu;
                     m_lapTimingState = enumFinished;
+
+                    // Play "Finished" song.
+                    SetupMusic(2);
                 }
                 else
                 {
@@ -237,6 +237,9 @@ void CPlayerShip::HandleRaceStartingAndEnding( bool isOnStartingGrid )
             }
             else
             {
+                // Play "Finished" song.
+                SetupMusic(2);
+
                 // Open the menu after the time trial.
                 m_requestedMenuMode = CMenu::enumTimeTrialFinishedMenu;
             }
