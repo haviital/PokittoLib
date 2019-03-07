@@ -1,13 +1,13 @@
 #include <cstdint>
 #include <Pokitto.h>
-#include "LibTilemap.hpp"
+#include "Tilemap.hpp"
 
 void SDL_RenderCopySolid( const uint8_t *data, uint32_t width, uint32_t height, int32_t x, int32_t y )
 {
     struct rect {
-	uint32_t x, y, w, h;
+        uint32_t x, y, w, h;
     };
-    
+
     rect srcClipped, dstClipped;
     srcClipped.x = 0;
     srcClipped.y = 0;
@@ -18,8 +18,8 @@ void SDL_RenderCopySolid( const uint8_t *data, uint32_t width, uint32_t height, 
 
     if( x < 0 )
     {
-	srcClipped.x -= x;
-	dstClipped.x = 0;
+        srcClipped.x -= x;
+        dstClipped.x = 0;
         srcClipped.w += x;
     }
 
@@ -44,8 +44,8 @@ void SDL_RenderCopySolid( const uint8_t *data, uint32_t width, uint32_t height, 
 
     if( srcClipped.x & 1 )
     {
-	srcClipped.x++;
-	dstClipped.x++;
+        srcClipped.x++;
+        dstClipped.x++;
         srcClipped.w--;
     }
 
@@ -64,20 +64,20 @@ void SDL_RenderCopySolid( const uint8_t *data, uint32_t width, uint32_t height, 
         offsett = offsetty + srcClipped.x;
 	pd = &data[(offsett>>1)];
 	out = Pokitto::Display::screenbuffer + dsty + (dstClipped.x>>1);
-	
+
         if( dstClipped.x & 1 )
         {
             for (uint32_t x = 0; x < srcClipped.w-1; x+=2, out++, pd++)
             {
-		out[1] = (out[1]&0x0F) | (*pd<<4);
-		out[0] = (out[0]&0xF0) | (*pd>>4);
+                out[1] = (out[1]&0x0F) | (*pd<<4);
+                out[0] = (out[0]&0xF0) | (*pd>>4);
             }
         }
         else
         {
             for (uint32_t x = 0; x < srcClipped.w-1; x+=2 )
             {
-		*out++ = *pd++;
+                *out++ = *pd++;
             }
         }
 
