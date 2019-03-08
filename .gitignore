@@ -11,4 +11,6 @@
 *.layout
 *.map
 *.elay
+*.bak
+*.mpy
 
