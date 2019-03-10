@@ -846,6 +846,10 @@ Q(SystemExit)
 
 Q(SystemExit)
 
+Q(Tilemap)
+
+Q(Tilemap)
+
 Q(TypeError)
 
 Q(TypeError)
@@ -877,6 +881,8 @@ Q(__class__)
 Q(__class__)
 
 Q(__contains__)
+
+Q(__del__)
 
 Q(__delitem__)
 
@@ -931,6 +937,8 @@ Q(__main__)
 Q(__main__)
 
 Q(__module__)
+
+Q(__name__)
 
 Q(__name__)
 
@@ -1139,6 +1147,8 @@ Q(display)
 Q(display)
 
 Q(divmod)
+
+Q(draw)
 
 Q(draw_text)
 
@@ -1466,6 +1476,8 @@ Q(set_palette)
 
 Q(set_palette_16bit)
 
+Q(set_tile)
+
 Q(setattr)
 
 Q(setdefault)
@@ -1515,6 +1527,10 @@ Q(text)
 Q(throw)
 
 Q(throw)
+
+Q(tilemap)
+
+Q(tilemap)
 
 Q(time_us)
 

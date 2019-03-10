@@ -43,6 +43,7 @@
 					<Add option="-g" />
 					<Add option="-DPOK_SIM" />
 					<Add directory="../POKITTO_LIBS/MicroPython" />
+					<Add directory="../POKITTO_LIBS/Tilemap" />
 				</Compiler>
 				<Linker>
 					<Add library="../POKITTO_LIBS/MicroPython/libmicropython_win.a" />
@@ -1006,6 +1007,7 @@
 		<Unit filename="../POKITTO_LIBS/Synth/Synth_wavefuncs.cpp" />
 		<Unit filename="../POKITTO_LIBS/Tilemap/Tilemap.cpp">
 			<Option target="TileMap" />
+			<Option target="MicroPython" />
 		</Unit>
 		<Unit filename="../POKITTO_LIBS/Tilemap/Tilemap.hpp">
 			<Option target="TileMap" />
