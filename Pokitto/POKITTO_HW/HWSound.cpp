@@ -401,12 +401,29 @@ inline void pokSoundIRQ() {
         streamstep &= streamon; // streamon is used to toggle SD music streaming on and off
         if (streamstep) {
             output = (*currentPtr++);
-	    if( Pokitto::Sound::sfxDataPtr != Pokitto::Sound::sfxEndPtr ){
-		int32_t s = (int32_t(output) + int32_t(*Pokitto::Sound::sfxDataPtr++)) - 128;
-		if( s < 0 ) s = 0;
-		else if( s > 255 ) s = 255;
-		output = s;
-	    }
+
+            // If exists, mix the sound effect to the output.
+            if( Pokitto::Sound::sfxDataPtr != Pokitto::Sound::sfxEndPtr ){
+                uint8_t sfxSample = 0;
+                if( Pokitto::Sound::sfxIs4bitSamples ) {
+                    if(Pokitto::Sound::sfxBytePos++ == 0) {
+                        sfxSample = (*Pokitto::Sound::sfxDataPtr) << 4;  // 4-bit sample is in the low nibble
+                    }
+                    else
+                    {
+                        sfxSample = (*Pokitto::Sound::sfxDataPtr++) & 0xf0;  // 4-bit sample is in the high nibble
+                        Pokitto::Sound::sfxBytePos = 0;
+                    }
+                }
+                else {
+                    sfxSample = (*Pokitto::Sound::sfxDataPtr++);  // 8-bit sample
+                }
+                int32_t s = (int32_t(output) + int32_t(sfxSample)) - 128;
+                if( s < 0 ) s = 0;
+                else if( s > 255 ) s = 255;
+                output = s;
+            }
+
             if(streamvol && streamon) {
                 output >>= 3-streamvol;
                 streambyte = output;
