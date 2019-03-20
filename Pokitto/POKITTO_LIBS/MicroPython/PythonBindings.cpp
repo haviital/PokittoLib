@@ -227,7 +227,7 @@ void Pok_Sound_Reset() {
 
     #if POK_STREAMING_MUSIC > 0
 
-    // Zero buffers
+    // Zero buffers. TODO: Should I initialize to 128 instead?
     #if POK_HIGH_RAM == HIGH_RAM_MUSIC
     memset(buffers[0], 0, BUFFER_SIZE);
     memset(buffers[1], 0, BUFFER_SIZE);
