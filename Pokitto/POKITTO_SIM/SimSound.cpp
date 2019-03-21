@@ -120,11 +120,11 @@ void pokSoundIRQ() {
                 uint8_t sfxSample = 0;
                 if( Pokitto::Sound::sfxIs4bitSamples ) {
                     if(Pokitto::Sound::sfxBytePos++ == 0) {
-                        sfxSample = (*Pokitto::Sound::sfxDataPtr) << 4;  // 4-bit sample is in the low nibble
+                        sfxSample = (*Pokitto::Sound::sfxDataPtr) & 0xf0;  // 4-bit sample is in the high nibble
                     }
                     else
                     {
-                        sfxSample = (*Pokitto::Sound::sfxDataPtr++) & 0xf0;  // 4-bit sample is in the high nibble
+                        sfxSample = (*Pokitto::Sound::sfxDataPtr++) << 4;  // 4-bit sample is in the low nibble
                         Pokitto::Sound::sfxBytePos = 0;
                     }
                 }

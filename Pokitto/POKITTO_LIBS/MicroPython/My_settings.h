@@ -48,7 +48,7 @@
 #ifdef POK_SIM
 #define USE_USB_SERIAL_PRINT (0)
 #else
-#define USE_USB_SERIAL_PRINT (1)
+#define USE_USB_SERIAL_PRINT (0)
 #endif
 
 #endif

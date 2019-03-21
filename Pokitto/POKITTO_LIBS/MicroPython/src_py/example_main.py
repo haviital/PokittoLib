@@ -51,7 +51,7 @@ while True:
             if eventtype.key == pygame.K_UP:    vy = 1
             if eventtype.key == pygame.K_DOWN:  vy = -1
             if eventtype.key == pygame.BUT_A:
-                g_sound.play_sfx(data.sound1, len(data.sound1), True)
+                g_sound.play_sfx(data.sound1, len(data.sound1), False)
             if eventtype.key == pygame.BUT_B:
                 g_sound.play_sfx(data.sound2, len(data.sound2), True)
         if eventtype.type == pygame.KEYUP:
