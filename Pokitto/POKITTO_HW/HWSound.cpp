@@ -239,6 +239,7 @@ void Pokitto::dac_write(uint8_t value) {
     LPC_GPIO_PORT->MPIN[2] = val<<(20-4); // write bits to port
     CLR_MASK_DAC_HI;
     #else
+    CLR_MASK_P2;
     if (value & 1) SET_DAC0 else CLR_DAC0;
     value >>= 1;
     if (value & 1) SET_DAC1 else CLR_DAC1;
@@ -254,6 +255,7 @@ void Pokitto::dac_write(uint8_t value) {
     if (value & 1) SET_DAC6 else CLR_DAC6;
     value >>= 1;
     if (value & 1) SET_DAC7 else CLR_DAC7;
+    SET_MASK_P2;
     #endif //MASKED_DAC
     //CLR_MASK_DAC;
     #endif // BOARDREV
@@ -431,6 +433,7 @@ inline void pokSoundIRQ() {
                 streambyte = 0; // duty cycle
                 output = 0;
             }
+
             if (currentPtr >= endPtr)
             {
             currentBuffer++;
@@ -513,7 +516,7 @@ inline void pokSoundIRQ() {
                     uint32_t t_on = (uint32_t)((((obj->pwm->MATCHREL0)*op)>>8)); //cut out float
                     obj->pwm->MATCHREL1 = t_on;
                 #endif
-            #else // POK_STREAMING_MUSIC
+            #else // ! POK_STREAM_TO_DAC
                 op = output;
                 op *= discrete_vol_multipliers[discrete_vol];
                 op >>= 8;

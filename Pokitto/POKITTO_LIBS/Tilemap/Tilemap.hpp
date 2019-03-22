@@ -98,7 +98,9 @@ public:
     }
 
     // Get the tile under the given x and y
-    uint8_t GetTileId( std::int32_t x, std::int32_t y, uint8_t tileSize ){
+    uint8_t GetTileId( std::int32_t x, std::int32_t y, uint8_t tileSize ) {
+
+        //TODO: check x and y for out of bounds
 
         // Get tile x and y
         uint32_t tx = 0;
@@ -122,6 +124,8 @@ public:
             id >>= 4;
         else
             id &= 0xF;
+
+        return id;
     }
 
     // Get the tiles at the rect corners.
