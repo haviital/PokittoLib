@@ -227,17 +227,17 @@ void Pok_Sound_Reset() {
 
     #if POK_STREAMING_MUSIC > 0
 
-    // Zero buffers. TODO: Should I initialize to 128 instead?
+    // Init buffers to an empty value: 128.
     #if POK_HIGH_RAM == HIGH_RAM_MUSIC
-    memset(buffers[0], 0, BUFFER_SIZE);
-    memset(buffers[1], 0, BUFFER_SIZE);
-    memset(buffers[2], 0, BUFFER_SIZE);
-    memset(buffers[3], 0, BUFFER_SIZE);
+    memset(buffers[0], 128, BUFFER_SIZE);
+    memset(buffers[1], 128, BUFFER_SIZE);
+    memset(buffers[2], 128, BUFFER_SIZE);
+    memset(buffers[3], 128, BUFFER_SIZE);
     #else
-    memset(&(buffers[0]), 0, BUFFER_SIZE);
-    memset(&(buffers[1]), 0, BUFFER_SIZE);
-    memset(&(buffers[2]), 0, BUFFER_SIZE);
-    memset(&(buffers[3]), 0, BUFFER_SIZE);
+    memset(&(buffers[0]), 128, BUFFER_SIZE);
+    memset(&(buffers[1]), 128, BUFFER_SIZE);
+    memset(&(buffers[2]), 128, BUFFER_SIZE);
+    memset(&(buffers[3]), 128, BUFFER_SIZE);
     #endif
 
     // Set global variables
