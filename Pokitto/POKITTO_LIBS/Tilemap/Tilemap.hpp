@@ -100,8 +100,6 @@ public:
     // Get the tile under the given x and y
     uint8_t GetTileId( std::int32_t x, std::int32_t y, uint8_t tileSize ) {
 
-        //TODO: check x and y for out of bounds
-
         // Get tile x and y
         uint32_t tx = 0;
         uint32_t ty = 0;
@@ -118,12 +116,16 @@ public:
             ty = y/tileSize;
         }
 
+        // Check x and y for out of bounds.
+        if( tx >= width || ty >= height )
+            return 0;
+
         // Get the tile id.
         uint8_t id = map[ (ty*width + tx)>>1 ];
         if(tx&1)
-            id >>= 4;
-        else
             id &= 0xF;
+        else
+            id >>= 4;
 
         return id;
     }
