@@ -18,7 +18,6 @@
 #define PROJ_ENABLE_SOUND 1     // 0 = all sound functions disabled
 #define PROJ_STREAMING_MUSIC 1  // Use streaming music (either SD or filling buffers programmaticly)
 #define PROJ_AUD_FREQ 8000
-//#define PROJ_SDFS_STREAMING 1
 
 #ifndef POK_SIM
 #define PROJ_HIGH_RAM HIGH_RAM_MUSIC

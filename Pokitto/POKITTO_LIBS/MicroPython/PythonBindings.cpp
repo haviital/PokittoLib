@@ -265,7 +265,8 @@ void Pok_Sound_Reset() {
 void Pok_Sound_PlayMusicFromSD(char* filePath) {
     #if POK_STREAMING_MUSIC > 0
     Pokitto::Sound::pauseMusicStream();
-    Pokitto::Sound::playMusicStream(filePath);
+    int ok = Pokitto::Sound::playMusicStream(filePath);
+    if(ok) Pokitto::Sound::playMusicStream();
     #endif
 }
 

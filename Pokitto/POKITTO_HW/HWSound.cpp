@@ -539,24 +539,11 @@ void Pokitto::updateSDAudioStream() {
     if (streamPaused()) return;
 
     #if POK_STREAMING_MUSIC > 0
-
     if (oldBuffer != currentBuffer) {
-        #if POK_HIGH_RAM == HIGH_RAM_MUSIC
-
-        if (currentBuffer==0) fileReadBytes(buffers[3],BUFFER_SIZE);
-        else if (currentBuffer==1) fileReadBytes(buffers[0],BUFFER_SIZE);
-        else if (currentBuffer==2) fileReadBytes(buffers[1],BUFFER_SIZE);
-        else fileReadBytes(buffers[2],BUFFER_SIZE);
-
-        #else
-
         if (currentBuffer==0) fileReadBytes(&buffers[3][0],BUFFER_SIZE);
         else if (currentBuffer==1) fileReadBytes(&buffers[0][0],BUFFER_SIZE);
         else if (currentBuffer==2) fileReadBytes(&buffers[1][0],BUFFER_SIZE);
         else fileReadBytes(&buffers[2][0],BUFFER_SIZE);
-
-        #endif
-
         oldBuffer = currentBuffer;
         streamcounter += BUFFER_SIZE;
     } else return;

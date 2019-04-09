@@ -1,13 +1,9 @@
-print('test 1')
-
 import upygame as pygame
 import framebuf
 import urandom as random
 import example_data as spritedata
 import sprite
 import gc
-
-print('test 2')
 
 pygame.display.init()
 pygame.display.set_palette_16bit([
@@ -17,14 +13,11 @@ pygame.display.set_palette_16bit([
 
 screen = pygame.display.set_mode() # full screen
 
-print('test 3')
 # Initialize sound
 g_sound = pygame.mixer.Sound()
-print('test 4')
 
 g_sound.play_from_sd("intro44.snd")
-print('test 5')
-g_sound.play()
+#g_sound.play()
 
 print('display ready')
 
