@@ -21,11 +21,15 @@
 
 #ifndef POK_SIM
 #define PROJ_HIGH_RAM HIGH_RAM_MUSIC
+#define PROJ_FPS 200
+#else
+#define PROJ_FPS 10
 #endif
 
-//#define PROJ_SHOW_FPS_COUNTER
-#define PROJ_FPS 200
+#define PROJ_SHOW_FPS_COUNTER
 //#define PROJ_FPS 20
+
+#define _OSCT 2
 
 // Python specific
 
@@ -37,5 +41,7 @@
 #else
 #define USE_USB_SERIAL_PRINT (0)
 #endif
+
+#define DEFAULT_FONT fontTiny
 
 #endif
