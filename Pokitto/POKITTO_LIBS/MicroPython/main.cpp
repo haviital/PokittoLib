@@ -76,7 +76,7 @@ int main () {
         #pragma GCC diagnostic ignored "-Wwrite-strings" // The strings below will not be changed in the function called
         char* argv[] = {
             "",
-            PYTHON_SOURCE_FILE_PATH"example_main.py"
+            PYTHON_SOURCE_FILE_PATH"main.py"
         };
         #pragma GCC diagnostic pop
 

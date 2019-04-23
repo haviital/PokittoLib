@@ -21,7 +21,7 @@
 
 #ifndef POK_SIM
 #define PROJ_HIGH_RAM HIGH_RAM_MUSIC
-#define PROJ_FPS 200
+#define PROJ_FPS 400
 #else
 #define PROJ_FPS 10
 #endif
