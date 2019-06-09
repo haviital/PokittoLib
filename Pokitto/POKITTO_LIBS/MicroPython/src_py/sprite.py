@@ -1,3 +1,4 @@
+
 # Slightly modified Pygame sprite classes
 # Author: Hannu Viitala, 2018
 
@@ -248,4 +249,5 @@ def spritecollideany(sprite, group, collided=None):
             if spritecollide(s.rect):
                 return s
     return None
+
 

@@ -15,10 +15,9 @@
 #define PROJ_HIRES 0 //1 = high resolution (220x176) , 0 = low resolution fast mode (110x88)
 
 // Sound
-#define PROJ_ENABLE_SOUND 1     // 0 = all sound functions disabled
-#define PROJ_STREAMING_MUSIC 1  // Use streaming music (either SD or filling buffers programmaticly)
 #define PROJ_AUD_FREQ 8000
-//#define PROJ_SDFS_STREAMING 1
+#define PROJ_ENABLE_SFX
+#define PROJ_ENABLE_SD_MUSIC
 
 #ifndef POK_SIM
 #define PROJ_HIGH_RAM HIGH_RAM_MUSIC
