@@ -6,11 +6,11 @@
 # 1 "../../py/mpconfig.h" 1
 # 45 "../../py/mpconfig.h"
 # 1 "./mpconfigport.h" 1
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stdint.h" 1 3 4
-# 9 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stdint.h" 3 4
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 1 3 4
-# 12 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 3 4
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 1 3 4
+# 1 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stdint.h" 1 3 4
+# 9 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stdint.h" 3 4
+# 1 "p:\\arm-none-eabi\\include\\stdint.h" 1 3 4
+# 12 "p:\\arm-none-eabi\\include\\stdint.h" 3 4
+# 1 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 1 3 4
 
 
 
@@ -18,46 +18,46 @@
 
 
 
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\features.h" 1 3 4
-# 28 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\features.h" 3 4
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\_newlib_version.h" 1 3 4
-# 29 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\features.h" 2 3 4
-# 9 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 2 3 4
-# 41 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 1 "p:\\arm-none-eabi\\include\\sys\\features.h" 1 3 4
+# 28 "p:\\arm-none-eabi\\include\\sys\\features.h" 3 4
+# 1 "p:\\arm-none-eabi\\include\\_newlib_version.h" 1 3 4
+# 29 "p:\\arm-none-eabi\\include\\sys\\features.h" 2 3 4
+# 9 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 2 3 4
+# 41 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 
-# 41 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 41 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef signed char __int8_t;
 
 typedef unsigned char __uint8_t;
-# 55 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 55 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef short int __int16_t;
 
 typedef short unsigned int __uint16_t;
-# 77 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 77 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef long int __int32_t;
 
 typedef long unsigned int __uint32_t;
-# 103 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 103 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef long long int __int64_t;
 
 typedef long long unsigned int __uint64_t;
-# 134 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 134 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef signed char __int_least8_t;
 
 typedef unsigned char __uint_least8_t;
-# 160 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 160 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef short int __int_least16_t;
 
 typedef short unsigned int __uint_least16_t;
-# 182 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 182 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef long int __int_least32_t;
 
 typedef long unsigned int __uint_least32_t;
-# 200 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 200 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef long long int __int_least64_t;
 
 typedef long long unsigned int __uint_least64_t;
-# 214 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
+# 214 "p:\\arm-none-eabi\\include\\machine\\_default_types.h" 3 4
 typedef long long int __intmax_t;
 
 
@@ -77,9 +77,9 @@ typedef long long unsigned int __uintmax_t;
 typedef int __intptr_t;
 
 typedef unsigned int __uintptr_t;
-# 13 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 2 3 4
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_intsup.h" 1 3 4
-# 35 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_intsup.h" 3 4
+# 13 "p:\\arm-none-eabi\\include\\stdint.h" 2 3 4
+# 1 "p:\\arm-none-eabi\\include\\sys\\_intsup.h" 1 3 4
+# 35 "p:\\arm-none-eabi\\include\\sys\\_intsup.h" 3 4
        
        
        
@@ -87,7 +87,7 @@ typedef unsigned int __uintptr_t;
        
        
        
-# 187 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_intsup.h" 3 4
+# 187 "p:\\arm-none-eabi\\include\\sys\\_intsup.h" 3 4
        
        
        
@@ -95,9 +95,9 @@ typedef unsigned int __uintptr_t;
        
        
        
-# 14 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 2 3 4
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_stdint.h" 1 3 4
-# 20 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_stdint.h" 3 4
+# 14 "p:\\arm-none-eabi\\include\\stdint.h" 2 3 4
+# 1 "p:\\arm-none-eabi\\include\\sys\\_stdint.h" 1 3 4
+# 20 "p:\\arm-none-eabi\\include\\sys\\_stdint.h" 3 4
 typedef __int8_t int8_t ;
 
 
@@ -161,7 +161,7 @@ typedef __intptr_t intptr_t;
 
 
 typedef __uintptr_t uintptr_t;
-# 15 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 2 3 4
+# 15 "p:\\arm-none-eabi\\include\\stdint.h" 2 3 4
 
 
 
@@ -188,19 +188,19 @@ typedef __uint_least32_t uint_least32_t;
 
 typedef __int_least64_t int_least64_t;
 typedef __uint_least64_t uint_least64_t;
-# 51 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 3 4
+# 51 "p:\\arm-none-eabi\\include\\stdint.h" 3 4
   typedef int int_fast8_t;
   typedef unsigned int uint_fast8_t;
-# 61 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 3 4
+# 61 "p:\\arm-none-eabi\\include\\stdint.h" 3 4
   typedef int int_fast16_t;
   typedef unsigned int uint_fast16_t;
-# 71 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 3 4
+# 71 "p:\\arm-none-eabi\\include\\stdint.h" 3 4
   typedef int int_fast32_t;
   typedef unsigned int uint_fast32_t;
-# 81 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\stdint.h" 3 4
+# 81 "p:\\arm-none-eabi\\include\\stdint.h" 3 4
   typedef long long int int_fast64_t;
   typedef long long unsigned int uint_fast64_t;
-# 10 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stdint.h" 2 3 4
+# 10 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stdint.h" 2 3 4
 # 2 "./mpconfigport.h" 2
 # 89 "./mpconfigport.h"
 
@@ -212,46 +212,46 @@ typedef long mp_off_t;
 
 extern const struct _mp_obj_module_t mp_module_pygame;
 # 109 "./mpconfigport.h"
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\alloca.h" 1 3
-# 10 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\alloca.h" 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\_ansi.h" 1 3
-# 10 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\_ansi.h" 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\newlib.h" 1 3
-# 11 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\_ansi.h" 2 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\config.h" 1 3
+# 1 "p:\\arm-none-eabi\\include\\alloca.h" 1 3
+# 10 "p:\\arm-none-eabi\\include\\alloca.h" 3
+# 1 "p:\\arm-none-eabi\\include\\_ansi.h" 1 3
+# 10 "p:\\arm-none-eabi\\include\\_ansi.h" 3
+# 1 "p:\\arm-none-eabi\\include\\newlib.h" 1 3
+# 11 "p:\\arm-none-eabi\\include\\_ansi.h" 2 3
+# 1 "p:\\arm-none-eabi\\include\\sys\\config.h" 1 3
 
 
 
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\ieeefp.h" 1 3
-# 5 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\config.h" 2 3
-# 12 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\_ansi.h" 2 3
-# 11 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\alloca.h" 2 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 1 3
-# 13 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\_ansi.h" 1 3
-# 14 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 2 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 1 3 4
-# 149 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
+# 1 "p:\\arm-none-eabi\\include\\machine\\ieeefp.h" 1 3
+# 5 "p:\\arm-none-eabi\\include\\sys\\config.h" 2 3
+# 12 "p:\\arm-none-eabi\\include\\_ansi.h" 2 3
+# 11 "p:\\arm-none-eabi\\include\\alloca.h" 2 3
+# 1 "p:\\arm-none-eabi\\include\\sys\\reent.h" 1 3
+# 13 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 1 "p:\\arm-none-eabi\\include\\_ansi.h" 1 3
+# 14 "p:\\arm-none-eabi\\include\\sys\\reent.h" 2 3
+# 1 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 1 3 4
+# 149 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
 
-# 149 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
+# 149 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
 typedef int ptrdiff_t;
-# 216 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
+# 216 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
 typedef unsigned int size_t;
-# 328 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
+# 328 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
 typedef unsigned int wchar_t;
-# 426 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
+# 426 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
 typedef struct {
   long long __max_align_ll __attribute__((__aligned__(__alignof__(long long))));
   long double __max_align_ld __attribute__((__aligned__(__alignof__(long double))));
-# 437 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
+# 437 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
 } max_align_t;
-# 15 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 2 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 1 3
-# 24 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\machine\\_types.h" 1 3
-# 25 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 2 3
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\lock.h" 1 3
-# 33 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\lock.h" 3
+# 15 "p:\\arm-none-eabi\\include\\sys\\reent.h" 2 3
+# 1 "p:\\arm-none-eabi\\include\\sys\\_types.h" 1 3
+# 24 "p:\\arm-none-eabi\\include\\sys\\_types.h" 3
+# 1 "p:\\arm-none-eabi\\include\\machine\\_types.h" 1 3
+# 25 "p:\\arm-none-eabi\\include\\sys\\_types.h" 2 3
+# 1 "p:\\arm-none-eabi\\include\\sys\\lock.h" 1 3
+# 33 "p:\\arm-none-eabi\\include\\sys\\lock.h" 3
 struct __lock;
 typedef struct __lock * _LOCK_T;
 
@@ -280,7 +280,7 @@ extern int __retarget_lock_try_acquire_recursive(_LOCK_T lock);
 extern void __retarget_lock_release(_LOCK_T lock);
 
 extern void __retarget_lock_release_recursive(_LOCK_T lock);
-# 26 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 2 3
+# 26 "p:\\arm-none-eabi\\include\\sys\\_types.h" 2 3
 
 
 typedef long __blkcnt_t;
@@ -329,7 +329,7 @@ typedef __uint32_t __id_t;
 
 
 typedef unsigned short __ino_t;
-# 88 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 3
+# 88 "p:\\arm-none-eabi\\include\\sys\\_types.h" 3
 typedef __uint32_t __mode_t;
 
 
@@ -357,18 +357,18 @@ typedef long __key_t;
 
 
 typedef long _fpos_t;
-# 129 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 3
+# 129 "p:\\arm-none-eabi\\include\\sys\\_types.h" 3
 typedef unsigned int __size_t;
-# 145 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 3
+# 145 "p:\\arm-none-eabi\\include\\sys\\_types.h" 3
 typedef signed int _ssize_t;
-# 156 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 3
+# 156 "p:\\arm-none-eabi\\include\\sys\\_types.h" 3
 typedef _ssize_t __ssize_t;
 
 
-# 1 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 1 3 4
-# 357 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
+# 1 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 1 3 4
+# 357 "p:\\lib\\gcc\\arm-none-eabi\\8.2.1\\include\\stddef.h" 3 4
 typedef unsigned int wint_t;
-# 160 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\_types.h" 2 3
+# 160 "p:\\arm-none-eabi\\include\\sys\\_types.h" 2 3
 
 
 
@@ -431,7 +431,7 @@ typedef unsigned long __useconds_t;
 
 
 typedef char * __va_list;
-# 16 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 2 3
+# 16 "p:\\arm-none-eabi\\include\\sys\\reent.h" 2 3
 
 
 
@@ -439,7 +439,7 @@ typedef char * __va_list;
 
 
 typedef unsigned long __ULong;
-# 38 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 38 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
 struct _reent;
 
 struct __locale_t;
@@ -485,7 +485,7 @@ struct _on_exit_args {
 
  __ULong _is_cxa;
 };
-# 93 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 93 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
 struct _atexit {
  struct _atexit *_next;
  int _ind;
@@ -493,12 +493,12 @@ struct _atexit {
  void (*_fns[32])(void);
         struct _on_exit_args _on_exit_args;
 };
-# 117 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 117 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
 struct __sbuf {
  unsigned char *_base;
  int _size;
 };
-# 181 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 181 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
 struct __sFILE {
   unsigned char *_p;
   int _r;
@@ -549,7 +549,7 @@ struct __sFILE {
   _mbstate_t _mbstate;
   int _flags2;
 };
-# 287 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 287 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
 typedef struct __sFILE __FILE;
 
 
@@ -560,7 +560,7 @@ struct _glue
   int _niobs;
   __FILE *_iobs;
 };
-# 319 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 319 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
 struct _rand48 {
   unsigned short _seed[3];
   unsigned short _mult[3];
@@ -570,7 +570,7 @@ struct _rand48 {
 
 
 };
-# 608 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 608 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
 struct _reent
 {
   int _errno;
@@ -653,12 +653,12 @@ struct _reent
   __FILE __sf[3];
 
 };
-# 814 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\sys\\reent.h" 3
+# 814 "p:\\arm-none-eabi\\include\\sys\\reent.h" 3
 extern struct _reent *_impure_ptr ;
 extern struct _reent *const _global_impure_ptr ;
 
 void _reclaim_reent (struct _reent *);
-# 12 "c:\\program files (x86)\\embitz\\1.11\\share\\em_armgcc\\arm-none-eabi\\include\\alloca.h" 2 3
+# 12 "p:\\arm-none-eabi\\include\\alloca.h" 2 3
 # 110 "./mpconfigport.h" 2
 # 46 "../../py/mpconfig.h" 2
 # 28 "<stdin>" 2
@@ -1067,6 +1067,8 @@ Q(__name__)
 
 Q(__name__)
 
+Q(__name__)
+
 Q(__new__)
 
 Q(__new__)
@@ -1324,6 +1326,8 @@ Q(generator)
 Q(generator)
 
 Q(get)
+
+Q(getInt)
 
 Q(get_current_soundbuffer_index)
 
@@ -1587,6 +1591,8 @@ Q(sep)
 
 Q(setCursor)
 
+Q(setInt)
+
 Q(setTile)
 
 Q(set_background_color)
@@ -1696,6 +1702,10 @@ Q(upygame)
 Q(urandom)
 
 Q(urandom)
+
+Q(userext)
+
+Q(userext)
 
 Q(value)
 

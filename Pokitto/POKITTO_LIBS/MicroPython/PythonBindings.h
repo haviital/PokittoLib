@@ -143,6 +143,10 @@ EXTERNC void Pok_TasUI_fillRectTiles(int32_t col1, int32_t row1, int32_t col2, i
 EXTERNC void Pok_TasUI_drawBox(int32_t col1, int32_t row1, int32_t col2, int32_t row2);
 EXTERNC void Pok_TasUI_drawGauge(int32_t col1, int32_t col2, int32_t row, int32_t current, int32_t maxValue );
 
+// *** USER EXTENSION API***
+EXTERNC void Pok_UserExt_setInteger(int32_t cmdId, int32_t number);
+EXTERNC int32_t Pok_UserExt_getInteger(int32_t cmdId);
+
 // For compatibility in linking
 EXTERNC struct tm * localtime_cpp(const time_t * timer);
 EXTERNC time_t time_cpp(time_t* timer);

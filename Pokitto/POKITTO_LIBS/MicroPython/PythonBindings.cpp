@@ -524,6 +524,29 @@ void Pok_TasUI_drawBox(int32_t col1, int32_t row1, int32_t col2, int32_t row2)
     #endif
 }
 
+// *** USER EXTENSION API***
+typedef int32_t (*PythonUserExtCallback)( int32_t oper, int32_t cmdId, int32_t par);
+PythonUserExtCallback pythonUserExtCallbackPtr = nullptr;
+
+void Pok_UserExt_setInteger(int32_t cmdId, int32_t number)
+{
+    if( pythonUserExtCallbackPtr )
+        (void)pythonUserExtCallbackPtr(0 /*SET*/, cmdId, number );
+}
+
+int32_t Pok_UserExt_getInteger(int32_t cmdId )
+{
+    int32_t ret = 0;
+    if( pythonUserExtCallbackPtr )
+        ret = pythonUserExtCallbackPtr(1 /*GET*/, cmdId, 0 );
+
+    return ret;
+}
+
+void registerPythonUserExtCallback(PythonUserExtCallback ptr) {
+    pythonUserExtCallbackPtr = ptr;
+}
+
 // For compatibility in linking
 
 struct tm * localtime_cpp(const time_t * timer)

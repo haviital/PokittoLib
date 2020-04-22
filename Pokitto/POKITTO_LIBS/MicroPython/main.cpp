@@ -62,6 +62,17 @@ extern "C" int PythonMain(int argc, char **argv);
 extern "C" int PyInSkyMain( unsigned int heapSize, char *heapMem );
 #endif
 
+
+typedef int32_t (*PythonUserExtCallback)( int32_t oper, int32_t cmdId, int32_t par);
+void registerPythonUserExtCallback(PythonUserExtCallback ptr);
+
+PythonUserExtCallback myPythonUserExtCallback( int32_t oper, int32_t cmdId, int32_t par)
+{
+
+    //printf("myPythonUserExtCallback() CALLED\n");
+    return 0;
+}
+
 int main () {
 
     int *tmp = new int;
@@ -92,6 +103,10 @@ int main () {
         "..\\..\\..\\POKITTO_LIBS\\MicroPython\\src_py\\main.py"
     };
     #pragma GCC diagnostic pop
+
+
+    //!!HV
+    registerPythonUserExtCallback( *myPythonUserExtCallback );
 
     PythonMain(2, argv);
 
